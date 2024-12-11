@@ -34,3 +34,31 @@ export const getFunctionByAlias = async (alias: string) => {
   }
   return null;
 };
+
+export const updateFunctionCallsOnceByAlias = async (alias: string) => {
+  const { error } = await supabaseClient.rpc('updatefunctioncallsonce', {
+    x: alias,
+  });
+  if (error) {
+    throw error;
+  }
+  return null;
+};
+
+export const updateFunction = async (
+  fun: Partial<{
+    alias: string;
+    fun: string;
+    total_calls?: number;
+    remaining_calls?: number;
+  }>
+) => {
+  const { error } = await supabaseClient
+    .from('functions')
+    .update({ ...fun })
+    .eq('alias', fun.alias);
+  if (error) {
+    throw error;
+  }
+  return null;
+};

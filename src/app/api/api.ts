@@ -28,3 +28,30 @@ export const getFunction = async ({ alias }: { alias: string }) => {
   }
   throw new Error(`Unable to get function by alias ${alias}`);
 };
+
+export const updateFunction = async ({
+  alias,
+  fun,
+  total_calls,
+  remaining_calls,
+}: Partial<{
+  alias: string;
+  fun: string;
+  total_calls?: number;
+  remaining_calls?: number;
+}>) => {
+  const response = await fetch('/api/fun', {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      alias,
+      fun,
+      ...(total_calls && { total_calls }),
+      ...(remaining_calls && { remaining_calls }),
+    }),
+  });
+  if (response.ok) {
+    return await response.json();
+  }
+  throw new Error(`Unable to update function by alias ${alias}`);
+};

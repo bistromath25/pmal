@@ -1,4 +1,4 @@
-import { createFunction } from '@/utils/supabase';
+import { createFunction, updateFunction } from '@/utils/supabase';
 import { randomString } from '@/utils/utils';
 
 export async function POST(req: Request) {
@@ -14,7 +14,9 @@ export async function POST(req: Request) {
 
 export async function PATCH(req: Request) {
   try {
-    return new Response(JSON.stringify({}), { status: 200 });
+    const body = await req.json();
+    await updateFunction(body);
+    return new Response(JSON.stringify({ alias: body.alias }), { status: 200 });
   } catch (error) {
     return new Response(null, { status: 500 });
   }
