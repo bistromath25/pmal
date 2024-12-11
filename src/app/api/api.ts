@@ -9,7 +9,7 @@ export const createFunction = async ({
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       fun,
-      remaining_calls,
+      remaining_calls: remaining_calls ?? 10,
       total_calls: 0,
     }),
   });
