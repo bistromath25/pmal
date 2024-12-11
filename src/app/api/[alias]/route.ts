@@ -1,7 +1,5 @@
 import { getFunctionByAlias } from '@/utils/supabase';
 import { executeScript, getFunctionName } from '@/utils/utils';
-import * as fs from 'fs';
-import { TMP_FILE_STORAGE_LOCATION } from '@/utils/env';
 
 export async function POST(req: Request) {
   try {
