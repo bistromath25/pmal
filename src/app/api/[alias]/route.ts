@@ -1,5 +1,5 @@
 import { getFunctionByAlias } from '@/utils/supabase';
-import { executeFile, getFunctionName } from '@/utils/utils';
+import { executeScript, getFunctionName } from '@/utils/utils';
 import * as fs from 'fs';
 import { TMP_FILE_STORAGE_LOCATION } from '@/utils/env';
 
@@ -13,11 +13,8 @@ export async function POST(req: Request) {
       const funName = getFunctionName(f.fun);
       const content =
         f.fun +
-        `\nconsole.log(${funName}(${Object.values(Object.fromEntries(params)).map((x) => `'${x}'`)}))`;
-      const file = `${TMP_FILE_STORAGE_LOCATION}/${alias}.js`;
-      fs.writeFileSync(file, content);
-      const result = await executeFile(file);
-      fs.unlinkSync(file);
+        `\n${funName}(${Object.values(Object.fromEntries(params)).map((x) => `'${x}'`)});`;
+      const result = await executeScript(content);
       return new Response(JSON.stringify({ result }), { status: 200 });
     }
     return new Response(null, { status: 500 });

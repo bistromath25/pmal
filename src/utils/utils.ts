@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import { execFile } from 'child_process';
+import vm from 'vm';
 
 export const randomString = (n) => {
   return Math.random().toString(36).slice(-n);
@@ -42,15 +42,14 @@ export const getDemoQuery = (f: string) => {
   return result.slice(0, -1);
 };
 
-export const executeFile = async (file: string) => {
-  const { stdout } = await new Promise((resolve, reject) => {
-    execFile('node', [file], (error, stdout, stderr) => {
-      if (error) {
-        reject(error);
-        return;
-      }
-      resolve({ stdout });
-    });
-  });
-  return stdout.trim();
+export const executeScript = async (content: string) => {
+  try {
+    const script = new vm.Script(content);
+    const sandbox = {};
+    const context = vm.createContext(sandbox);
+    const result = script.runInContext(context);
+    return result;
+  } catch (error) {
+    throw error;
+  }
 };
