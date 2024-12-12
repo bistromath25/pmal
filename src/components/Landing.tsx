@@ -1,5 +1,6 @@
 import Editor from '@/components/Editor';
 import Header from './Header';
+import Footer from './Footer';
 
 export default function Landing() {
   return (
@@ -58,6 +59,7 @@ export default function Landing() {
           </p>
         </div>
       </div>
+      <Footer />
     </main>
   );
 }
