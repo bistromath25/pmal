@@ -12,7 +12,9 @@ export async function POST(req: Request) {
     } else {
       await createFunction({ ...fun, alias, remaining_calls: 10 });
     }
-    return new Response(JSON.stringify({ alias, remaining_calls }), { status: 200 });
+    return new Response(JSON.stringify({ alias, remaining_calls }), {
+      status: 200,
+    });
   } catch (error) {
     return new Response(null, { status: 500 });
   }

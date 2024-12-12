@@ -26,7 +26,7 @@ export const getFunctionByAlias = async (alias: string) => {
     .eq('alias', alias);
   if (data && data.length > 0) {
     const { remaining_calls } = data[0];
-    return remaining_calls > 0 ? data[0] as Function : null;
+    return remaining_calls > 0 ? (data[0] as Function) : null;
   }
   if (error) {
     throw error;

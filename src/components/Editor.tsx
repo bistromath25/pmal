@@ -60,7 +60,7 @@ export default function App() {
       />
       {error && <Warning />}
       <button
-        className='px-4 py-2 rounded-full border border-green-500 shadow-sm bg-green-300 hover:bg-green-200 hover:border-transparent text-center disabled:cursor-not-allowed'
+        className='px-4 py-2 rounded-full border border-green-500 shadow-md bg-green-300 hover:bg-green-200 hover:border-transparent text-center disabled:cursor-not-allowed'
         onClick={onSubmit}
         disabled={!code}
       >
@@ -68,7 +68,7 @@ export default function App() {
       </button>
       {alias && (
         <>
-          <div className='flex items-center'>
+          <div className='flex items-center shadow-md rounded-lg'>
             <input
               className='animate-pulse bg-gray-50 border border-e-0 border-gray-300 text-gray-500 text-sm rounded-s-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 overflow-x-scroll line-clamp-1'
               style={{
