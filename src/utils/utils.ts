@@ -30,7 +30,11 @@ export const getDemoQuery = (f: string) => {
   var result = '';
   params.forEach((x, i) => {
     result += x;
-    result += `=input${i + 1}&`;
+    result += `=value${i + 1}&`;
   });
   return result.slice(0, -1);
+};
+
+export const validateApiKey = (key: string) => {
+  return true; // accept all for now
 };

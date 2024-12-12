@@ -1,4 +1,7 @@
-import { getFunctionByAlias } from '@/utils/supabase';
+import {
+  getFunctionByAlias,
+  updateFunctionCallsOnceByAlias,
+} from '@/utils/supabase';
 import { getFunction } from '@/utils/utils';
 
 export async function POST(req: Request) {
@@ -11,7 +14,11 @@ export async function POST(req: Request) {
       const fun = getFunction(f.fun);
       if (fun) {
         const result = fun(...Object.values(Object.fromEntries(params)));
-        return new Response(JSON.stringify({ result }), { status: 200 });
+        await updateFunctionCallsOnceByAlias(alias);
+        return new Response(
+          JSON.stringify({ result, remaining_calls: f.remaining_calls - 1 }),
+          { status: 200 }
+        );
       }
     }
     return new Response(null, { status: 500 });
