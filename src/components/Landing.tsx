@@ -32,7 +32,7 @@ export default function Landing() {
           <div className='rounded-lg p-4 bg-blue-200'>
             <p className='font-bold text-2xl text-center'>Deploy 🚀</p>
             <p className='text-gray-600'>
-              Deploy your function at the touch of a button.
+              Deploy your function at the click of a button.
             </p>
           </div>
           <div className='rounded-lg p-4 bg-blue-300'>
@@ -53,8 +53,7 @@ export default function Landing() {
             <a href='#' className='text-blue-500'>
               Sign in
             </a>{' '}
-            to gain full access to PMAL, including creating functions in 5+
-            languages such as Node.js and Python.
+            to gain full access to PMAL, including our API.
           </p>
         </div>
       </div>

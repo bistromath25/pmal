@@ -34,3 +34,7 @@ export const getDemoQuery = (f: string) => {
   });
   return result.slice(0, -1);
 };
+
+export const validateApiKey = (key: string) => {
+  return true; // accept all for now
+};

@@ -70,7 +70,7 @@ export default function App() {
         <>
           <div className='flex items-center'>
             <input
-              className='bg-gray-50 border border-e-0 border-gray-300 text-gray-500 text-sm rounded-s-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 overflow-x-scroll line-clamp-1'
+              className='animate-pulse bg-gray-50 border border-e-0 border-gray-300 text-gray-500 text-sm rounded-s-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 overflow-x-scroll line-clamp-1'
               style={{
                 backgroundColor: '#f5f5f5',
                 fontFamily:

@@ -3,14 +3,16 @@ import { Function } from '@/utils/types';
 export const createFunction = async ({
   fun,
   remaining_calls,
-}: Partial<Function>) => {
+  apiKey,
+}: Partial<Function & { apiKey: string }>) => {
   const response = await fetch(`/api/fun`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       fun,
-      remaining_calls: remaining_calls ?? 10,
+      remaining_calls,
       total_calls: 0,
+      apiKey,
     }),
   });
   if (response.ok) {

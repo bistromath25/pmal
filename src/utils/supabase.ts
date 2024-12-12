@@ -25,9 +25,8 @@ export const getFunctionByAlias = async (alias: string) => {
     .select('fun, total_calls, remaining_calls')
     .eq('alias', alias);
   if (data && data.length > 0) {
-    // const { remaining_calls } = data[0];
-    // return remaining_calls > 0 ? (data[0] as Function) : null;
-    return data[0] as Function;
+    const { remaining_calls } = data[0];
+    return remaining_calls > 0 ? data[0] as Function : null;
   }
   if (error) {
     throw error;
@@ -36,7 +35,7 @@ export const getFunctionByAlias = async (alias: string) => {
 };
 
 export const updateFunctionCallsOnceByAlias = async (alias: string) => {
-  const { error } = await supabaseClient.rpc('updatefunctioncallsonce', {
+  const { error } = await supabaseClient.rpc('updatecallsonce', {
     x: alias,
   });
   if (error) {
