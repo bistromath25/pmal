@@ -115,7 +115,7 @@ export default function FunctionTableWrapper() {
             </div>
           </div>
         }
-        width='80%'
+        editor
       />
     </>
   );

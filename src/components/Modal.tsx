@@ -1,13 +1,12 @@
 import { ReactElement } from 'react';
 import { CloseModalIcon } from './Icons';
-import { title } from 'process';
 
 export interface ModalProps {
   modalIsOpen: boolean;
   onClose: () => void;
   title?: string;
   contents?: ReactElement;
-  width?: string;
+  editor?: boolean;
 }
 
 export default function Modal({
@@ -15,13 +14,13 @@ export default function Modal({
   onClose,
   title,
   contents,
-  width,
+  editor,
 }: ModalProps) {
   return modalIsOpen ? (
     <>
       <div className='backdrop-blur-sm justify-center items-center text-left flex overflow-x-hidden overflow-y-auto fixed inset-0 z-40 outline-none focus:outline-none'>
         <div
-          className={`bg-white rounded-lg shadow z-50 p-0 ${width ? `w-[${width}]` : 'w-[500px]'}`}
+          className={`bg-white rounded-lg shadow z-50 p-0 ${editor ? 'w-[70%]' : 'w-[500px]'}`}
         >
           <div className='space-y-2 p-6'>
             <div className='flex items-center justify-between rounded-t'>
