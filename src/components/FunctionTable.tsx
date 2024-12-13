@@ -1,49 +1,33 @@
 'use client';
 
 import { Function } from '@/utils/types';
-import { getDemoQuery, getNumberOfLines } from '@/utils/utils';
-import { useEffect, useState } from 'react';
-import { useSession } from 'next-auth/react';
+import { getDemoQuery } from '@/utils/utils';
+import { useState } from 'react';
 import Editor from './Editor';
 import { APP_BASE_URL } from '@/utils/env';
 import Modal from './Modal';
-import * as API from '@/app/api/api';
 
 export interface FunctionTableProps {
   functions: Function[];
   setFunctions: React.Dispatch<React.SetStateAction<Function[]>>;
+  currentFunction: Function;
+  setCurrentFunction: React.Dispatch<React.SetStateAction<Function>>;
+  handleDeleteFunction: (alias: string) => Promise<void>;
+  handleUpdateFunction: (fun: Function) => Promise<void>;
 }
 
 export default function FunctionTable({
   functions,
   setFunctions,
+  currentFunction,
+  setCurrentFunction,
+  handleDeleteFunction,
+  handleUpdateFunction,
 }: FunctionTableProps) {
-  const session = useSession();
   const [currentCode, setCurrentCode] = useState('');
-  const [currentFunction, setCurrentFunction] = useState<Function>({
-    alias: '',
-    fun: '',
-    total_calls: 0,
-    remaining_calls: 0,
-  });
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
-  const refreshFunctions = async () => {
-    const { functions } = await API.getAllFunctions();
-    setFunctions(functions);
-  };
-  const deleteFunction = async (alias: string) => {
-    await API.deleteFunction({ alias });
-    await refreshFunctions();
-  };
-  const saveFunction = async (fun: Function) => {
-    await API.updateFunction(fun);
-    await refreshFunctions();
-  };
-  useEffect(() => {
-    refreshFunctions();
-  }, [session]);
-  return functions.length ? (
+  return functions && functions.length ? (
     <div className='relative overflow-x-auto'>
       <table className='w-full text-md text-left rtl:text-right text-gray-500'>
         <thead className='text-md text-gray-700 uppercase bg-gray-50 border border-gray-300 border-s-0 border-e-0'>
@@ -162,7 +146,7 @@ export default function FunctionTable({
               <button
                 className='px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-center text-white'
                 onClick={() => {
-                  deleteFunction(currentFunction.alias);
+                  handleDeleteFunction(currentFunction.alias);
                   setDeleteModalIsOpen(false);
                 }}
               >
@@ -193,14 +177,13 @@ export default function FunctionTable({
               <button
                 className='px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-center text-white'
                 onClick={() => {
-                  console.log(JSON.stringify(currentFunction));
                   if (currentFunction) {
                     const newFunction = {
                       ...currentFunction,
                       fun: currentCode,
                     };
                     setCurrentFunction(newFunction);
-                    saveFunction(newFunction);
+                    handleUpdateFunction(newFunction);
                   }
                   setEditModalIsOpen(false);
                 }}
@@ -210,7 +193,7 @@ export default function FunctionTable({
             </div>
           </div>
         }
-        width='80%'
+        editor
       />
     </div>
   ) : null;
