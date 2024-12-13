@@ -1,4 +1,4 @@
-import Editor from '@/components/Editor';
+import { LandingEditor } from '@/components/Editor';
 import Header from './Header';
 import Footer from './Footer';
 
@@ -19,7 +19,7 @@ export default function Landing() {
               </span>
             </h2>
           </div>
-          <Editor />
+          <LandingEditor />
         </div>
       </div>
       <div className='w-full justify-items-center bg-gray-50 px-10 sm:px-40 py-10 border border-1 border-e-0 border-s-0'>

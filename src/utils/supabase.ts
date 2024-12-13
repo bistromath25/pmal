@@ -61,3 +61,25 @@ export const updateFunction = async (
   }
   return null;
 };
+
+export const deleteFunctionByAlias = async (alias: string) => {
+  const { error } = await supabaseClient
+    .from('functions')
+    .delete()
+    .eq('alias', alias);
+  if (error) {
+    throw error;
+  }
+  return null;
+};
+
+export const getAllFunctions = async () => {
+  const { data, error } = await supabaseClient.from('functions').select('*');
+  if (data) {
+    return data;
+  }
+  if (error) {
+    throw error;
+  }
+  return null;
+};
