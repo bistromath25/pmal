@@ -193,7 +193,7 @@ export default function FunctionTable({
             </div>
           </div>
         }
-        width='80%'
+        editor
       />
     </div>
   ) : null;
