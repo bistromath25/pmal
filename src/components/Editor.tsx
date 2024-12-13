@@ -3,14 +3,14 @@
 import React, { useState } from 'react';
 import CodeEditor from '@uiw/react-textarea-code-editor';
 import * as API from '@/app/api/api';
-import { getDemoQuery } from '@/utils/utils';
+import { getDemoQuery, isValidFunction } from '@/utils/utils';
 import { APP_BASE_URL } from '@/utils/env';
 import { DefaultIcon, SuccessIcon } from './Icons';
 
-function Warning() {
+export function Warning() {
   return (
-    <p className='w-full p-2 rounded-lg border border-red-200 bg-red-100 text-center'>
-      ⚠️ Syntax error! ⚠️
+    <p className='w-full p-2 rounded-lg bg-red-500 text-center text-white'>
+      ⚠️ Error! Not a valid function! ⚠️
     </p>
   );
 }
@@ -20,9 +20,16 @@ export interface EditorProps {
   setCode: React.Dispatch<React.SetStateAction<string>>;
   onClick?: (e: any) => void;
   style?: React.CSSProperties;
+  error?: boolean;
 }
 
-export default function Editor({ code, setCode, onClick, style }: EditorProps) {
+export default function Editor({
+  code,
+  setCode,
+  onClick,
+  style,
+  error,
+}: EditorProps) {
   const combinedStyle = {
     fontSize: '18px',
     minHeight: '200px',
@@ -34,16 +41,18 @@ export default function Editor({ code, setCode, onClick, style }: EditorProps) {
   };
 
   return (
-    <CodeEditor
-      className='w-full p-2 rounded-lg border border-blue-100 shadow-sm'
-      // className='w-full p-2 rounded-lg border border-blue-100 shadow-sm'
-      value={code}
-      language='js'
-      onChange={(evn) => setCode(evn.target.value)}
-      padding={15}
-      style={combinedStyle}
-      onClick={onClick}
-    />
+    <>
+      <CodeEditor
+        className='w-full p-2 rounded-lg border border-blue-100 shadow-sm'
+        value={code}
+        language='js'
+        onChange={(evn) => setCode(evn.target.value)}
+        padding={15}
+        style={combinedStyle}
+        onClick={onClick}
+      />
+      {error && <Warning />}
+    </>
   );
 }
 
@@ -56,7 +65,7 @@ export function LandingEditor() {
   const [alias, setAlias] = useState<string | undefined>(undefined);
   const [copied, setCopied] = useState(false);
   const onSubmit = async () => {
-    try {
+    if (code && isValidFunction(code)) {
       if (!alias) {
         const { alias } = await API.createFunction({
           fun: code,
@@ -66,16 +75,15 @@ export function LandingEditor() {
         await API.updateFunction({ alias, fun: code });
       }
       setDemoQuery(getDemoQuery(code));
-      setError(false);
       setCopied(false);
-    } catch (e) {
+      setError(false);
+    } else {
       setError(true);
     }
   };
   return (
     <div className='w-full space-y-4 justify-items-center'>
-      <Editor code={code} setCode={setCode} />
-      {error && <Warning />}
+      <Editor code={code} setCode={setCode} error={error} />
       <button
         className='px-4 py-2 rounded-full border border-green-500 shadow-md bg-green-300 hover:bg-green-400 hover:border-transparent text-center disabled:cursor-not-allowed'
         onClick={onSubmit}

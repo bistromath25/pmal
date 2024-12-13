@@ -13,8 +13,17 @@ export const remove = (items, item) => {
   return x;
 };
 
+export const isValidFunction = (s: string) => {
+  try {
+    new Function(s);
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+
 // https://stackoverflow.com/a/31194949
-export function getParameterNames(f: string) {
+export const getParameterNames = (f: string) => {
   return (f + '')
     .replace(/[/][/].*$/gm, '') // strip single-line comments
     .replace(/\s+/g, '') // strip white space
@@ -24,7 +33,7 @@ export function getParameterNames(f: string) {
     .replace(/=[^,]+/g, '') // strip any ES6 defaults
     .split(',')
     .filter(Boolean); // split & filter [""]
-}
+};
 
 export const getFunction = (
   s: string

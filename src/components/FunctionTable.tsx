@@ -1,68 +1,32 @@
 'use client';
 
-import { Function, User } from '@/utils/types';
-import { getDemoQuery, getNumberOfLines, remove } from '@/utils/utils';
-import { useEffect, useState } from 'react';
-import { useSession } from 'next-auth/react';
+import { Function } from '@/utils/types';
+import { getDemoQuery } from '@/utils/utils';
+import { useState } from 'react';
 import Editor from './Editor';
 import { APP_BASE_URL } from '@/utils/env';
 import Modal from './Modal';
-import * as API from '@/app/api/api';
 
 export interface FunctionTableProps {
   functions: Function[];
   setFunctions: React.Dispatch<React.SetStateAction<Function[]>>;
+  currentFunction: Function;
+  setCurrentFunction: React.Dispatch<React.SetStateAction<Function>>;
+  handleDeleteFunction: (alias: string) => Promise<void>;
+  handleUpdateFunction: (fun: Function) => Promise<void>;
 }
 
 export default function FunctionTable({
   functions,
   setFunctions,
+  currentFunction,
+  setCurrentFunction,
+  handleDeleteFunction,
+  handleUpdateFunction,
 }: FunctionTableProps) {
-  const session = useSession();
   const [currentCode, setCurrentCode] = useState('');
-  const [currentFunction, setCurrentFunction] = useState<Function>({
-    alias: '',
-    fun: '',
-    total_calls: 0,
-    remaining_calls: 0,
-  });
-  const [currentUser, setCurrentUser] = useState<User>({
-    email: '',
-    aliases: [],
-  });
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
-  const refreshFunctions = async () => {
-    const email = session.data?.user?.email;
-    if (email) {
-      const { aliases } = await API.getUser({ email });
-      const { functions } = await API.getFunctions({ aliases });
-      setFunctions(functions);
-      setCurrentUser({
-        email,
-        aliases,
-      });
-    }
-  };
-  const deleteFunction = async (alias: string) => {
-    console.log('deleteFunction', alias);
-    await API.deleteFunction({ alias });
-    const newUser = {
-      ...currentUser,
-      aliases: remove(currentUser.aliases, alias),
-    };
-    console.log(JSON.stringify(newUser, null, 2));
-    setCurrentUser(newUser);
-    await API.updateUser(newUser);
-    await refreshFunctions();
-  };
-  const saveFunction = async (fun: Function) => {
-    await API.updateFunction(fun);
-    await refreshFunctions();
-  };
-  useEffect(() => {
-    refreshFunctions();
-  }, [session]);
   return functions && functions.length ? (
     <div className='relative overflow-x-auto'>
       <table className='w-full text-md text-left rtl:text-right text-gray-500'>
@@ -182,7 +146,7 @@ export default function FunctionTable({
               <button
                 className='px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-center text-white'
                 onClick={() => {
-                  deleteFunction(currentFunction.alias);
+                  handleDeleteFunction(currentFunction.alias);
                   setDeleteModalIsOpen(false);
                 }}
               >
@@ -219,7 +183,7 @@ export default function FunctionTable({
                       fun: currentCode,
                     };
                     setCurrentFunction(newFunction);
-                    saveFunction(newFunction);
+                    handleUpdateFunction(newFunction);
                   }
                   setEditModalIsOpen(false);
                 }}
