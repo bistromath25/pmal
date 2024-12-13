@@ -1,8 +1,20 @@
+'use client';
+
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import { LandingEditor } from '@/components/Editor';
 import Header from './Header';
 import Footer from './Footer';
 
 export default function Landing() {
+  const session = useSession();
+  const router = useRouter();
+  useEffect(() => {
+    if (session.status === 'authenticated') {
+      router.push('/home');
+    }
+  }, [session, router]);
   return (
     <main className='w-full items-center justify-items-center min-h-screen gap-16 bg-[linear-gradient(120deg,_rgb(255_255_255)_50%,_rgb(239_246_255)_50%)] bg-fixed'>
       <Header />
