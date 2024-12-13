@@ -1,7 +1,7 @@
 'use client';
 
-import { Function } from '@/utils/types';
-import { getDemoQuery, getNumberOfLines } from '@/utils/utils';
+import { Function, User } from '@/utils/types';
+import { getDemoQuery, getNumberOfLines, remove } from '@/utils/utils';
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import Editor from './Editor';
@@ -26,14 +26,34 @@ export default function FunctionTable({
     total_calls: 0,
     remaining_calls: 0,
   });
+  const [currentUser, setCurrentUser] = useState<User>({
+    email: '',
+    aliases: [],
+  });
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const refreshFunctions = async () => {
-    const { functions } = await API.getAllFunctions();
-    setFunctions(functions);
+    const email = session.data?.user?.email;
+    if (email) {
+      const { aliases } = await API.getUser({ email });
+      const { functions } = await API.getFunctions({ aliases });
+      setFunctions(functions);
+      setCurrentUser({
+        email,
+        aliases,
+      });
+    }
   };
   const deleteFunction = async (alias: string) => {
+    console.log('deleteFunction', alias);
     await API.deleteFunction({ alias });
+    const newUser = {
+      ...currentUser,
+      aliases: remove(currentUser.aliases, alias),
+    };
+    console.log(JSON.stringify(newUser, null, 2));
+    setCurrentUser(newUser);
+    await API.updateUser(newUser);
     await refreshFunctions();
   };
   const saveFunction = async (fun: Function) => {
@@ -43,7 +63,7 @@ export default function FunctionTable({
   useEffect(() => {
     refreshFunctions();
   }, [session]);
-  return functions.length ? (
+  return functions && functions.length ? (
     <div className='relative overflow-x-auto'>
       <table className='w-full text-md text-left rtl:text-right text-gray-500'>
         <thead className='text-md text-gray-700 uppercase bg-gray-50 border border-gray-300 border-s-0 border-e-0'>
@@ -193,7 +213,6 @@ export default function FunctionTable({
               <button
                 className='px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-center text-white'
                 onClick={() => {
-                  console.log(JSON.stringify(currentFunction));
                   if (currentFunction) {
                     const newFunction = {
                       ...currentFunction,

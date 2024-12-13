@@ -6,12 +6,14 @@ import { useEffect } from 'react';
 import { LandingEditor } from '@/components/Editor';
 import Header from './Header';
 import Footer from './Footer';
+import * as API from '@/app/api/api';
 
 export default function Landing() {
   const session = useSession();
   const router = useRouter();
   useEffect(() => {
-    if (session.status === 'authenticated') {
+    if (session.status === 'authenticated' && session.data.user?.email) {
+      const user = API.getUser({ email: session.data.user.email });
       router.push('/home');
     }
   }, [session, router]);

@@ -77,7 +77,7 @@ export function LandingEditor() {
       <Editor code={code} setCode={setCode} />
       {error && <Warning />}
       <button
-        className='px-4 py-2 rounded-full border border-green-500 shadow-md bg-green-300 hover:bg-green-200 hover:border-transparent text-center disabled:cursor-not-allowed'
+        className='px-4 py-2 rounded-full border border-green-500 shadow-md bg-green-300 hover:bg-green-400 hover:border-transparent text-center disabled:cursor-not-allowed'
         onClick={onSubmit}
         disabled={!code}
       >

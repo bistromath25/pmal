@@ -5,3 +5,8 @@ export interface Function {
   total_calls: number;
   remaining_calls: number;
 }
+
+export interface User {
+  email: string;
+  aliases: string[];
+}
