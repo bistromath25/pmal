@@ -1,11 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import CodeEditor from '@uiw/react-textarea-code-editor';
-import * as API from '@/app/api/api';
-import { getDemoQuery, isValidFunction } from '@/utils/utils';
-import { APP_BASE_URL } from '@/utils/env';
-import { DefaultIcon, SuccessIcon } from './Icons';
 
 export function Warning() {
   return (
@@ -53,83 +49,5 @@ export default function Editor({
       />
       {error && <Warning />}
     </>
-  );
-}
-
-export function LandingEditor() {
-  const [code, setCode] = useState(
-    'function add(a, b) {\n  return parseInt(a) + parseInt(b);\n}'
-  );
-  const [demoQuery, setDemoQuery] = useState<string | undefined>(undefined);
-  const [error, setError] = useState(false);
-  const [alias, setAlias] = useState<string | undefined>(undefined);
-  const [copied, setCopied] = useState(false);
-  const onSubmit = async () => {
-    if (code && isValidFunction(code)) {
-      if (!alias) {
-        const { alias } = await API.createFunction({
-          fun: code,
-        });
-        setAlias(alias);
-      } else {
-        await API.updateFunction({ alias, fun: code });
-      }
-      setDemoQuery(getDemoQuery(code));
-      setCopied(false);
-      setError(false);
-    } else {
-      setError(true);
-    }
-  };
-  return (
-    <div className='w-full space-y-4 justify-items-center'>
-      <Editor code={code} setCode={setCode} error={error} />
-      <button
-        className='px-4 py-2 rounded-full border border-green-500 shadow-md bg-green-300 hover:bg-green-400 hover:border-transparent text-center disabled:cursor-not-allowed'
-        onClick={onSubmit}
-        disabled={!code}
-      >
-        {alias ? 'Update' : 'Deploy'} my function!
-      </button>
-      {alias && (
-        <>
-          <div className='flex items-center shadow-md rounded-lg'>
-            <input
-              className='animate-pulse bg-gray-50 border border-e-0 border-gray-300 text-gray-500 text-sm rounded-s-lg block w-full p-2.5 overflow-x-scroll line-clamp-1 focus:outline-none'
-              style={{
-                backgroundColor: '#f5f5f5',
-                fontFamily:
-                  'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
-                minWidth: '560px',
-              }}
-              value={`curl -X POST '${APP_BASE_URL}/api/${alias}?${demoQuery}'`}
-              readOnly
-            />
-            <button
-              className='flex-shrink-0 inline-flex items-center py-3 px-4 text-sm font-medium text-center text-gray-500 bg-gray-100 border border-gray-300 rounded-e-lg focus:outline-none focus:ring-gray-100 hover:bg-gray-200 hover:text-gray-900 cursor-pointer'
-              onClick={(e) => {
-                e.preventDefault();
-                if (alias) {
-                  navigator.clipboard.writeText(
-                    `curl -X POST '${APP_BASE_URL}/api/${alias}?${demoQuery}'`
-                  );
-                  setCopied(true);
-                }
-              }}
-            >
-              <DefaultIcon hidden={copied} />
-              <SuccessIcon hidden={!copied} />
-            </button>
-          </div>
-          <p className='text-gray-600'>
-            Free functions are automatically deleted after 10 calls.{' '}
-            <a href='#' className='text-blue-500'>
-              Sign in
-            </a>{' '}
-            to get more calls!
-          </p>
-        </>
-      )}
-    </div>
   );
 }
