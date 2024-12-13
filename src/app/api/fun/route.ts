@@ -1,4 +1,8 @@
-import { createFunction, updateFunction } from '@/utils/supabase';
+import {
+  createFunction,
+  deleteFunctionByAlias,
+  updateFunction,
+} from '@/utils/supabase';
 import { randomString, validateApiKey } from '@/utils/utils';
 
 export async function POST(req: Request) {
@@ -32,6 +36,8 @@ export async function PATCH(req: Request) {
 
 export async function DELETE(req: Request) {
   try {
+    const { alias } = await req.json();
+    await deleteFunctionByAlias(alias);
     return new Response(JSON.stringify({}), { status: 200 });
   } catch (error) {
     return new Response(null, { status: 500 });

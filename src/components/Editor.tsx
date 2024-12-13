@@ -15,9 +15,41 @@ function Warning() {
   );
 }
 
-export default function App() {
+export interface EditorProps {
+  code: string;
+  setCode: React.Dispatch<React.SetStateAction<string>>;
+  onClick?: (e: any) => void;
+  style?: React.CSSProperties;
+}
+
+export default function Editor({ code, setCode, onClick, style }: EditorProps) {
+  const combinedStyle = {
+    fontSize: '18px',
+    minHeight: '200px',
+    overflow: 'visible',
+    ...style,
+    backgroundColor: '#f5f5f5',
+    fontFamily:
+      'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
+  };
+
+  return (
+    <CodeEditor
+      className='w-full p-2 rounded-lg border border-blue-100 shadow-sm'
+      // className='w-full p-2 rounded-lg border border-blue-100 shadow-sm'
+      value={code}
+      language='js'
+      onChange={(evn) => setCode(evn.target.value)}
+      padding={15}
+      style={combinedStyle}
+      onClick={onClick}
+    />
+  );
+}
+
+export function LandingEditor() {
   const [code, setCode] = useState(
-    `function add(a, b) {\n  return parseInt(a) + parseInt(b);\n}`
+    'function add(a, b) {\n  return parseInt(a) + parseInt(b);\n}'
   );
   const [demoQuery, setDemoQuery] = useState<string | undefined>(undefined);
   const [error, setError] = useState(false);
@@ -28,7 +60,6 @@ export default function App() {
       if (!alias) {
         const { alias } = await API.createFunction({
           fun: code,
-          remaining_calls: 0,
         });
         setAlias(alias);
       } else {
@@ -43,21 +74,7 @@ export default function App() {
   };
   return (
     <div className='w-full space-y-4 justify-items-center'>
-      <CodeEditor
-        className='w-full p-2 rounded-lg border border-blue-100 shadow-sm'
-        value={code}
-        language='js'
-        onChange={(evn) => setCode(evn.target.value)}
-        padding={15}
-        style={{
-          backgroundColor: '#f5f5f5',
-          fontFamily:
-            'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
-          fontSize: '18px',
-          minHeight: '200px',
-          overflow: 'visible',
-        }}
-      />
+      <Editor code={code} setCode={setCode} />
       {error && <Warning />}
       <button
         className='px-4 py-2 rounded-full border border-green-500 shadow-md bg-green-300 hover:bg-green-200 hover:border-transparent text-center disabled:cursor-not-allowed'
@@ -70,7 +87,7 @@ export default function App() {
         <>
           <div className='flex items-center shadow-md rounded-lg'>
             <input
-              className='animate-pulse bg-gray-50 border border-e-0 border-gray-300 text-gray-500 text-sm rounded-s-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 overflow-x-scroll line-clamp-1'
+              className='animate-pulse bg-gray-50 border border-e-0 border-gray-300 text-gray-500 text-sm rounded-s-lg block w-full p-2.5 overflow-x-scroll line-clamp-1 focus:outline-none'
               style={{
                 backgroundColor: '#f5f5f5',
                 fontFamily:
@@ -78,7 +95,7 @@ export default function App() {
                 minWidth: '560px',
               }}
               value={`curl -X POST '${APP_BASE_URL}/api/${alias}?${demoQuery}'`}
-              disabled
+              readOnly
             />
             <button
               className='flex-shrink-0 inline-flex items-center py-3 px-4 text-sm font-medium text-center text-gray-500 bg-gray-100 border border-gray-300 rounded-e-lg focus:outline-none focus:ring-gray-100 hover:bg-gray-200 hover:text-gray-900 cursor-pointer'

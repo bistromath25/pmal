@@ -38,3 +38,7 @@ export const getDemoQuery = (f: string) => {
 export const validateApiKey = (key: string) => {
   return true; // accept all for now
 };
+
+export const getNumberOfLines = (f: string) => {
+  return f.split('\n').length;
+};
