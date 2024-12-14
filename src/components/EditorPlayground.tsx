@@ -81,6 +81,3 @@ export default function EditorPlayground({
   );
 }
 
-// get api key from first 8 chars of UUID
-// use api key to create a special function
-// for the playground
