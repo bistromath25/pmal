@@ -23,12 +23,15 @@ export const getFunctionByAlias = async (alias: string) => {
   const { data, error } = await supabaseClient
     .from('functions')
     .select('fun, total_calls, remaining_calls, anonymous')
-    .eq('alias', alias);
+    .eq('alias', alias)
+    .neq('frozen', true);
   if (data && data.length > 0) {
     const { fun, total_calls, remaining_calls, anonymous } = data[0];
-    return anonymous && total_calls >= 10
-      ? null
-      : ({ alias, fun, total_calls, remaining_calls } as Function);
+    if (anonymous && total_calls >= 10) {
+      deleteFunctionByAlias(alias);
+      return null;
+    }
+    return { alias, fun, total_calls, remaining_calls } as Function;
   }
   if (error) {
     throw error;
@@ -37,7 +40,7 @@ export const getFunctionByAlias = async (alias: string) => {
 };
 
 export const updateFunctionCallsOnceByAlias = async (alias: string) => {
-  const { error } = await supabaseClient.rpc('updatecallsonce', {
+  const { error } = await supabaseClient.rpc('updatefunctioncallsoncebyalias', {
     x: alias,
   });
   if (error) {
@@ -57,7 +60,8 @@ export const updateFunction = async (
   const { error } = await supabaseClient
     .from('functions')
     .update({ ...fun })
-    .eq('alias', fun.alias);
+    .eq('alias', fun.alias)
+    .neq('frozen', true);
   if (error) {
     throw error;
   }
@@ -65,10 +69,9 @@ export const updateFunction = async (
 };
 
 export const deleteFunctionByAlias = async (alias: string) => {
-  const { error } = await supabaseClient
-    .from('functions')
-    .delete()
-    .eq('alias', alias);
+  const { error } = await supabaseClient.rpc('freezefunctionbyalias', {
+    x: alias,
+  });
   if (error) {
     throw error;
   }
@@ -79,7 +82,8 @@ export const getFunctionsByAliases = async (aliases: string[]) => {
   const { data, error } = await supabaseClient
     .from('functions')
     .select('*')
-    .in('alias', aliases);
+    .in('alias', aliases)
+    .neq('frozen', true);
   if (data && data[0]) {
     return data;
   }

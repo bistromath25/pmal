@@ -8,6 +8,7 @@ export interface Function {
 
 export interface FunctionDatabaseEntity extends Function {
   anonymous: boolean;
+  frozen: boolean;
 }
 
 export interface User {
