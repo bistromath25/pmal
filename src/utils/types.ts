@@ -6,6 +6,11 @@ export interface Function {
   remaining_calls: number;
 }
 
+export interface FunctionDatabaseEntity extends Function {
+  anonymous: boolean;
+  frozen: boolean;
+}
+
 export interface User {
   email: string;
   aliases: string[];

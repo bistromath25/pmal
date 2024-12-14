@@ -1,10 +1,10 @@
-import { Function, User } from '@/utils/types';
+import { FunctionDatabaseEntity, User } from '@/utils/types';
 
 export const createFunction = async ({
   fun,
   remaining_calls,
-  apiKey,
-}: Partial<Function & { apiKey: string }>) => {
+  anonymous,
+}: Partial<FunctionDatabaseEntity>) => {
   const response = await fetch(`/api/fun`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -12,7 +12,7 @@ export const createFunction = async ({
       fun,
       remaining_calls,
       total_calls: 0,
-      apiKey,
+      anonymous,
     }),
   });
   if (response.ok) {
@@ -36,12 +36,7 @@ export const updateFunction = async ({
   fun,
   total_calls,
   remaining_calls,
-}: Partial<{
-  alias: string;
-  fun: string;
-  total_calls?: number;
-  remaining_calls?: number;
-}>) => {
+}: Partial<FunctionDatabaseEntity>) => {
   const response = await fetch('/api/fun', {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
