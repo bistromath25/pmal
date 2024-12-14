@@ -19,7 +19,7 @@ export async function GET(req: Request) {
         const result = fun(...Object.values(Object.fromEntries(params)));
         await updateFunctionCallsOnceByAlias(alias);
         return new Response(
-          JSON.stringify({ result, remaining_calls: f.remaining_calls - 1 }),
+          JSON.stringify({ result, total_calls: f.total_calls + 1 }),
           { status: 200 }
         );
       }

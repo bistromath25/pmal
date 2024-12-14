@@ -53,7 +53,12 @@ export default function FunctionTable({
           {functions.map(({ fun, alias, total_calls, remaining_calls }) => {
             const onClickCode = () => {
               setCurrentCode(fun);
-              setCurrentFunction({ fun, alias, total_calls, remaining_calls });
+              setCurrentFunction({
+                fun,
+                alias,
+                total_calls,
+                remaining_calls,
+              });
               setEditModalIsOpen(true);
             };
             return (
