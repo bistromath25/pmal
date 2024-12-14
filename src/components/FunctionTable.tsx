@@ -66,7 +66,7 @@ export default function FunctionTable({
                 className='border-b hover:bg-gray-50 align-top bg-white'
                 key={`function-table-${alias}`}
               >
-                <td className='px-6 py-4 font-medium text-gray-900'>{alias}</td>
+                <td className='px-6 py-4 font-bold'>{alias}</td>
                 <td
                   scope='row'
                   className='px-6 py-4 whitespace-nowrap flex flex-col gap-4'
@@ -83,8 +83,9 @@ export default function FunctionTable({
                   />
                 </td>
                 <td className='px-6 py-4'>
-                  <p>{remaining_calls} remaining</p>
-                  <p>{total_calls} total</p>
+                  <p>
+                    <span className='font-bold'>{total_calls}</span> total
+                  </p>
                 </td>
                 <td className='px-6 py-4'>
                   <input
