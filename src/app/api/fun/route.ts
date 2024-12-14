@@ -3,20 +3,29 @@ import {
   deleteFunctionByAlias,
   updateFunction,
 } from '@/utils/supabase';
-import { randomString, validateApiKey } from '@/utils/utils';
+import { randomString } from '@/utils/utils';
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
     const alias = randomString(5);
-    const { apiKey, ...fun } = body;
-    const { remaining_calls } = fun;
-    if (apiKey && validateApiKey(apiKey) && remaining_calls) {
-      await createFunction({ ...fun, alias });
+    const { total_calls, anonymous } = body;
+    if (anonymous) {
+      await createFunction({
+        ...body,
+        alias,
+        remaining_calls: 10,
+        total_calls: 0,
+        anonymous: true,
+      });
     } else {
-      await createFunction({ ...fun, alias, remaining_calls: 10 });
+      await createFunction({
+        ...body,
+        alias,
+        anonymous: false,
+      });
     }
-    return new Response(JSON.stringify({ alias, remaining_calls }), {
+    return new Response(JSON.stringify({ alias, total_calls }), {
       status: 200,
     });
   } catch (error) {

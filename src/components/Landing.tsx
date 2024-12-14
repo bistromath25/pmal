@@ -24,6 +24,7 @@ function LandingEditor() {
       if (!alias) {
         const { alias } = await API.createFunction({
           fun: code,
+          anonymous: true,
         });
         setAlias(alias);
       } else {

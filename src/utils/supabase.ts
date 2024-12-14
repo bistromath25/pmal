@@ -1,6 +1,6 @@
 import { createFetch } from './cache';
 import { supabaseKey, supabaseUrl } from './env';
-import { Function, User } from '@/utils/types';
+import { Function, FunctionDatabaseEntity, User } from '@/utils/types';
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseClient = createClient(supabaseUrl, supabaseKey, {
@@ -11,7 +11,7 @@ const supabaseClient = createClient(supabaseUrl, supabaseKey, {
   },
 });
 
-export const createFunction = async (f: Function) => {
+export const createFunction = async (f: FunctionDatabaseEntity) => {
   const { error } = await supabaseClient.from('functions').insert(f);
   if (error) {
     throw error;
@@ -22,11 +22,13 @@ export const createFunction = async (f: Function) => {
 export const getFunctionByAlias = async (alias: string) => {
   const { data, error } = await supabaseClient
     .from('functions')
-    .select('fun, total_calls, remaining_calls')
+    .select('fun, total_calls, remaining_calls, anonymous')
     .eq('alias', alias);
   if (data && data.length > 0) {
-    const { remaining_calls } = data[0];
-    return remaining_calls > 0 ? (data[0] as Function) : null;
+    const { fun, total_calls, remaining_calls, anonymous } = data[0];
+    return anonymous && total_calls >= 10
+      ? null
+      : ({ alias, fun, total_calls, remaining_calls } as Function);
   }
   if (error) {
     throw error;
