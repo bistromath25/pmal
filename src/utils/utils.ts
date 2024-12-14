@@ -1,5 +1,8 @@
 // @ts-nocheck
 
+export const defaultFunctionValue =
+  'function add(a, b) {\n  return parseInt(a) + parseInt(b);\n}';
+
 export const randomString = (n) => {
   return Math.random().toString(36).slice(-n);
 };

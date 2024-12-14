@@ -9,4 +9,5 @@ export interface Function {
 export interface User {
   email: string;
   aliases: string[];
+  key: string;
 }

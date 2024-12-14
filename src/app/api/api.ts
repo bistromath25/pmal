@@ -3,6 +3,7 @@ import { Function, User } from '@/utils/types';
 export const createFunction = async ({
   fun,
   remaining_calls,
+  alias,
   apiKey,
 }: Partial<Function & { apiKey: string }>) => {
   const response = await fetch(`/api/fun`, {
@@ -12,6 +13,7 @@ export const createFunction = async ({
       fun,
       remaining_calls,
       total_calls: 0,
+      alias,
       apiKey,
     }),
   });
@@ -21,9 +23,12 @@ export const createFunction = async ({
   throw new Error('Unable to create function');
 };
 
-export const getFunction = async ({ alias }: { alias: string }) => {
-  const response = await fetch(`/api/${alias}`, {
-    method: 'POST',
+export const getFunction = async (
+  { alias }: { alias: string },
+  fun = false
+) => {
+  const response = await fetch(`/api/${alias}${fun ? '?fun=true' : ''}`, {
+    method: 'GET',
   });
   if (response.ok) {
     return await response.json();

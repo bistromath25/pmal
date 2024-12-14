@@ -6,15 +6,17 @@ import { useEffect, useState } from 'react';
 import Editor from './Editor';
 import Header from './Header';
 import Footer from './Footer';
-import { getDemoQuery, isValidFunction } from '@/utils/utils';
+import {
+  defaultFunctionValue,
+  getDemoQuery,
+  isValidFunction,
+} from '@/utils/utils';
 import { APP_BASE_URL } from '@/utils/env';
 import { DefaultIcon, SuccessIcon } from './Icons';
 import * as API from '@/app/api/api';
 
 function LandingEditor() {
-  const [code, setCode] = useState(
-    'function add(a, b) {\n  return parseInt(a) + parseInt(b);\n}'
-  );
+  const [code, setCode] = useState(defaultFunctionValue);
   const [demoQuery, setDemoQuery] = useState<string | undefined>(undefined);
   const [error, setError] = useState(false);
   const [alias, setAlias] = useState<string | undefined>(undefined);
@@ -92,11 +94,23 @@ function LandingEditor() {
 export default function Landing() {
   const session = useSession();
   const router = useRouter();
-  useEffect(() => {
+  const handleSignin = async () => {
     if (session.status === 'authenticated' && session.data.user?.email) {
-      const user = API.getUser({ email: session.data.user.email });
+      const { key } = await API.getUser({ email: session.data.user.email });
+      try {
+        await API.createFunction({
+          fun: defaultFunctionValue,
+          remaining_calls: 10,
+          total_calls: 0,
+          alias: key,
+        });
+        router.push('/home');
+      } catch {}
       router.push('/home');
     }
+  };
+  useEffect(() => {
+    handleSignin();
   }, [session, router]);
   return (
     <main className='w-full items-center justify-items-center min-h-screen gap-16 bg-[linear-gradient(120deg,_rgb(255_255_255)_50%,_rgb(239_246_255)_50%)] bg-fixed'>

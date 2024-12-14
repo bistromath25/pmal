@@ -8,9 +8,13 @@ const sidebarOptions = [
     name: 'Home',
     path: '/home',
   },
+  // {
+  //   name: 'Settings',
+  //   path: '/settings',
+  // },
   {
-    name: 'Settings',
-    path: '/settings',
+    name: 'Editor',
+    path: '/editor',
   },
   {
     name: 'Sign out',

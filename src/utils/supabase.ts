@@ -109,7 +109,7 @@ export const createUser = async (user: User) => {
 export const getUserByEmail = async (email: string) => {
   const { data, error } = await supabaseClient
     .from('users')
-    .select('email, aliases')
+    .select('email, aliases, key')
     .eq('email', email);
   if (data && data[0]) {
     return data[0];
@@ -120,7 +120,7 @@ export const getUserByEmail = async (email: string) => {
   return null;
 };
 
-export const updateUser = async (user: User) => {
+export const updateUser = async (user: Partial<User>) => {
   const { error } = await supabaseClient
     .from('users')
     .update(user)

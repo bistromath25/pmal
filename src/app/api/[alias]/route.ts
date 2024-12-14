@@ -4,12 +4,15 @@ import {
 } from '@/utils/supabase';
 import { getFunction } from '@/utils/utils';
 
-export async function POST(req: Request) {
+export async function GET(req: Request) {
   try {
     const url = new URL(req.url);
     const params = new URLSearchParams(url.search);
     const alias = url.pathname.split('/api/')[1];
-    var f = await getFunctionByAlias(alias);
+    const f = await getFunctionByAlias(alias);
+    if (params.get('fun')) {
+      return new Response(JSON.stringify({ ...f }), { status: 200 });
+    }
     if (f && f.fun) {
       const fun = getFunction(f.fun);
       if (fun) {
@@ -25,4 +28,8 @@ export async function POST(req: Request) {
   } catch (error) {
     return new Response(null, { status: 500 });
   }
+}
+
+export async function POST(req: Request) {
+  return GET(req);
 }

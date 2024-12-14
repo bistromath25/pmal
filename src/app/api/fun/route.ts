@@ -8,7 +8,8 @@ import { randomString, validateApiKey } from '@/utils/utils';
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const alias = randomString(5);
+    var { alias } = body;
+    if (!alias) alias = randomString(5);
     const { apiKey, ...fun } = body;
     const { remaining_calls } = fun;
     if (apiKey && validateApiKey(apiKey) && remaining_calls) {
