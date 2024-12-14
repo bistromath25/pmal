@@ -3,11 +3,7 @@
 import { useState } from 'react';
 import Editor, { EditorProps } from './Editor';
 import { User } from '@/utils/types';
-import {
-  defaultFunctionValue,
-  getDemoQuery,
-  isValidFunction,
-} from '@/utils/utils';
+import { getDemoQuery, isValidFunction } from '@/utils/utils';
 import * as API from '@/app/api/api';
 import { APP_BASE_URL } from '@/utils/env';
 import { DefaultIcon, SuccessIcon } from './Icons';
@@ -44,19 +40,13 @@ export default function EditorPlayground({
             className='px-4 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-center text-white'
             onClick={onSubmit}
           >
-            Deploy
-          </button>
-          <button
-            className='px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-center text-white'
-            onClick={() => setCode(defaultFunctionValue)}
-          >
-            Reset
+            Update
           </button>
         </div>
         <div className='flex items-center shadow-md rounded-lg'>
           <input
             className='animate-pulse bg-gray-50 border border-e-0 border-gray-300 text-gray-500 text-sm rounded-s-lg block w-full p-2.5 overflow-x-scroll line-clamp-1 focus:outline-none'
-            value={`curl -X POST '${APP_BASE_URL}/api/${currentUser.key}?${demoQuery}'`}
+            value={`curl -X GET '${APP_BASE_URL}/api/${currentUser.key}?${demoQuery}'`}
             readOnly
           />
           <button
@@ -64,7 +54,7 @@ export default function EditorPlayground({
             onClick={(e) => {
               e.preventDefault();
               navigator.clipboard.writeText(
-                `curl -X POST '${APP_BASE_URL}/api/${currentUser.key}?${demoQuery}'`
+                `curl -X GET '${APP_BASE_URL}/api/${currentUser.key}?${demoQuery}'`
               );
               setCopied(true);
             }}
@@ -80,4 +70,3 @@ export default function EditorPlayground({
     </div>
   );
 }
-

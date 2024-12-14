@@ -59,7 +59,7 @@ function LandingEditor() {
                   'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
                 minWidth: '560px',
               }}
-              value={`curl -X POST '${APP_BASE_URL}/api/${alias}?${demoQuery}'`}
+              value={`curl -X GET '${APP_BASE_URL}/api/${alias}?${demoQuery}'`}
               readOnly
             />
             <button
@@ -68,7 +68,7 @@ function LandingEditor() {
                 e.preventDefault();
                 if (alias) {
                   navigator.clipboard.writeText(
-                    `curl -X POST '${APP_BASE_URL}/api/${alias}?${demoQuery}'`
+                    `curl -X GET '${APP_BASE_URL}/api/${alias}?${demoQuery}'`
                   );
                   setCopied(true);
                 }
@@ -148,7 +148,8 @@ export default function Landing() {
           <div className='rounded-lg p-4 bg-blue-300 shadow-md'>
             <p className='font-bold text-2xl text-center'>Call ⚡</p>
             <p className='text-gray-600'>
-              Call your function whenever and wherever you want.
+              Call your function whenever and wherever you want via a GET or
+              POST.
             </p>
           </div>
         </div>
