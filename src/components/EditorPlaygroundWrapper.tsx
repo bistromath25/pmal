@@ -1,16 +1,19 @@
 'use client';
 
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import EditorPlayground from './EditorPlayground';
 import { User } from '@/utils/types';
-import { defaultFunctionValue } from '@/utils/utils';
+import { defaultFunctionValues } from '@/utils/utils';
 import * as API from '@/app/api/api';
 import { APP_BASE_URL } from '@/utils/env';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function EditorPlaygroundWrapper() {
   const session = useSession();
-  const [currentCode, setCurrentCode] = useState(defaultFunctionValue);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [currentCode, setCurrentCode] = useState(defaultFunctionValues['js']);
   const [currentUser, setCurrentUser] = useState<User>({
     email: '',
     aliases: [],
@@ -35,6 +38,11 @@ export default function EditorPlaygroundWrapper() {
   useEffect(() => {
     getKeyFunction(currentUser.key);
   }, [currentUser]);
+  useEffect(() => {
+    if (!searchParams.get('language')) {
+      router.push('/editor?language=js');
+    }
+  }, []);
   return (
     <div className='w-full space-y-10'>
       <div className='justify-items-left pl-4 space-y-4'>

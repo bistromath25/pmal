@@ -1,12 +1,34 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Editor, { EditorProps } from './Editor';
 import { User } from '@/utils/types';
-import { getDemoQuery, isValidFunction } from '@/utils/utils';
+import {
+  defaultFunctionValues,
+  getDemoQuery,
+  isValidFunction,
+} from '@/utils/utils';
 import * as API from '@/app/api/api';
 import { APP_BASE_URL } from '@/utils/env';
 import { DefaultIcon, SuccessIcon } from './Icons';
+import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
+
+const languageOptions = [
+  {
+    name: 'js',
+    logoUrl: 'https://nodejs.org/static/logos/jsIconGreen.svg',
+  },
+  {
+    name: 'py',
+    logoUrl:
+      'https://s3.dualstack.us-east-2.amazonaws.com/pythondotorg-assets/media/community/logos/python-logo-only.png',
+  },
+  {
+    name: 'php',
+    logoUrl: 'https://www.php.net//images/logos/php-med-trans-light.gif',
+  },
+];
 
 export interface EditorPlaygroundProps extends EditorProps {
   currentUser: User;
@@ -19,9 +41,11 @@ export default function EditorPlayground({
   style,
   currentUser,
 }: EditorPlaygroundProps) {
+  const searchParams = useSearchParams();
   const [error, setError] = useState(false);
   const [demoQuery, setDemoQuery] = useState(getDemoQuery(code));
   const [copied, setCopied] = useState(false);
+  const [currentLanguage, setCurrentLanguage] = useState('js');
   const onSubmit = async () => {
     if (code && isValidFunction(code)) {
       await API.updateFunction({ alias: currentUser.key, fun: code });
@@ -31,10 +55,25 @@ export default function EditorPlayground({
       setError(true);
     }
   };
+  useEffect(() => {
+    if (currentLanguage === 'js') {
+      setCode(defaultFunctionValues['js']);
+    } else if (currentLanguage === 'py') {
+      setCode(defaultFunctionValues['py']);
+    } else if (currentLanguage === 'php') {
+      setCode(defaultFunctionValues['php']);
+    }
+  }, [currentLanguage]);
   return (
     <div className='w-full flex flex-row space-x-10'>
       <div className='basis-[70%] space-y-4'>
-        <Editor code={code} setCode={setCode} style={style} error={error} />
+        <Editor
+          code={code}
+          setCode={setCode}
+          style={style}
+          error={error}
+          language={currentLanguage}
+        />
         <div className='space-x-4'>
           <button
             className='px-4 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-center text-white'
@@ -65,7 +104,25 @@ export default function EditorPlayground({
         </div>
       </div>
       <div className='basis-[30%] space-y-4'>
-        <div className='space-x-4'>Hold</div>
+        <div className='font-bold text-2xl'>Select language</div>
+        <div className='flex flex-row gap-4'>
+          {languageOptions.map(({ name, logoUrl }) => {
+            const isActive = name === searchParams.get('language');
+            return (
+              <Link
+                className={`rounded-lg hover:bg-gray-100 h-[50px] justify-items-center ${isActive ? 'bg-gray-100' : 'bg-white-100'}`}
+                key={`editor-language-option-${name}`}
+                // href={{} || `/editor?language=${name}`}
+                href=''
+                // onClick={() => {
+                //   setCurrentLanguage(name);
+                // }}
+              >
+                <img className='h-[50px]' src={logoUrl} alt={name} />
+              </Link>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

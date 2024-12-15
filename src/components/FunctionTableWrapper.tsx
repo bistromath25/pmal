@@ -6,13 +6,13 @@ import { Function, User } from '@/utils/types';
 import Editor, { Warning } from './Editor';
 import Modal from './Modal';
 import * as API from '@/app/api/api';
-import { defaultFunctionValue, isValidFunction, remove } from '@/utils/utils';
+import { defaultFunctionValues, isValidFunction, remove } from '@/utils/utils';
 import { useSession } from 'next-auth/react';
 
 export default function FunctionTableWrapper() {
   const session = useSession();
   const [functions, setFunctions] = useState<Function[]>([]);
-  const [currentCode, setCurrentCode] = useState(defaultFunctionValue);
+  const [currentCode, setCurrentCode] = useState(defaultFunctionValues['Node']);
   const [currentFunction, setCurrentFunction] = useState<Function>({
     alias: '',
     fun: '',
