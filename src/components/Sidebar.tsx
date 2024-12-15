@@ -8,9 +8,13 @@ const sidebarOptions = [
     name: 'Home',
     path: '/home',
   },
+  // {
+  //   name: 'Settings',
+  //   path: '/settings',
+  // },
   {
-    name: 'Settings',
-    path: '/settings',
+    name: 'Editor',
+    path: '/editor',
   },
   {
     name: 'Sign out',
@@ -29,7 +33,7 @@ export default function Sidebar() {
             <div key={`sidebar-option-${name}`}>
               <Link href={path}>
                 <div
-                  className={`w-full p-2 rounded-lg ${isActive ? 'bg-gray-50' : 'hover:bg-gray-50'} flex flex-row items-center`}
+                  className={`w-full p-2 rounded-lg ${isActive ? 'bg-gray-100' : 'hover:bg-gray-100'} flex flex-row items-center`}
                 >
                   <h1>{name}</h1>
                 </div>

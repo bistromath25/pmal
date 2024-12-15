@@ -1,23 +1,22 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import Editor from './Editor';
-import Header from './Header';
-import Footer from './Footer';
+import * as API from '@/app/api/api';
+import { APP_BASE_URL } from '@/utils/env';
 import {
+  defaultFunctionValues,
   getDemoQuery,
   isValidFunction,
 } from '@/utils/utils';
-import { APP_BASE_URL } from '@/utils/env';
+import Editor from './Editor';
+import Footer from './Footer';
+import Header from './Header';
 import { DefaultIcon, SuccessIcon } from './Icons';
-import * as API from '@/app/api/api';
 
 function LandingEditor() {
-  const [code, setCode] = useState(
-    'function add(a, b) {\n  return parseInt(a) + parseInt(b);\n}'
-  );
+  const [code, setCode] = useState(defaultFunctionValues['js']);
   const [demoQuery, setDemoQuery] = useState<string | undefined>(undefined);
   const [error, setError] = useState(false);
   const [alias, setAlias] = useState<string | undefined>(undefined);
@@ -61,7 +60,7 @@ function LandingEditor() {
                   'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
                 minWidth: '560px',
               }}
-              value={`curl -X POST '${APP_BASE_URL}/api/${alias}?${demoQuery}'`}
+              value={`curl -X GET '${APP_BASE_URL}/api/${alias}?${demoQuery}'`}
               readOnly
             />
             <button
@@ -70,7 +69,7 @@ function LandingEditor() {
                 e.preventDefault();
                 if (alias) {
                   navigator.clipboard.writeText(
-                    `curl -X POST '${APP_BASE_URL}/api/${alias}?${demoQuery}'`
+                    `curl -X GET '${APP_BASE_URL}/api/${alias}?${demoQuery}'`
                   );
                   setCopied(true);
                 }
@@ -96,11 +95,23 @@ function LandingEditor() {
 export default function Landing() {
   const session = useSession();
   const router = useRouter();
-  useEffect(() => {
+  const handleSignin = async () => {
     if (session.status === 'authenticated' && session.data.user?.email) {
-      const user = API.getUser({ email: session.data.user.email });
+      const { key } = await API.getUser({ email: session.data.user.email });
+      try {
+        await API.createFunction({
+          fun: defaultFunctionValues['js'],
+          remaining_calls: 10,
+          total_calls: 0,
+          alias: key,
+        });
+        router.push('/home');
+      } catch {}
       router.push('/home');
     }
+  };
+  useEffect(() => {
+    handleSignin();
   }, [session, router]);
   return (
     <main className='w-full items-center justify-items-center min-h-screen gap-16 bg-[linear-gradient(120deg,_rgb(255_255_255)_50%,_rgb(239_246_255)_50%)] bg-fixed'>
@@ -138,7 +149,8 @@ export default function Landing() {
           <div className='rounded-lg p-4 bg-blue-300 shadow-md'>
             <p className='font-bold text-2xl text-center'>Call ⚡</p>
             <p className='text-gray-600'>
-              Call your function whenever and wherever you want.
+              Call your function whenever and wherever you want via a GET or
+              POST.
             </p>
           </div>
         </div>

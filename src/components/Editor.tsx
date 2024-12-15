@@ -17,6 +17,7 @@ export interface EditorProps {
   onClick?: (e: any) => void;
   style?: React.CSSProperties;
   error?: boolean;
+  language?: string;
 }
 
 export default function Editor({
@@ -25,6 +26,7 @@ export default function Editor({
   onClick,
   style,
   error,
+  language,
 }: EditorProps) {
   const combinedStyle = {
     fontSize: '18px',
@@ -41,7 +43,7 @@ export default function Editor({
       <CodeEditor
         className='w-full p-2 rounded-lg border border-blue-100 shadow-sm'
         value={code}
-        language='js'
+        language={language ?? 'js'}
         onChange={(evn) => setCode(evn.target.value)}
         padding={15}
         style={combinedStyle}

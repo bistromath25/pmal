@@ -1,11 +1,13 @@
 import { createUser, getUserByEmail, updateUser } from '@/utils/supabase';
+import { randomString } from '@/utils/utils';
 
 export async function POST(req: Request) {
   try {
     const { email } = await req.json();
     const user = await getUserByEmail(email);
     if (!user) {
-      await createUser({ email, aliases: [] });
+      const key = randomString(16);
+      await createUser({ email, aliases: [], key });
       return new Response(JSON.stringify({ email, aliases: [] }), {
         status: 201,
       });

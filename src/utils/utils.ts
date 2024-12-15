@@ -2,6 +2,12 @@
 
 import JSZip from 'jszip';
 
+export const defaultFunctionValues = {
+  js: 'function add(a, b) {\n  return parseInt(a) + parseInt(b);\n}',
+  py: 'def add(a, b):\n  return int(a) + int(b)',
+  php: 'function add($a, $b) {\n  return (int) $a + (int) $b;\n}',
+};
+
 export const randomString = (n) => {
   return Math.random().toString(36).slice(-n);
 };
