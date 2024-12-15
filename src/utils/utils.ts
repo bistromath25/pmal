@@ -1,5 +1,7 @@
 // @ts-nocheck
 
+import JSZip from 'jszip';
+
 export const randomString = (n) => {
   return Math.random().toString(36).slice(-n);
 };
@@ -35,6 +37,11 @@ export const getParameterNames = (f: string) => {
     .filter(Boolean); // split & filter [""]
 };
 
+// https://stackoverflow.com/a/47663732
+export const getFunctionName = (f: string) => {
+  return f.match(/function(.*?)\(/)[1].trim() as string;
+};
+
 export const getFunction = (
   s: string
 ): ((...args: any[]) => any) | undefined => {
@@ -55,4 +62,8 @@ export const getDemoQuery = (f: string) => {
 
 export const getNumberOfLines = (f: string) => {
   return f.split('\n').length;
+};
+
+export const getFunctionFileName = (alias: string, language: string) => {
+  return `${language}/${alias}.${language}`;
 };

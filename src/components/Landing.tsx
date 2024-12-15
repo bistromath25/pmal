@@ -6,7 +6,11 @@ import { useEffect, useState } from 'react';
 import Editor from './Editor';
 import Header from './Header';
 import Footer from './Footer';
-import { getDemoQuery, isValidFunction } from '@/utils/utils';
+import {
+  getDemoQuery,
+  getFunctionFileName,
+  isValidFunction,
+} from '@/utils/utils';
 import { APP_BASE_URL } from '@/utils/env';
 import { DefaultIcon, SuccessIcon } from './Icons';
 import * as API from '@/app/api/api';

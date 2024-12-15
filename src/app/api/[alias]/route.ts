@@ -2,7 +2,10 @@ import {
   getFunctionByAlias,
   updateFunctionCallsOnceByAlias,
 } from '@/utils/supabase';
-import { getFunction } from '@/utils/utils';
+import { getFunctionName } from '@/utils/utils';
+import * as GH from '@/utils/gh';
+import JSZip from 'jszip';
+import { GITHUB_JS_INDEX } from '@/utils/env';
 
 export async function POST(req: Request) {
   try {
@@ -11,15 +14,48 @@ export async function POST(req: Request) {
     const alias = url.pathname.split('/api/')[1];
     var f = await getFunctionByAlias(alias);
     if (f && f.fun) {
-      const fun = getFunction(f.fun);
-      if (fun) {
-        const result = fun(...Object.values(Object.fromEntries(params)));
-        await updateFunctionCallsOnceByAlias(alias);
-        return new Response(
-          JSON.stringify({ result, total_calls: f.total_calls + 1 }),
-          { status: 200 }
-        );
-      }
+      const funName = getFunctionName(f.fun);
+      const contents =
+        f.fun +
+        `\nconsole.log(${funName}(${Object.values(Object.fromEntries(params)).map((x) => `'${x}'`)}));`;
+
+      var response = await GH.getFiles('/js');
+      const files = await response.json();
+      const sha =
+        files.find(({ name }: { name: string }) => name === GITHUB_JS_INDEX)
+          ?.sha ?? '';
+
+      response = await GH.updateIndexFile({
+        decodedContents: contents,
+        sha,
+        language: 'js',
+      });
+      response = await GH.getWorkflows();
+      const { workflow_runs } = await response.json();
+      const id = workflow_runs[0].id;
+
+      response = await GH.getWorkflowRunById(id);
+      const data = await response.arrayBuffer();
+      const zip = await JSZip.loadAsync(data);
+
+      const dirtyLogContent =
+        await zip.files['build/4_Run node jsindex.js.txt'].async('string');
+      const cleanLogContent = dirtyLogContent
+        .split('\n')
+        .filter((line) => line.trim())
+        .map((line) => line.split(' ').slice(1).join(' '))
+        .join('\n');
+
+      await updateFunctionCallsOnceByAlias(alias);
+      const result = cleanLogContent.split('##[endgroup]\n')[1].trim();
+
+      return new Response(
+        JSON.stringify({
+          result,
+          total_calls: f.total_calls + 1,
+        }),
+        { status: 200 }
+      );
     }
     return new Response(null, { status: 500 });
   } catch (error) {
