@@ -1,6 +1,6 @@
+import { Function, FunctionDatabaseEntity, User } from '@/utils/types';
 import { createFetch } from './cache';
 import { supabaseKey, supabaseUrl } from './env';
-import { Function, FunctionDatabaseEntity, User } from '@/utils/types';
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseClient = createClient(supabaseUrl, supabaseKey, {
@@ -22,16 +22,16 @@ export const createFunction = async (f: FunctionDatabaseEntity) => {
 export const getFunctionByAlias = async (alias: string) => {
   const { data, error } = await supabaseClient
     .from('functions')
-    .select('fun, total_calls, remaining_calls, anonymous')
+    .select('fun, total_calls, remaining_calls, anonymous, language')
     .eq('alias', alias)
     .neq('frozen', true);
   if (data && data.length > 0) {
-    const { fun, total_calls, remaining_calls, anonymous } = data[0];
+    const { fun, total_calls, remaining_calls, anonymous, language } = data[0];
     if (anonymous && total_calls >= 10) {
       deleteFunctionByAlias(alias);
       return null;
     }
-    return { alias, fun, total_calls, remaining_calls } as Function;
+    return { alias, fun, total_calls, remaining_calls, language } as Function;
   }
   if (error) {
     throw error;
@@ -115,7 +115,7 @@ export const createUser = async (user: User) => {
 export const getUserByEmail = async (email: string) => {
   const { data, error } = await supabaseClient
     .from('users')
-    .select('email, aliases')
+    .select('email, aliases, key')
     .eq('email', email);
   if (data && data[0]) {
     return data[0];
@@ -126,7 +126,7 @@ export const getUserByEmail = async (email: string) => {
   return null;
 };
 
-export const updateUser = async (user: User) => {
+export const updateUser = async (user: Partial<User>) => {
   const { error } = await supabaseClient
     .from('users')
     .update(user)

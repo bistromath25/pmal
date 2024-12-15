@@ -4,6 +4,7 @@ export const createFunction = async ({
   fun,
   remaining_calls,
   anonymous,
+  language,
 }: Partial<FunctionDatabaseEntity>) => {
   const response = await fetch(`/api/fun`, {
     method: 'POST',
@@ -13,6 +14,7 @@ export const createFunction = async ({
       remaining_calls,
       total_calls: 0,
       anonymous,
+      language,
     }),
   });
   if (response.ok) {
@@ -21,9 +23,12 @@ export const createFunction = async ({
   throw new Error('Unable to create function');
 };
 
-export const getFunction = async ({ alias }: { alias: string }) => {
-  const response = await fetch(`/api/${alias}`, {
-    method: 'POST',
+export const getFunction = async (
+  { alias }: { alias: string },
+  fun = false
+) => {
+  const response = await fetch(`/api/${alias}${fun ? '?fun=true' : ''}`, {
+    method: 'GET',
   });
   if (response.ok) {
     return await response.json();

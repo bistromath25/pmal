@@ -1,5 +1,5 @@
-import Sidebar from '@/components/Sidebar';
 import Head from 'next/head';
+import Sidebar from '@/components/Sidebar';
 
 export default async function DashboardLayout({ children }) {
   return (
