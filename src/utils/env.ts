@@ -10,3 +10,4 @@ export const GITHUB_COMMITER_NAME = process.env.GITHUB_COMMITER_NAME as string;
 export const GITHUB_COMMITER_EMAIL = process.env
   .GITHUB_COMMITER_EMAIL as string;
 export const GITHUB_JS_INDEX = process.env.GITHUB_JS_INDEX as string;
+export const GITHUB_ACTIONS_JS_STEP = process.env.GITHUB_ACTIONS_JS_STEP as string;

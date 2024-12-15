@@ -5,7 +5,7 @@ import {
 import { getFunctionName } from '@/utils/utils';
 import * as GH from '@/utils/gh';
 import JSZip from 'jszip';
-import { GITHUB_JS_INDEX } from '@/utils/env';
+import { GITHUB_ACTIONS_JS_STEP, GITHUB_JS_INDEX } from '@/utils/env';
 
 export async function POST(req: Request) {
   try {
@@ -39,7 +39,7 @@ export async function POST(req: Request) {
       const zip = await JSZip.loadAsync(data);
 
       const dirtyLogContent =
-        await zip.files['build/4_Run node jsindex.js.txt'].async('string');
+        await zip.files[GITHUB_ACTIONS_JS_STEP].async('string');
       const cleanLogContent = dirtyLogContent
         .split('\n')
         .filter((line) => line.trim())
