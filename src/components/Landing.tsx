@@ -23,15 +23,11 @@ function LandingEditor() {
   const [copied, setCopied] = useState(false);
   const onSubmit = async () => {
     if (code && isValidFunction(code)) {
-      if (!alias) {
-        const { alias } = await API.createFunction({
-          fun: code,
-          anonymous: true,
-        });
-        setAlias(alias);
-      } else {
-        await API.updateFunction({ alias, fun: code });
-      }
+      const { alias } = await API.createFunction({
+        fun: code,
+        anonymous: true,
+      });
+      setAlias(alias);
       setDemoQuery(getDemoQuery(code));
       setCopied(false);
       setError(false);
@@ -47,7 +43,7 @@ function LandingEditor() {
         onClick={onSubmit}
         disabled={!code}
       >
-        {alias ? 'Update' : 'Deploy'} my function!
+        Deploy my function!
       </button>
       {alias && (
         <>
