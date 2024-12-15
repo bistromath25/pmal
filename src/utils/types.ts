@@ -4,6 +4,7 @@ export interface Function {
   fun: string;
   total_calls: number;
   remaining_calls: number;
+  language: string;
 }
 
 export interface FunctionDatabaseEntity extends Function {

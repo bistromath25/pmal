@@ -22,16 +22,16 @@ export const createFunction = async (f: FunctionDatabaseEntity) => {
 export const getFunctionByAlias = async (alias: string) => {
   const { data, error } = await supabaseClient
     .from('functions')
-    .select('fun, total_calls, remaining_calls, anonymous')
+    .select('fun, total_calls, remaining_calls, anonymous, language')
     .eq('alias', alias)
     .neq('frozen', true);
   if (data && data.length > 0) {
-    const { fun, total_calls, remaining_calls, anonymous } = data[0];
+    const { fun, total_calls, remaining_calls, anonymous, language } = data[0];
     if (anonymous && total_calls >= 10) {
       deleteFunctionByAlias(alias);
       return null;
     }
-    return { alias, fun, total_calls, remaining_calls } as Function;
+    return { alias, fun, total_calls, remaining_calls, language } as Function;
   }
   if (error) {
     throw error;
