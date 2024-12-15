@@ -1,19 +1,19 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import Editor from './Editor';
-import Header from './Header';
-import Footer from './Footer';
+import * as API from '@/app/api/api';
+import { APP_BASE_URL } from '@/utils/env';
 import {
   defaultFunctionValues,
   getDemoQuery,
   isValidFunction,
 } from '@/utils/utils';
-import { APP_BASE_URL } from '@/utils/env';
+import Editor from './Editor';
+import Footer from './Footer';
+import Header from './Header';
 import { DefaultIcon, SuccessIcon } from './Icons';
-import * as API from '@/app/api/api';
 
 function LandingEditor() {
   const [code, setCode] = useState(defaultFunctionValues['js']);

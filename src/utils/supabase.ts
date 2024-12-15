@@ -1,6 +1,6 @@
+import { Function, FunctionDatabaseEntity, User } from '@/utils/types';
 import { createFetch } from './cache';
 import { supabaseKey, supabaseUrl } from './env';
-import { Function, FunctionDatabaseEntity, User } from '@/utils/types';
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseClient = createClient(supabaseUrl, supabaseKey, {

@@ -1,8 +1,8 @@
 import { permanentRedirect } from 'next/navigation';
+import EditorPlaygroundWrapper from '@/components/EditorPlaygroundWrapper';
 import DashboardLayout from '@/components/layouts/Dashboard';
 import { auth } from '@/utils/auth';
 import { APP_BASE_URL } from '@/utils/env';
-import EditorPlaygroundWrapper from '@/components/EditorPlaygroundWrapper';
 
 export default async function Page() {
   const session = await auth();

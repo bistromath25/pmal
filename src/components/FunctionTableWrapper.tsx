@@ -1,13 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import FunctionTable from './FunctionTable';
-import { Function, User } from '@/utils/types';
-import Editor, { Warning } from './Editor';
-import Modal from './Modal';
-import * as API from '@/app/api/api';
-import { defaultFunctionValues, isValidFunction, remove } from '@/utils/utils';
 import { useSession } from 'next-auth/react';
+import * as API from '@/app/api/api';
+import { Function, User } from '@/utils/types';
+import { defaultFunctionValues, isValidFunction, remove } from '@/utils/utils';
+import Editor, { Warning } from './Editor';
+import FunctionTable from './FunctionTable';
+import Modal from './Modal';
 
 export default function FunctionTableWrapper() {
   const session = useSession();

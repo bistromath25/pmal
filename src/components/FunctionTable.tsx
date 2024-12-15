@@ -1,10 +1,10 @@
 'use client';
 
+import { useState } from 'react';
+import { APP_BASE_URL } from '@/utils/env';
 import { Function } from '@/utils/types';
 import { getDemoQuery } from '@/utils/utils';
-import { useState } from 'react';
 import Editor from './Editor';
-import { APP_BASE_URL } from '@/utils/env';
 import Modal from './Modal';
 
 export interface FunctionTableProps {
