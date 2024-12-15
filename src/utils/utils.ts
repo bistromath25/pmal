@@ -1,5 +1,4 @@
 // @ts-nocheck
-
 import JSZip from 'jszip';
 
 export const defaultFunctionValues = {

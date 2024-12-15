@@ -1,11 +1,11 @@
+import JSZip from 'jszip';
+import { GITHUB_ACTIONS_JS_STEP, GITHUB_JS_INDEX } from '@/utils/env';
+import * as GH from '@/utils/gh';
 import {
   getFunctionByAlias,
   updateFunctionCallsOnceByAlias,
 } from '@/utils/supabase';
 import { getFunctionName } from '@/utils/utils';
-import * as GH from '@/utils/gh';
-import JSZip from 'jszip';
-import { GITHUB_ACTIONS_JS_STEP, GITHUB_JS_INDEX } from '@/utils/env';
 
 export async function GET(req: Request) {
   try {
