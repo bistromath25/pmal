@@ -63,7 +63,3 @@ export const getDemoQuery = (f: string) => {
 export const getNumberOfLines = (f: string) => {
   return f.split('\n').length;
 };
-
-export const getFunctionFileName = (alias: string, language: string) => {
-  return `${language}/${alias}.${language}`;
-};

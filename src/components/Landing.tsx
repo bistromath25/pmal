@@ -8,7 +8,6 @@ import Header from './Header';
 import Footer from './Footer';
 import {
   getDemoQuery,
-  getFunctionFileName,
   isValidFunction,
 } from '@/utils/utils';
 import { APP_BASE_URL } from '@/utils/env';
