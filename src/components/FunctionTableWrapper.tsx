@@ -12,7 +12,7 @@ import { useSession } from 'next-auth/react';
 export default function FunctionTableWrapper() {
   const session = useSession();
   const [functions, setFunctions] = useState<Function[]>([]);
-  const [currentCode, setCurrentCode] = useState(defaultFunctionValues['Node']);
+  const [currentCode, setCurrentCode] = useState(defaultFunctionValues['js']);
   const [currentFunction, setCurrentFunction] = useState<Function>({
     alias: '',
     fun: '',

@@ -16,7 +16,7 @@ import { DefaultIcon, SuccessIcon } from './Icons';
 import * as API from '@/app/api/api';
 
 function LandingEditor() {
-  const [code, setCode] = useState(defaultFunctionValues['Node']);
+  const [code, setCode] = useState(defaultFunctionValues['js']);
   const [demoQuery, setDemoQuery] = useState<string | undefined>(undefined);
   const [error, setError] = useState(false);
   const [alias, setAlias] = useState<string | undefined>(undefined);
@@ -100,7 +100,7 @@ export default function Landing() {
       const { key } = await API.getUser({ email: session.data.user.email });
       try {
         await API.createFunction({
-          fun: defaultFunctionValues['Node'],
+          fun: defaultFunctionValues['js'],
           remaining_calls: 10,
           total_calls: 0,
           alias: key,
