@@ -43,8 +43,7 @@ export async function GET(req: Request) {
           commitMessage,
         });
 
-        await sleep(2000); // find a better way to determine if workflow dispatched
-        // no delay: same old count and new count
+        await sleep(2000);
         response = await GH.getWorkflows();
         let { workflow_runs } = await response.json();
         const id =
