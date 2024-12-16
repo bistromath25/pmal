@@ -9,5 +9,9 @@ export default async function Page() {
   if (!session?.user) {
     permanentRedirect(APP_BASE_URL);
   }
-  return <DashboardLayout children={<EditorPlaygroundWrapper />} />;
+  return (
+    <DashboardLayout>
+      <EditorPlaygroundWrapper />
+    </DashboardLayout>
+  );
 }
