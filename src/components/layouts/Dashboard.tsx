@@ -1,7 +1,7 @@
 import Head from 'next/head';
+import Footer from '@/components/Footer';
+import Header from '@/components/Header';
 import Sidebar from '@/components/Sidebar';
-import Footer from '../Footer';
-import Header from '../Header';
 
 export default async function DashboardLayout({ children }) {
   return (
