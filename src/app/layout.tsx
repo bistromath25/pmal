@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'PMAL',
-  description: 'Poor Man\'s AWS Lambdas',
+  description: "Poor Man's AWS Lambdas",
 };
 
 export default function RootLayout({

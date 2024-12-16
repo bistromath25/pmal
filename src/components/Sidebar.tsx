@@ -26,7 +26,7 @@ export default function Sidebar() {
   const pathname = usePathname();
   return (
     <div className='h-full bg-white border-r-2 p-4'>
-      <div className='flex flex-col gap-1'>
+      <div className='flex flex-col gap-2'>
         {sidebarOptions.map(({ name, path }) => {
           const isActive = path === pathname;
           return (
