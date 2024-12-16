@@ -30,6 +30,33 @@ const languageOptions = [
   },
 ];
 
+function LanguageSelection() {
+  const searchParams = useSearchParams();
+  return (
+    <>
+      <div className='font-bold text-2xl'>Select language</div>
+      <div className='flex flex-row gap-4'>
+        {languageOptions.map(({ name, logoUrl }) => {
+          const isActive = name === searchParams.get('language');
+          return (
+            <Link
+              className={`rounded-lg hover:bg-gray-100 h-[50px] justify-items-center ${isActive ? 'bg-gray-100' : 'bg-white-100'}`}
+              key={`editor-language-option-${name}`}
+              // href={{} || `/editor?language=${name}`}
+              href=''
+              // onClick={() => {
+              //   setCurrentLanguage(name);
+              // }}
+            >
+              <img className='h-[50px]' src={logoUrl} alt={name} />
+            </Link>
+          );
+        })}
+      </div>
+    </>
+  );
+}
+
 export interface EditorPlaygroundProps extends EditorProps {
   currentUser: User;
 }
@@ -41,7 +68,6 @@ export default function EditorPlayground({
   style,
   currentUser,
 }: EditorPlaygroundProps) {
-  const searchParams = useSearchParams();
   const [error, setError] = useState(false);
   const [demoQuery, setDemoQuery] = useState(getDemoQuery(code));
   const [copied, setCopied] = useState(false);
@@ -65,8 +91,8 @@ export default function EditorPlayground({
     }
   }, [currentLanguage]);
   return (
-    <div className='w-full flex flex-row space-x-10'>
-      <div className='basis-[70%] space-y-4'>
+    <div className='w-full lg:flex lg:flex-row lg:space-x-10'>
+      <div className='basis-[70%] lg:basis-[100%] space-y-4'>
         <Editor
           code={code}
           setCode={setCode}
@@ -103,26 +129,8 @@ export default function EditorPlayground({
           </button>
         </div>
       </div>
-      <div className='basis-[30%] space-y-4'>
-        <div className='font-bold text-2xl'>Select language</div>
-        <div className='flex flex-row gap-4'>
-          {languageOptions.map(({ name, logoUrl }) => {
-            const isActive = name === searchParams.get('language');
-            return (
-              <Link
-                className={`rounded-lg hover:bg-gray-100 h-[50px] justify-items-center ${isActive ? 'bg-gray-100' : 'bg-white-100'}`}
-                key={`editor-language-option-${name}`}
-                // href={{} || `/editor?language=${name}`}
-                href=''
-                // onClick={() => {
-                //   setCurrentLanguage(name);
-                // }}
-              >
-                <img className='h-[50px]' src={logoUrl} alt={name} />
-              </Link>
-            );
-          })}
-        </div>
+      <div className='basis-[30%] hidden lg:block space-y-4'>
+        <LanguageSelection />
       </div>
     </div>
   );

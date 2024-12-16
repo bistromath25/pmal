@@ -89,7 +89,7 @@ function LandingEditor() {
 export default function Landing() {
   return (
     <main className='w-full items-center justify-items-center min-h-screen gap-16 bg-[linear-gradient(120deg,_rgb(255_255_255)_50%,_rgb(239_246_255)_50%)] bg-fixed'>
-      <Header />
+      <Header type='landing' />
       <div className='pb-4 pt-8 px-10 sm:px-0 sm:w-[60%]'>
         <div className='w-full flex flex-col items-center text-center gap-10'>
           <div>
@@ -144,7 +144,7 @@ export default function Landing() {
           </p>
         </div>
       </div>
-      <Footer />
+      <Footer type='landing' />
     </main>
   );
 }

@@ -44,7 +44,7 @@ export default function EditorPlaygroundWrapper() {
     }
   }, []);
   return (
-    <div className='w-full space-y-10'>
+    <div className='w-full space-y-10 justify'>
       <div className='justify-items-left pl-4 space-y-4'>
         <h1 className='text-4xl font-bold'>Editor Playground</h1>
         <p className='text-gray-600'>
@@ -54,11 +54,13 @@ export default function EditorPlaygroundWrapper() {
           </span>
         </p>
       </div>
-      <EditorPlayground
-        code={currentCode}
-        setCode={setCurrentCode}
-        currentUser={currentUser}
-      />
+      <div className='pl-4 pr-4'>
+        <EditorPlayground
+          code={currentCode}
+          setCode={setCurrentCode}
+          currentUser={currentUser}
+        />
+      </div>
     </div>
   );
 }
