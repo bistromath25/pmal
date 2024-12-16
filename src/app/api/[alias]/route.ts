@@ -5,7 +5,7 @@ import {
   getFunctionByAlias,
   updateFunctionCallsOnceByAlias,
 } from '@/utils/supabase';
-import { getFunctionName } from '@/utils/utils';
+import { getFunctionName, sleep } from '@/utils/utils';
 
 export async function GET(req: Request) {
   try {
@@ -22,22 +22,39 @@ export async function GET(req: Request) {
         f.fun +
         `\nconsole.log(${funName}(${Object.values(Object.fromEntries(params)).map((x) => `'${x}'`)}));`;
 
-      var response = await GH.getFiles('/js');
+      let response = await GH.getFiles('/js');
       const files = await response.json();
-      const sha =
+      let sha =
         files.find(({ name }: { name: string }) => name === GITHUB_JS_INDEX)
           ?.sha ?? '';
 
+      const commitMessage = `${alias}-${sha}`;
       response = await GH.updateIndexFile({
         decodedContents: contents,
         sha,
         language: 'js',
+        commitMessage,
       });
+
+      await sleep(2000); // find a better way to determine if workflow dispatched
+      // no delay: same old count and new count
       response = await GH.getWorkflows();
-      const { workflow_runs } = await response.json();
-      const id = workflow_runs[0].id;
+      let { workflow_runs } = await response.json();
+      const id =
+        workflow_runs.find((workflow) => {
+          return workflow.head_commit.message === commitMessage;
+        })?.id ?? workflow_runs[0].id;
 
       response = await GH.getWorkflowRunById(id);
+      let { status } = await response.json();
+      while (status !== 'completed') {
+        await sleep(1000);
+        response = await GH.getWorkflowRunById(id);
+        ({ status } = await response.json());
+        response = await GH.getWorkflows();
+      }
+
+      response = await GH.getWorkflowRunLogsById(id);
       const data = await response.arrayBuffer();
       const zip = await JSZip.loadAsync(data);
 
@@ -48,9 +65,8 @@ export async function GET(req: Request) {
         .filter((line) => line.trim())
         .map((line) => line.split(' ').slice(1).join(' '))
         .join('\n');
-
-      await updateFunctionCallsOnceByAlias(alias);
       const result = cleanLogContent.split('##[endgroup]\n')[1].trim();
+      await updateFunctionCallsOnceByAlias(alias);
 
       return new Response(
         JSON.stringify({

@@ -57,7 +57,7 @@ export const getFunction = (
 
 export const getDemoQuery = (f: string) => {
   const params = getParameterNames(f);
-  var result = '';
+  let result = '';
   params.forEach((x, i) => {
     result += x;
     result += `=value${i + 1}&`;
@@ -67,4 +67,8 @@ export const getDemoQuery = (f: string) => {
 
 export const getNumberOfLines = (f: string) => {
   return f.split('\n').length;
+};
+
+export const sleep = (ms: number) => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 };
