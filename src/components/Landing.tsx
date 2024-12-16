@@ -132,7 +132,7 @@ export default function Landing() {
       <div className='w-full items-left px-10 sm:px-40 py-10 text-center'>
         <p className='text-3xl'>
           🔓 Unlock limitless possibilities with{' '}
-          <span className='font-bold'>Poor Man's AWS Lambdas 🔑</span>
+          <span className='font-bold'>{"Poor Man's AWS Lambdas 🔑"}</span>
         </p>
         <div>
           <p className='text-gray-600 pt-1'>

@@ -89,7 +89,7 @@ export default function EditorPlayground({
     } else if (currentLanguage === 'php') {
       setCode(defaultFunctionValues['php']);
     }
-  }, [currentLanguage]);
+  }, [currentLanguage, setCode]);
   return (
     <div className='w-full lg:flex lg:flex-row lg:space-x-10'>
       <div className='basis-[70%] lg:basis-[100%] space-y-4'>

@@ -8,5 +8,9 @@ export default async function Page() {
   if (!session?.user) {
     permanentRedirect(APP_BASE_URL);
   }
-  return <DashboardLayout children={<h1>Settings</h1>} />;
+  return (
+    <DashboardLayout>
+      <h1>Settings</h1>
+    </DashboardLayout>
+  );
 }

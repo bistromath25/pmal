@@ -19,13 +19,6 @@ export default function EditorPlaygroundWrapper() {
     aliases: [],
     key: '',
   });
-  const getUser = async () => {
-    const email = session.data?.user?.email;
-    if (email) {
-      const user = await API.getUser({ email });
-      setCurrentUser(user);
-    }
-  };
   const getKeyFunction = async (alias: string) => {
     if (alias) {
       const { fun } = await API.getFunction({ alias }, true);
@@ -33,6 +26,13 @@ export default function EditorPlaygroundWrapper() {
     }
   };
   useEffect(() => {
+    const getUser = async () => {
+      const email = session.data?.user?.email;
+      if (email) {
+        const user = await API.getUser({ email });
+        setCurrentUser(user);
+      }
+    };
     getUser();
   }, [session]);
   useEffect(() => {
@@ -42,7 +42,7 @@ export default function EditorPlaygroundWrapper() {
     if (!searchParams.get('language')) {
       router.push('/editor?language=js');
     }
-  }, []);
+  }, [router, searchParams]);
   return (
     <div className='w-full space-y-10 justify'>
       <div className='justify-items-left pl-4 space-y-4'>

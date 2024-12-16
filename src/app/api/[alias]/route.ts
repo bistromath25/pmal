@@ -31,7 +31,7 @@ export async function GET(req: Request) {
 
         let response = await GH.getFiles('/js');
         const files = await response.json();
-        let sha =
+        const sha =
           files.find(({ name }: { name: string }) => name === GITHUB_JS_INDEX)
             ?.sha ?? '';
 
@@ -45,11 +45,13 @@ export async function GET(req: Request) {
 
         await sleep(2000);
         response = await GH.getWorkflows();
-        let { workflow_runs } = await response.json();
+        const { workflow_runs } = await response.json();
         const id =
-          workflow_runs.find((workflow) => {
-            return workflow.head_commit.message === commitMessage;
-          })?.id ?? workflow_runs[0].id;
+          workflow_runs.find(
+            (workflow: { head_commit: { message: string } }) => {
+              return workflow.head_commit.message === commitMessage;
+            }
+          )?.id ?? workflow_runs[0].id;
 
         response = await GH.getWorkflowRunById(id);
         let { status } = await response.json();

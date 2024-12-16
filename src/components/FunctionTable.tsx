@@ -58,6 +58,7 @@ export default function FunctionTable({
                 alias,
                 total_calls,
                 remaining_calls,
+                language: 'js',
               });
               setEditModalIsOpen(true);
             };
@@ -111,6 +112,7 @@ export default function FunctionTable({
                           alias,
                           total_calls,
                           remaining_calls,
+                          language: 'js',
                         });
                         setEditModalIsOpen(true);
                       }}
@@ -125,6 +127,7 @@ export default function FunctionTable({
                           alias,
                           total_calls,
                           remaining_calls,
+                          language: 'js',
                         });
                         setDeleteModalIsOpen(true);
                       }}

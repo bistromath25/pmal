@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import * as API from '@/app/api/api';
 import { Function, User } from '@/utils/types';
 import { defaultFunctionValues, isValidFunction, remove } from '@/utils/utils';
-import Editor, { Warning } from './Editor';
+import Editor from './Editor';
 import FunctionTable from './FunctionTable';
 import Modal from './Modal';
 
@@ -18,6 +18,7 @@ export default function FunctionTableWrapper() {
     fun: '',
     total_calls: 0,
     remaining_calls: 0,
+    language: 'js',
   });
   const [currentUser, setCurrentUser] = useState<User>({
     email: '',
@@ -42,7 +43,7 @@ export default function FunctionTableWrapper() {
       setError(true);
     }
   };
-  const refreshFunctions = async () => {
+  const refreshFunctions = useCallback(async () => {
     const email = session.data?.user?.email;
     if (email) {
       const { aliases, key } = await API.getUser({ email });
@@ -50,7 +51,7 @@ export default function FunctionTableWrapper() {
       setFunctions(functions);
       setCurrentUser({ email, aliases, key });
     }
-  };
+  }, [session]);
   const handleDeleteFunction = async (alias: string) => {
     await API.deleteFunction({ alias });
     const newUser = {
@@ -67,7 +68,7 @@ export default function FunctionTableWrapper() {
   };
   useEffect(() => {
     refreshFunctions();
-  }, [session]);
+  }, [session, refreshFunctions]);
   return (
     <>
       <div className='w-full space-y-10'>
