@@ -1,8 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import * as API from '@/app/api/api';
 import { APP_BASE_URL } from '@/utils/env';
 import {
@@ -89,26 +87,6 @@ function LandingEditor() {
 }
 
 export default function Landing() {
-  const session = useSession();
-  const router = useRouter();
-  const handleSignin = async () => {
-    if (session.status === 'authenticated' && session.data.user?.email) {
-      const { key } = await API.getUser({ email: session.data.user.email });
-      try {
-        await API.createFunction({
-          fun: defaultFunctionValues['js'],
-          remaining_calls: 10,
-          total_calls: 0,
-          alias: key,
-        });
-        router.push('/home');
-      } catch {}
-      router.push('/home');
-    }
-  };
-  useEffect(() => {
-    handleSignin();
-  }, [session, router]);
   return (
     <main className='w-full items-center justify-items-center min-h-screen gap-16 bg-[linear-gradient(120deg,_rgb(255_255_255)_50%,_rgb(239_246_255)_50%)] bg-fixed'>
       <Header />

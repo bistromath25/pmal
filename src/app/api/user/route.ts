@@ -1,8 +1,15 @@
+import { auth } from '@/utils/auth';
 import { createUser, getUserByEmail, updateUser } from '@/utils/supabase';
 import { randomString } from '@/utils/utils';
 
 export async function POST(req: Request) {
   try {
+    const session = await auth();
+    if (!session) {
+      return new Response(null, {
+        status: 401,
+      });
+    }
     const { email } = await req.json();
     const user = await getUserByEmail(email);
     if (!user) {
@@ -23,6 +30,12 @@ export async function POST(req: Request) {
 
 export async function PATCH(req: Request) {
   try {
+    const session = await auth();
+    if (!session) {
+      return new Response(null, {
+        status: 401,
+      });
+    }
     const { user } = await req.json();
     await updateUser(user);
     return new Response(JSON.stringify(user), {
