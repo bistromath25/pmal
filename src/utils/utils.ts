@@ -1,4 +1,5 @@
 // @ts-nocheck
+import JSZip from 'jszip';
 
 export const defaultFunctionValues = {
   js: 'function add(a, b) {\n  return parseInt(a) + parseInt(b);\n}',
@@ -41,6 +42,11 @@ export const getParameterNames = (f: string) => {
     .filter(Boolean); // split & filter [""]
 };
 
+// https://stackoverflow.com/a/47663732
+export const getFunctionName = (f: string) => {
+  return f.match(/function(.*?)\(/)[1].trim() as string;
+};
+
 export const getFunction = (
   s: string
 ): ((...args: any[]) => any) | undefined => {
@@ -51,7 +57,7 @@ export const getFunction = (
 
 export const getDemoQuery = (f: string) => {
   const params = getParameterNames(f);
-  var result = '';
+  let result = '';
   params.forEach((x, i) => {
     result += x;
     result += `=value${i + 1}&`;
@@ -61,4 +67,8 @@ export const getDemoQuery = (f: string) => {
 
 export const getNumberOfLines = (f: string) => {
   return f.split('\n').length;
+};
+
+export const sleep = (ms: number) => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 };
