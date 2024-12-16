@@ -1,9 +1,9 @@
 import { Function, FunctionDatabaseEntity, User } from '@/utils/types';
 import { createFetch } from './cache';
-import { supabaseKey, supabaseUrl } from './env';
+import { SUPABASE_ANON_KEY, SUPABASE_URL } from './env';
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseClient = createClient(supabaseUrl, supabaseKey, {
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   global: {
     fetch: createFetch({
       cache: 'no-store',
