@@ -119,14 +119,14 @@ export default function Landing() {
       <div className='pb-4 pt-8 px-10 sm:px-0 sm:w-[60%]'>
         <div className='w-full flex flex-col items-center text-center gap-10'>
           <div>
-            <h1 className='w-full font-bold text-6xl bg-gradient-to-r from-blue-600 via-green-500 to-indigo-400 inline-block text-transparent bg-clip-text'>
-              Serverless Functions
+            <h1 className='w-full font-bold text-6xl'>
+              Deploy{' '}
+              <span className='bg-gradient-to-r from-blue-600 via-green-500 to-indigo-400 inline-block text-transparent bg-clip-text'>
+                Serverless Functions
+              </span>
             </h1>
             <h2 className='w-full font-bold text-4xl'>
-              have never been so{' '}
-              <span className='bg-gradient-to-r from-blue-600 via-green-500 to-indigo-400 inline-block text-transparent bg-clip-text'>
-                easy
-              </span>
+              right from your browser
             </h2>
           </div>
           <LandingEditor />
@@ -165,8 +165,8 @@ export default function Landing() {
             <a href='#' className='text-blue-500'>
               Sign in
             </a>{' '}
-            to gain full access to PMAL, including our{' '}
-            <span className='font-bold'>API</span>.
+            to gain <span className='font-bold'>full access</span> to PMAL,
+            including our <span className='font-bold'>API</span>.
           </p>
         </div>
       </div>

@@ -12,3 +12,5 @@ export const GITHUB_COMMITER_EMAIL = process.env
 export const GITHUB_JS_INDEX = process.env.GITHUB_JS_INDEX as string;
 export const GITHUB_ACTIONS_JS_STEP = process.env
   .GITHUB_ACTIONS_JS_STEP as string;
+export const FF_USE_GITHUB_ACTIONS =
+  (process.env.FF_USE_GITHUB_ACTIONS as string) === 'TRUE';
