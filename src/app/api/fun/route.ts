@@ -1,3 +1,4 @@
+import { auth } from '@/utils/auth';
 import {
   createFunction,
   deleteFunctionByAlias,
@@ -35,6 +36,12 @@ export async function POST(req: Request) {
 
 export async function PATCH(req: Request) {
   try {
+    const session = await auth();
+    if (!session) {
+      return new Response(null, {
+        status: 401,
+      });
+    }
     const body = await req.json();
     await updateFunction(body);
     return new Response(JSON.stringify({ alias: body.alias }), { status: 200 });
@@ -45,6 +52,12 @@ export async function PATCH(req: Request) {
 
 export async function DELETE(req: Request) {
   try {
+    const session = await auth();
+    if (!session) {
+      return new Response(null, {
+        status: 401,
+      });
+    }
     const { alias } = await req.json();
     await deleteFunctionByAlias(alias);
     return new Response(JSON.stringify({}), { status: 200 });
