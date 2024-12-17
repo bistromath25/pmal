@@ -5,7 +5,7 @@ import {
   GITHUB_OWNER,
   GITHUB_REPO,
   GITHUB_TOKEN,
-} from './env';
+} from '@/utils/env';
 
 export const getFiles = async (path = '') => {
   const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents${path}`;

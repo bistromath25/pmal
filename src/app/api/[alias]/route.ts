@@ -1,14 +1,14 @@
 import JSZip from 'jszip';
+import * as GH from '@/services/gh';
+import {
+  getFunctionByAlias,
+  updateFunctionCallsOnceByAlias,
+} from '@/services/supabase';
 import {
   FF_USE_GITHUB_ACTIONS,
   GITHUB_ACTIONS_JS_STEP,
   GITHUB_JS_INDEX,
 } from '@/utils/env';
-import * as GH from '@/utils/gh';
-import {
-  getFunctionByAlias,
-  updateFunctionCallsOnceByAlias,
-} from '@/utils/supabase';
 import { getFunction, getFunctionName, sleep } from '@/utils/utils';
 
 export async function GET(req: Request) {
@@ -43,15 +43,21 @@ export async function GET(req: Request) {
           commitMessage,
         });
 
-        await sleep(2000);
         response = await GH.getWorkflows();
-        const { workflow_runs } = await response.json();
-        const id =
-          workflow_runs.find(
-            (workflow: { head_commit: { message: string } }) => {
-              return workflow.head_commit.message === commitMessage;
-            }
-          )?.id ?? workflow_runs[0].id;
+        let { workflow_runs } = await response.json();
+        let id = workflow_runs.find(
+          (workflow: { head_commit: { message: string } }) =>
+            workflow.head_commit.message === commitMessage
+        )?.id;
+        while (!id) {
+          sleep(1000);
+          response = await GH.getWorkflows();
+          ({ workflow_runs } = await response.json());
+          id = workflow_runs.find(
+            (workflow: { head_commit: { message: string } }) =>
+              workflow.head_commit.message === commitMessage
+          )?.id;
+        }
 
         response = await GH.getWorkflowRunById(id);
         let { status } = await response.json();
