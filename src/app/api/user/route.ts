@@ -1,5 +1,5 @@
+import { createUser, getUserByEmail, updateUser } from '@/services/supabase';
 import { auth } from '@/utils/auth';
-import { createUser, getUserByEmail, updateUser } from '@/utils/supabase';
 import { randomString } from '@/utils/utils';
 
 export async function POST(req: Request) {

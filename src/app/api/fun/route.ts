@@ -1,9 +1,9 @@
-import { auth } from '@/utils/auth';
 import {
   createFunction,
   deleteFunctionByAlias,
   updateFunction,
-} from '@/utils/supabase';
+} from '@/services/supabase';
+import { auth } from '@/utils/auth';
 import { randomString } from '@/utils/utils';
 
 export async function POST(req: Request) {

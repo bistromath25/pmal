@@ -1,14 +1,14 @@
 import JSZip from 'jszip';
+import * as GH from '@/services/gh';
+import {
+  getFunctionByAlias,
+  updateFunctionCallsOnceByAlias,
+} from '@/services/supabase';
 import {
   FF_USE_GITHUB_ACTIONS,
   GITHUB_ACTIONS_JS_STEP,
   GITHUB_JS_INDEX,
 } from '@/utils/env';
-import * as GH from '@/utils/gh';
-import {
-  getFunctionByAlias,
-  updateFunctionCallsOnceByAlias,
-} from '@/utils/supabase';
 import { getFunction, getFunctionName, sleep } from '@/utils/utils';
 
 export async function GET(req: Request) {
@@ -43,39 +43,85 @@ export async function GET(req: Request) {
           commitMessage,
         });
 
-        await sleep(2000);
-        response = await GH.getWorkflows();
-        const { workflow_runs } = await response.json();
-        const id =
-          workflow_runs.find(
-            (workflow: { head_commit: { message: string } }) => {
-              return workflow.head_commit.message === commitMessage;
+        async function findWorkflowId(commitMessage: string): Promise<number> {
+          const POLL_INTERVAL = 1000;
+          const POLL_ATTEMPTS = 10;
+          let attempts = 0;
+          return new Promise(async (resolve, reject) => {
+            async function pollForId() {
+              try {
+                attempts++;
+                const response = await GH.getWorkflows();
+                const { workflow_runs } = await response.json();
+                const id = workflow_runs.find(
+                  (workflow: { head_commit: { message: string } }) =>
+                    workflow.head_commit.message === commitMessage
+                )?.id;
+                if (id) {
+                  resolve(id);
+                } else if (attempts >= POLL_ATTEMPTS) {
+                  reject(new Error('Unable to find workflow id'));
+                } else {
+                  setTimeout(pollForId, POLL_INTERVAL);
+                }
+              } catch (error) {
+                reject(error);
+              }
             }
-          )?.id ?? workflow_runs[0].id;
-
-        response = await GH.getWorkflowRunById(id);
-        let { status } = await response.json();
-        while (status !== 'completed') {
-          await sleep(1000);
-          response = await GH.getWorkflowRunById(id);
-          ({ status } = await response.json());
-          response = await GH.getWorkflows();
+            pollForId();
+          });
         }
 
-        response = await GH.getWorkflowRunLogsById(id);
-        const data = await response.arrayBuffer();
-        const zip = await JSZip.loadAsync(data);
+        async function waitForWorkflowCompletion(id: number): Promise<void> {
+          const POLL_INTERVAL = 1000;
+          const POLL_ATTEMPTS = 20;
+          let attempts = 0;
+          return new Promise(async (resolve, reject) => {
+            async function pollForCompletion() {
+              try {
+                attempts++;
+                const response = await GH.getWorkflowRunById(id);
+                const { status } = await response.json();
+                if (status === 'completed') {
+                  resolve();
+                } else if (attempts >= POLL_ATTEMPTS) {
+                  reject(new Error('Unable to wait for workflow completion'));
+                } else {
+                  setTimeout(pollForCompletion, POLL_INTERVAL);
+                }
+              } catch (error) {
+                reject(error);
+              }
+            }
+            pollForCompletion();
+          });
+        }
 
-        const dirtyLogContent =
-          await zip.files[GITHUB_ACTIONS_JS_STEP].async('string');
-        const cleanLogContent = dirtyLogContent
-          .split('\n')
-          .filter((line) => line.trim())
-          .map((line) => line.split(' ').slice(1).join(' '))
-          .join('\n');
+        async function getWorkflowLogs(id: number): Promise<JSZip> {
+          const response = await GH.getWorkflowRunLogsById(id);
+          const data = await response.arrayBuffer();
+          const zip = await JSZip.loadAsync(data);
+          return zip;
+        }
 
-        result = cleanLogContent.split('##[endgroup]\n')[1].trim();
-        await updateFunctionCallsOnceByAlias(alias);
+        try {
+          const id = await findWorkflowId(commitMessage);
+          await waitForWorkflowCompletion(id);
+          const zip = await getWorkflowLogs(id);
+
+          const dirtyLogContent =
+            await zip.files[GITHUB_ACTIONS_JS_STEP].async('string');
+          const cleanLogContent = dirtyLogContent
+            .split('\n')
+            .filter((line) => line.trim())
+            .map((line) => line.split(' ').slice(1).join(' '))
+            .join('\n');
+
+          result = cleanLogContent.split('##[endgroup]\n')[1].trim();
+          await updateFunctionCallsOnceByAlias(alias);
+        } catch (error) {
+          return new Response(null, { status: 500 });
+        }
       } else {
         const fun = getFunction(f.fun);
         if (fun) {

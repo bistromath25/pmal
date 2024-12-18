@@ -1,5 +1,5 @@
+import { getFunctionsByAliases } from '@/services/supabase';
 import { auth } from '@/utils/auth';
-import { getFunctionsByAliases } from '@/utils/supabase';
 
 export async function POST(req: Request) {
   try {

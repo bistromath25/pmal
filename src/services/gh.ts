@@ -5,7 +5,7 @@ import {
   GITHUB_OWNER,
   GITHUB_REPO,
   GITHUB_TOKEN,
-} from './env';
+} from '@/utils/env';
 
 export const getFiles = async (path = '') => {
   const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents${path}`;
@@ -105,7 +105,7 @@ export const getWorkflows = async () => {
   return response;
 };
 
-export const getWorkflowRunById = async (id: string) => {
+export const getWorkflowRunById = async (id: number) => {
   const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/actions/runs/${id}`;
   const response = await fetch(url, {
     method: 'GET',
@@ -119,7 +119,7 @@ export const getWorkflowRunById = async (id: string) => {
   return response;
 };
 
-export const getWorkflowRunLogsById = async (id: string) => {
+export const getWorkflowRunLogsById = async (id: number) => {
   const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/actions/runs/${id}/logs`;
   const response = await fetch(url, {
     method: 'GET',
