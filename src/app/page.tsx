@@ -16,7 +16,7 @@ export default function Home() {
         const { key } = await API.getUser({ email: session.data.user.email });
         try {
           await API.createFunction({
-            fun: defaultFunctionValues['js'],
+            code: defaultFunctionValues['js'],
             remaining_calls: 10,
             total_calls: 0,
             alias: key,

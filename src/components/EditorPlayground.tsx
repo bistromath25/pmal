@@ -74,7 +74,7 @@ export default function EditorPlayground({
   const [currentLanguage, setCurrentLanguage] = useState('js');
   const onSubmit = async () => {
     if (code && isValidFunction(code)) {
-      await API.updateFunction({ alias: currentUser.key, fun: code });
+      await API.updateFunction({ alias: currentUser.key, code });
       setDemoQuery(getDemoQuery(code));
       setError(false);
     } else {

@@ -1,7 +1,7 @@
 import { FunctionDatabaseEntity, User } from '@/utils/types';
 
 export const createFunction = async ({
-  fun,
+  code,
   remaining_calls,
   anonymous,
   language,
@@ -10,7 +10,7 @@ export const createFunction = async ({
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      fun,
+      code,
       remaining_calls,
       total_calls: 0,
       anonymous,
@@ -27,7 +27,7 @@ export const getFunction = async (
   { alias }: { alias: string },
   fun = false
 ) => {
-  const response = await fetch(`/api/${alias}${fun ? '?fun=true' : ''}`, {
+  const response = await fetch(`/api/${alias}${fun ? '?code=true' : ''}`, {
     method: 'GET',
   });
   if (response.ok) {
@@ -38,7 +38,7 @@ export const getFunction = async (
 
 export const updateFunction = async ({
   alias,
-  fun,
+  code,
   total_calls,
   remaining_calls,
 }: Partial<FunctionDatabaseEntity>) => {
@@ -47,7 +47,7 @@ export const updateFunction = async ({
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       alias,
-      fun,
+      code,
       ...(total_calls && { total_calls }),
       ...(remaining_calls && { remaining_calls }),
     }),

@@ -17,16 +17,16 @@ export async function GET(req: Request) {
     const params = new URLSearchParams(url.search);
     const alias = url.pathname.split('/api/')[1];
     const f = await getFunctionByAlias(alias);
-    if (params.get('fun')) {
+    if (params.get('code')) {
       return new Response(JSON.stringify({ ...f }), { status: 200 });
     }
 
     let result;
-    if (f && f.fun) {
+    if (f && f.code) {
       if (FF_USE_GITHUB_ACTIONS) {
-        const funName = getFunctionName(f.fun);
+        const funName = getFunctionName(f.code);
         const contents =
-          f.fun +
+          f.code +
           `\nconsole.log(${funName}(${Object.values(Object.fromEntries(params)).map((x) => `'${x}'`)}));`;
 
         let response = await GH.getFiles('/js');
@@ -123,7 +123,7 @@ export async function GET(req: Request) {
           return new Response(null, { status: 500 });
         }
       } else {
-        const fun = getFunction(f.fun);
+        const fun = getFunction(f.code);
         if (fun) {
           result = fun(...Object.values(Object.fromEntries(params)));
           await updateFunctionCallsOnceByAlias(alias);

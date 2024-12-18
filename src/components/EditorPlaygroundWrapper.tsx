@@ -21,8 +21,8 @@ export default function EditorPlaygroundWrapper() {
   });
   const getKeyFunction = async (alias: string) => {
     if (alias) {
-      const { fun } = await API.getFunction({ alias }, true);
-      setCurrentCode(fun);
+      const { code } = await API.getFunction({ alias }, true);
+      setCurrentCode(code);
     }
   };
   useEffect(() => {

@@ -15,7 +15,7 @@ export default function FunctionTableWrapper() {
   const [currentCode, setCurrentCode] = useState(defaultFunctionValues['js']);
   const [currentFunction, setCurrentFunction] = useState<Function>({
     alias: '',
-    fun: '',
+    code: '',
     total_calls: 0,
     remaining_calls: 0,
     language: 'js',
@@ -29,7 +29,7 @@ export default function FunctionTableWrapper() {
   const [error, setError] = useState(false);
   const onSubmit = async () => {
     if (currentCode && isValidFunction(currentCode)) {
-      const { alias } = await API.createFunction({ fun: currentCode });
+      const { alias } = await API.createFunction({ code: currentCode });
       const newUser = {
         ...currentUser,
         aliases: [...currentUser.aliases, alias],

@@ -50,11 +50,11 @@ export default function FunctionTable({
           </tr>
         </thead>
         <tbody>
-          {functions.map(({ fun, alias, total_calls, remaining_calls }) => {
+          {functions.map(({ code, alias, total_calls, remaining_calls }) => {
             const onClickCode = () => {
-              setCurrentCode(fun);
+              setCurrentCode(code);
               setCurrentFunction({
-                fun,
+                code,
                 alias,
                 total_calls,
                 remaining_calls,
@@ -73,7 +73,7 @@ export default function FunctionTable({
                   className='px-6 py-4 whitespace-nowrap flex flex-col gap-4'
                 >
                   <Editor
-                    code={fun}
+                    code={code}
                     setCode={setCurrentCode}
                     style={{
                       fontSize: '16px',
@@ -91,11 +91,11 @@ export default function FunctionTable({
                 <td className='px-6 py-4'>
                   <input
                     className='p-2 cursor-copy focus:outline-none bg-transparent border border-gray-300 rounded-lg'
-                    value={`/${alias}?${getDemoQuery(fun)}`}
+                    value={`/${alias}?${getDemoQuery(code)}`}
                     onClick={(e) => {
                       e.preventDefault();
                       navigator.clipboard.writeText(
-                        `${APP_BASE_URL}/api/${alias}?${getDemoQuery(fun)}`
+                        `${APP_BASE_URL}/api/${alias}?${getDemoQuery(code)}`
                       );
                     }}
                     readOnly
@@ -106,9 +106,9 @@ export default function FunctionTable({
                     <button
                       className='px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-center'
                       onClick={() => {
-                        setCurrentCode(fun);
+                        setCurrentCode(code);
                         setCurrentFunction({
-                          fun,
+                          code,
                           alias,
                           total_calls,
                           remaining_calls,
@@ -123,7 +123,7 @@ export default function FunctionTable({
                       className='px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-center'
                       onClick={() => {
                         setCurrentFunction({
-                          fun,
+                          code,
                           alias,
                           total_calls,
                           remaining_calls,
