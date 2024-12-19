@@ -25,9 +25,9 @@ export const createFunction = async ({
 
 export const getFunction = async (
   { alias }: { alias: string },
-  fun = false
+  code = false
 ) => {
-  const response = await fetch(`/api/${alias}${fun ? '?code=true' : ''}`, {
+  const response = await fetch(`/api/${alias}${code ? '?code=true' : ''}`, {
     method: 'GET',
   });
   if (response.ok) {
