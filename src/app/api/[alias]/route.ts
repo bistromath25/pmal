@@ -9,7 +9,7 @@ import {
   GITHUB_ACTIONS_JS_STEP,
   GITHUB_JS_INDEX,
 } from '@/utils/env';
-import { getFunction, getFunctionName, sleep } from '@/utils/utils';
+import { getFunction, getFunctionName } from '@/utils/utils';
 
 export async function GET(req: Request) {
   try {
@@ -120,6 +120,7 @@ export async function GET(req: Request) {
           result = cleanLogContent.split('##[endgroup]\n')[1].trim();
           await updateFunctionCallsOnceByAlias(alias);
         } catch (error) {
+          console.log(error);
           return new Response(null, { status: 500 });
         }
       } else {
@@ -139,6 +140,7 @@ export async function GET(req: Request) {
     }
     return new Response(null, { status: 500 });
   } catch (error) {
+    console.log(error);
     return new Response(null, { status: 500 });
   }
 }

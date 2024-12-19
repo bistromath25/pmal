@@ -52,20 +52,26 @@ export default function FunctionTableWrapper() {
       setCurrentUser({ email, aliases, key });
     }
   }, [session]);
-  const handleDeleteFunction = async (alias: string) => {
-    await API.deleteFunction({ alias });
-    const newUser = {
-      ...currentUser,
-      aliases: remove(currentUser.aliases, alias),
-    };
-    await API.updateUser(newUser);
-    setCurrentUser(newUser);
-    await refreshFunctions();
-  };
-  const handleUpdateFunction = async (fun: Function) => {
-    await API.updateFunction(fun);
-    await refreshFunctions();
-  };
+  const handleDeleteFunction = useCallback(
+    async (alias: string) => {
+      await API.deleteFunction({ alias });
+      const newUser = {
+        ...currentUser,
+        aliases: remove(currentUser.aliases, alias),
+      };
+      await API.updateUser(newUser);
+      setCurrentUser(newUser);
+      await refreshFunctions();
+    },
+    [currentUser, refreshFunctions]
+  );
+  const handleUpdateFunction = useCallback(
+    async (fun: Function) => {
+      await API.updateFunction(fun);
+      await refreshFunctions();
+    },
+    [refreshFunctions]
+  );
   useEffect(() => {
     refreshFunctions();
   }, [session, refreshFunctions]);

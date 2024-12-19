@@ -37,7 +37,6 @@ export default function Editor({
     fontFamily:
       'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
   };
-
   return (
     <>
       <CodeEditor

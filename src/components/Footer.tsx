@@ -13,8 +13,7 @@ export default function Footer({ type }: FooterProps) {
       >
         <div className='font-bold'>
           <h1>
-            Poor Man's AWS Lambdas: Experiments with Github Actions as a
-            Backend
+            Poor Man's AWS Lambdas: Experiments with Github Actions as a Backend
           </h1>
         </div>
         <div className='ml-auto font-bold text-right sm:flex sm:flex-row gap-4'>

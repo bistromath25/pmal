@@ -189,7 +189,7 @@ export default function FunctionTable({
                   if (currentFunction) {
                     const newFunction = {
                       ...currentFunction,
-                      fun: currentCode,
+                      code: currentCode,
                     };
                     setCurrentFunction(newFunction);
                     handleUpdateFunction(newFunction);
