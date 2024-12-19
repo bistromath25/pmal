@@ -44,7 +44,7 @@ export async function GET(req: Request) {
         });
 
         async function findWorkflowId(commitMessage: string): Promise<number> {
-          const POLL_INTERVAL = 1000;
+          const POLL_INTERVAL = 500;
           const POLL_ATTEMPTS = 10;
           let attempts = 0;
           return new Promise(async (resolve, reject) => {
@@ -73,7 +73,7 @@ export async function GET(req: Request) {
         }
 
         async function waitForWorkflowCompletion(id: number): Promise<void> {
-          const POLL_INTERVAL = 1000;
+          const POLL_INTERVAL = 500;
           const POLL_ATTEMPTS = 20;
           let attempts = 0;
           return new Promise(async (resolve, reject) => {
@@ -120,7 +120,6 @@ export async function GET(req: Request) {
           result = cleanLogContent.split('##[endgroup]\n')[1].trim();
           await updateFunctionCallsOnceByAlias(alias);
         } catch (error) {
-          console.log(error);
           return new Response(null, { status: 500 });
         }
       } else {
@@ -140,7 +139,6 @@ export async function GET(req: Request) {
     }
     return new Response(null, { status: 500 });
   } catch (error) {
-    console.log(error);
     return new Response(null, { status: 500 });
   }
 }
