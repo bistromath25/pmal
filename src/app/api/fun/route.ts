@@ -1,18 +1,20 @@
+import { auth } from '@/services/auth';
 import {
   createFunction,
   deleteFunctionByAlias,
   updateFunction,
 } from '@/services/supabase';
-import { auth } from '@/utils/auth';
+import { Function } from '@/utils/types';
 import { randomString } from '@/utils/utils';
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
     const alias = randomString(5);
-    const { total_calls, anonymous } = body;
+    const { anonymous } = body;
+    let newFun: Function;
     if (anonymous) {
-      await createFunction({
+      newFun = await createFunction({
         ...body,
         alias,
         remaining_calls: 10,
@@ -20,13 +22,13 @@ export async function POST(req: Request) {
         anonymous: true,
       });
     } else {
-      await createFunction({
+      newFun = await createFunction({
         ...body,
         alias,
         anonymous: false,
       });
     }
-    return new Response(JSON.stringify({ alias, total_calls }), {
+    return new Response(JSON.stringify({ fun: newFun }), {
       status: 200,
     });
   } catch (error) {
@@ -43,8 +45,8 @@ export async function PATCH(req: Request) {
       });
     }
     const body = await req.json();
-    await updateFunction(body);
-    return new Response(JSON.stringify({ alias: body.alias }), { status: 200 });
+    const newFun = await updateFunction(body);
+    return new Response(JSON.stringify({ fun: newFun }), { status: 200 });
   } catch (error) {
     return new Response(null, { status: 500 });
   }

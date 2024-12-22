@@ -67,7 +67,3 @@ export const getDemoQuery = (f: string) => {
 export const getNumberOfLines = (f: string) => {
   return f.split('\n').length;
 };
-
-export const sleep = (ms: number) => {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-};

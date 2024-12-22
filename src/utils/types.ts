@@ -1,7 +1,6 @@
 export interface Function {
   alias: string;
-  // fun: (...args: any[]) => any;
-  fun: string;
+  code: string;
   total_calls: number;
   remaining_calls: number;
   language: string;

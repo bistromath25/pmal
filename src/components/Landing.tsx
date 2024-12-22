@@ -22,7 +22,7 @@ function LandingEditor() {
   const onSubmit = async () => {
     if (code && isValidFunction(code)) {
       const { alias } = await API.createFunction({
-        fun: code,
+        code,
         anonymous: true,
       });
       setAlias(alias);
@@ -116,13 +116,13 @@ export default function Landing() {
           </div>
           <div className='rounded-lg p-4 bg-blue-200 shadow-md'>
             <p className='font-bold text-2xl text-center'>Deploy 🚀</p>
-            <p className='text-gray-600'>
+            <p className='text-gray-700'>
               Deploy your function at the click of a button.
             </p>
           </div>
           <div className='rounded-lg p-4 bg-blue-300 shadow-md'>
             <p className='font-bold text-2xl text-center'>Call ⚡</p>
-            <p className='text-gray-600'>
+            <p className='text-gray-800'>
               Call your function whenever and wherever you want via a GET or
               POST.
             </p>
@@ -132,7 +132,7 @@ export default function Landing() {
       <div className='w-full items-left px-10 sm:px-40 py-10 text-center'>
         <p className='text-3xl'>
           🔓 Unlock limitless possibilities with{' '}
-          <span className='font-bold'>{"Poor Man's AWS Lambdas 🔑"}</span>
+          <span className='font-bold'>{'GitHub Actions Lambda 🔑'}</span>
         </p>
         <div>
           <p className='text-gray-600 pt-1'>

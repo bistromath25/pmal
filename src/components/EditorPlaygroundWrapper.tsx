@@ -1,35 +1,36 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import * as API from '@/app/api/api';
 import { APP_BASE_URL } from '@/utils/env';
 import { User } from '@/utils/types';
-import { defaultFunctionValues } from '@/utils/utils';
 import EditorPlayground from './EditorPlayground';
 
 export default function EditorPlaygroundWrapper() {
   const session = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [currentCode, setCurrentCode] = useState(defaultFunctionValues['js']);
+  const [currentCode, setCurrentCode] = useState('');
   const [currentUser, setCurrentUser] = useState<User>({
     email: '',
     aliases: [],
     key: '',
   });
-  const getKeyFunction = async (alias: string) => {
+  const getKeyFunction = useCallback(async (alias: string) => {
     if (alias) {
-      const { fun } = await API.getFunction({ alias }, true);
-      setCurrentCode(fun);
+      const {
+        fun: { code },
+      } = await API.getFunction({ alias }, true);
+      setCurrentCode(code);
     }
-  };
+  }, []);
   useEffect(() => {
     const getUser = async () => {
       const email = session.data?.user?.email;
       if (email) {
-        const user = await API.getUser({ email });
+        const { user } = await API.getUser({ email });
         setCurrentUser(user);
       }
     };
@@ -37,7 +38,7 @@ export default function EditorPlaygroundWrapper() {
   }, [session]);
   useEffect(() => {
     getKeyFunction(currentUser.key);
-  }, [currentUser]);
+  }, [currentUser, getKeyFunction]);
   useEffect(() => {
     if (!searchParams.get('language')) {
       router.push('/editor?language=js');

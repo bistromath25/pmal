@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'PMAL',
-  description: "Poor Man's AWS Lambdas",
+  description: 'GitHub Actions Lambda',
 };
 
 export default function RootLayout({

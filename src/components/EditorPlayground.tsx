@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import * as API from '@/app/api/api';
@@ -74,22 +74,22 @@ export default function EditorPlayground({
   const [currentLanguage, setCurrentLanguage] = useState('js');
   const onSubmit = async () => {
     if (code && isValidFunction(code)) {
-      await API.updateFunction({ alias: currentUser.key, fun: code });
+      await API.updateFunction({ alias: currentUser.key, code });
       setDemoQuery(getDemoQuery(code));
       setError(false);
     } else {
       setError(true);
     }
   };
-  useEffect(() => {
-    if (currentLanguage === 'js') {
-      setCode(defaultFunctionValues['js']);
-    } else if (currentLanguage === 'py') {
-      setCode(defaultFunctionValues['py']);
-    } else if (currentLanguage === 'php') {
-      setCode(defaultFunctionValues['php']);
-    }
-  }, [currentLanguage, setCode]);
+  // useEffect(() => {
+  //   if (currentLanguage === 'js') {
+  //     setCode(defaultFunctionValues['js']);
+  //   } else if (currentLanguage === 'py') {
+  //     setCode(defaultFunctionValues['py']);
+  //   } else if (currentLanguage === 'php') {
+  //     setCode(defaultFunctionValues['php']);
+  //   }
+  // }, [currentLanguage, setCode]);
   return (
     <div className='w-full lg:flex lg:flex-row lg:space-x-10'>
       <div className='basis-[70%] lg:basis-[100%] space-y-4'>

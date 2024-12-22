@@ -1,7 +1,7 @@
 import { FunctionDatabaseEntity, User } from '@/utils/types';
 
 export const createFunction = async ({
-  fun,
+  code,
   remaining_calls,
   anonymous,
   language,
@@ -10,7 +10,7 @@ export const createFunction = async ({
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      fun,
+      code,
       remaining_calls,
       total_calls: 0,
       anonymous,
@@ -25,9 +25,9 @@ export const createFunction = async ({
 
 export const getFunction = async (
   { alias }: { alias: string },
-  fun = false
+  code = false
 ) => {
-  const response = await fetch(`/api/${alias}${fun ? '?fun=true' : ''}`, {
+  const response = await fetch(`/api/${alias}${code ? '?code=true' : ''}`, {
     method: 'GET',
   });
   if (response.ok) {
@@ -38,7 +38,7 @@ export const getFunction = async (
 
 export const updateFunction = async ({
   alias,
-  fun,
+  code,
   total_calls,
   remaining_calls,
 }: Partial<FunctionDatabaseEntity>) => {
@@ -47,7 +47,7 @@ export const updateFunction = async ({
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       alias,
-      fun,
+      code,
       ...(total_calls && { total_calls }),
       ...(remaining_calls && { remaining_calls }),
     }),
@@ -80,16 +80,6 @@ export const getFunctions = async ({ aliases }: { aliases: string[] }) => {
     return await response.json();
   }
   throw new Error('Unable to get functions');
-};
-
-export const getAllFunctions = async () => {
-  const response = await fetch('/api/funs', {
-    method: 'POST',
-  });
-  if (response.ok) {
-    return await response.json();
-  }
-  return new Error('Unable to get all functions');
 };
 
 export const getUser = async ({ email }: Partial<User>) => {

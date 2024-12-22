@@ -9,7 +9,8 @@ import {
   GITHUB_ACTIONS_JS_STEP,
   GITHUB_JS_INDEX,
 } from '@/utils/env';
-import { getFunction, getFunctionName, sleep } from '@/utils/utils';
+import { Function } from '@/utils/types';
+import { getFunction, getFunctionName } from '@/utils/utils';
 
 export async function GET(req: Request) {
   try {
@@ -17,16 +18,17 @@ export async function GET(req: Request) {
     const params = new URLSearchParams(url.search);
     const alias = url.pathname.split('/api/')[1];
     const f = await getFunctionByAlias(alias);
-    if (params.get('fun')) {
-      return new Response(JSON.stringify({ ...f }), { status: 200 });
+    if (params.get('code')) {
+      return new Response(JSON.stringify({ fun: f }), { status: 200 });
     }
 
     let result;
-    if (f && f.fun) {
+    let newFun: Function | null = null;
+    if (f?.code) {
       if (FF_USE_GITHUB_ACTIONS) {
-        const funName = getFunctionName(f.fun);
+        const funName = getFunctionName(f.code);
         const contents =
-          f.fun +
+          f.code +
           `\nconsole.log(${funName}(${Object.values(Object.fromEntries(params)).map((x) => `'${x}'`)}));`;
 
         let response = await GH.getFiles('/js');
@@ -44,7 +46,7 @@ export async function GET(req: Request) {
         });
 
         async function findWorkflowId(commitMessage: string): Promise<number> {
-          const POLL_INTERVAL = 1000;
+          const POLL_INTERVAL = 500;
           const POLL_ATTEMPTS = 10;
           let attempts = 0;
           return new Promise(async (resolve, reject) => {
@@ -73,7 +75,7 @@ export async function GET(req: Request) {
         }
 
         async function waitForWorkflowCompletion(id: number): Promise<void> {
-          const POLL_INTERVAL = 1000;
+          const POLL_INTERVAL = 500;
           const POLL_ATTEMPTS = 20;
           let attempts = 0;
           return new Promise(async (resolve, reject) => {
@@ -118,21 +120,25 @@ export async function GET(req: Request) {
             .join('\n');
 
           result = cleanLogContent.split('##[endgroup]\n')[1].trim();
-          await updateFunctionCallsOnceByAlias(alias);
+          newFun = await updateFunctionCallsOnceByAlias(alias);
         } catch (error) {
           return new Response(null, { status: 500 });
         }
       } else {
-        const fun = getFunction(f.fun);
+        const fun = getFunction(f.code);
         if (fun) {
           result = fun(...Object.values(Object.fromEntries(params)));
-          await updateFunctionCallsOnceByAlias(alias);
+          newFun = await updateFunctionCallsOnceByAlias(alias);
         }
+      }
+
+      if (!newFun) {
+        return new Response(null, { status: 500 });
       }
       return new Response(
         JSON.stringify({
           result,
-          total_calls: f.total_calls + 1,
+          total_calls: newFun.total_calls,
         }),
         { status: 200 }
       );
