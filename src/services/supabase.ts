@@ -29,12 +29,7 @@ export const getFunctionByAlias = async (alias: string) => {
     throw error;
   }
   if (data?.length) {
-    const { code, total_calls, remaining_calls, anonymous, language } = data[0];
-    if (anonymous && total_calls >= 10) {
-      deleteFunctionByAlias(alias);
-      return null;
-    }
-    return { alias, code, total_calls, remaining_calls, language } as Function;
+    return data[0] as FunctionDatabaseEntity;
   }
   return null;
 };
