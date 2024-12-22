@@ -11,21 +11,24 @@ const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   },
 });
 
-export const createFunction = async (f: FunctionDatabaseEntity) => {
-  const { error } = await supabaseClient.from('functions').insert(f);
+export const createFunction = async (fun: FunctionDatabaseEntity) => {
+  const { error } = await supabaseClient.from('functions').insert(fun);
   if (error) {
     throw error;
   }
-  return null;
+  return fun as Function;
 };
 
 export const getFunctionByAlias = async (alias: string) => {
   const { data, error } = await supabaseClient
     .from('functions')
-    .select('code, total_calls, remaining_calls, anonymous, language')
+    .select('*')
     .eq('alias', alias)
     .neq('frozen', true);
-  if (data && data.length > 0) {
+  if (error) {
+    throw error;
+  }
+  if (data?.length) {
     const { code, total_calls, remaining_calls, anonymous, language } = data[0];
     if (anonymous && total_calls >= 10) {
       deleteFunctionByAlias(alias);
@@ -33,45 +36,44 @@ export const getFunctionByAlias = async (alias: string) => {
     }
     return { alias, code, total_calls, remaining_calls, language } as Function;
   }
-  if (error) {
-    throw error;
-  }
   return null;
 };
 
 export const updateFunctionCallsOnceByAlias = async (alias: string) => {
-  const { error } = await supabaseClient.rpc('updatefunctioncallsoncebyalias', {
-    x: alias,
-  });
-  if (error) {
-    throw error;
-  }
-  return null;
-};
-
-export const updateFunction = async (
-  fun: Partial<{
-    alias: string;
-    code: string;
-    total_calls?: number;
-    remaining_calls?: number;
-  }>
-) => {
+  const fun = (await getFunctionByAlias(alias)) as Function;
+  const newFun = {
+    ...fun,
+    total_calls: fun.total_calls + 1,
+    remaining_calls: fun.remaining_calls - 1,
+  } as Function;
   const { error } = await supabaseClient
     .from('functions')
-    .update({ ...fun })
-    .eq('alias', fun.alias)
-    .neq('frozen', true);
+    .update(newFun)
+    .eq('alias', fun.alias);
   if (error) {
     throw error;
   }
-  return null;
+  return newFun;
+};
+
+export const updateFunction = async (fun: Function) => {
+  const { error } = await supabaseClient
+    .from('functions')
+    .update(fun)
+    .eq('alias', fun.alias);
+  if (error) {
+    throw error;
+  }
+  return fun;
 };
 
 export const deleteFunctionByAlias = async (alias: string) => {
-  const { error } = await supabaseClient.rpc('freezefunctionbyalias', {
-    x: alias,
-  });
+  const { error } = await supabaseClient
+    .from('functions')
+    .update({
+      frozen: true,
+    })
+    .eq('alias', alias);
   if (error) {
     throw error;
   }
@@ -84,24 +86,10 @@ export const getFunctionsByAliases = async (aliases: string[]) => {
     .select('*')
     .in('alias', aliases)
     .neq('frozen', true);
-  if (data && data[0]) {
-    return data;
-  }
   if (error) {
     throw error;
   }
-  return null;
-};
-
-export const getAllFunctions = async () => {
-  const { data, error } = await supabaseClient.from('functions').select('*');
-  if (data) {
-    return data;
-  }
-  if (error) {
-    throw error;
-  }
-  return null;
+  return data?.length ? data.map((x) => x as Function) : [];
 };
 
 export const createUser = async (user: User) => {
@@ -109,7 +97,7 @@ export const createUser = async (user: User) => {
   if (error) {
     throw error;
   }
-  return null;
+  return user;
 };
 
 export const getUserByEmail = async (email: string) => {
@@ -117,16 +105,13 @@ export const getUserByEmail = async (email: string) => {
     .from('users')
     .select('email, aliases, key')
     .eq('email', email);
-  if (data && data[0]) {
-    return data[0];
-  }
   if (error) {
     throw error;
   }
-  return null;
+  return data?.length ? (data[0] as User) : null;
 };
 
-export const updateUser = async (user: Partial<User>) => {
+export const updateUser = async (user: User) => {
   const { error } = await supabaseClient
     .from('users')
     .update(user)
@@ -134,5 +119,5 @@ export const updateUser = async (user: Partial<User>) => {
   if (error) {
     throw error;
   }
-  return null;
+  return user;
 };

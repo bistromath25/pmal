@@ -9,6 +9,7 @@ import {
   GITHUB_ACTIONS_JS_STEP,
   GITHUB_JS_INDEX,
 } from '@/utils/env';
+import { Function } from '@/utils/types';
 import { getFunction, getFunctionName } from '@/utils/utils';
 
 export async function GET(req: Request) {
@@ -18,11 +19,12 @@ export async function GET(req: Request) {
     const alias = url.pathname.split('/api/')[1];
     const f = await getFunctionByAlias(alias);
     if (params.get('code')) {
-      return new Response(JSON.stringify({ ...f }), { status: 200 });
+      return new Response(JSON.stringify({ fun: f }), { status: 200 });
     }
 
     let result;
-    if (f && f.code) {
+    let newFun: Function | null = null;
+    if (f?.code) {
       if (FF_USE_GITHUB_ACTIONS) {
         const funName = getFunctionName(f.code);
         const contents =
@@ -118,7 +120,7 @@ export async function GET(req: Request) {
             .join('\n');
 
           result = cleanLogContent.split('##[endgroup]\n')[1].trim();
-          await updateFunctionCallsOnceByAlias(alias);
+          newFun = await updateFunctionCallsOnceByAlias(alias);
         } catch (error) {
           return new Response(null, { status: 500 });
         }
@@ -126,13 +128,17 @@ export async function GET(req: Request) {
         const fun = getFunction(f.code);
         if (fun) {
           result = fun(...Object.values(Object.fromEntries(params)));
-          await updateFunctionCallsOnceByAlias(alias);
+          newFun = await updateFunctionCallsOnceByAlias(alias);
         }
+      }
+
+      if (!newFun) {
+        return new Response(null, { status: 500 });
       }
       return new Response(
         JSON.stringify({
           result,
-          total_calls: f.total_calls + 1,
+          total_calls: newFun.total_calls,
         }),
         { status: 200 }
       );

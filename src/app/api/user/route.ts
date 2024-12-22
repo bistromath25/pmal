@@ -1,5 +1,5 @@
+import { auth } from '@/services/auth';
 import { createUser, getUserByEmail, updateUser } from '@/services/supabase';
-import { auth } from '@/utils/auth';
 import { randomString } from '@/utils/utils';
 
 export async function POST(req: Request) {
@@ -14,12 +14,12 @@ export async function POST(req: Request) {
     const user = await getUserByEmail(email);
     if (!user) {
       const key = randomString(16);
-      await createUser({ email, aliases: [], key });
-      return new Response(JSON.stringify({ email, aliases: [] }), {
+      const newUser = await createUser({ email, aliases: [], key });
+      return new Response(JSON.stringify({ user: newUser }), {
         status: 201,
       });
     } else {
-      return new Response(JSON.stringify(user), {
+      return new Response(JSON.stringify({ user }), {
         status: 200,
       });
     }
@@ -37,10 +37,15 @@ export async function PATCH(req: Request) {
       });
     }
     const { user } = await req.json();
-    await updateUser(user);
-    return new Response(JSON.stringify(user), {
-      status: 200,
-    });
+    const updatedUser = await updateUser(user);
+    return new Response(
+      JSON.stringify({
+        user: updatedUser,
+      }),
+      {
+        status: 200,
+      }
+    );
   } catch (error) {
     return new Response(null, { status: 500 });
   }

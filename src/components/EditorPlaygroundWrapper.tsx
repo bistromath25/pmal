@@ -20,7 +20,9 @@ export default function EditorPlaygroundWrapper() {
   });
   const getKeyFunction = useCallback(async (alias: string) => {
     if (alias) {
-      const { code } = await API.getFunction({ alias }, true);
+      const {
+        fun: { code },
+      } = await API.getFunction({ alias }, true);
       setCurrentCode(code);
     }
   }, []);
@@ -28,7 +30,7 @@ export default function EditorPlaygroundWrapper() {
     const getUser = async () => {
       const email = session.data?.user?.email;
       if (email) {
-        const user = await API.getUser({ email });
+        const { user } = await API.getUser({ email });
         setCurrentUser(user);
       }
     };

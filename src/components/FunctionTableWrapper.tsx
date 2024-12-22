@@ -29,13 +29,14 @@ export default function FunctionTableWrapper() {
   const [error, setError] = useState(false);
   const onSubmit = async () => {
     if (currentCode && isValidFunction(currentCode)) {
-      const { alias } = await API.createFunction({ code: currentCode });
-      const newUser = {
+      const {
+        fun: { alias },
+      } = await API.createFunction({ code: currentCode });
+      const { user } = await API.updateUser({
         ...currentUser,
         aliases: [...currentUser.aliases, alias],
-      };
-      await API.updateUser(newUser);
-      setCurrentUser(newUser);
+      });
+      setCurrentUser(user);
       await refreshFunctions();
       setError(false);
       setModalIsOpen(false);
@@ -46,21 +47,22 @@ export default function FunctionTableWrapper() {
   const refreshFunctions = useCallback(async () => {
     const email = session.data?.user?.email;
     if (email) {
-      const { aliases, key } = await API.getUser({ email });
-      const { functions } = await API.getFunctions({ aliases });
-      setFunctions(functions);
+      const {
+        user: { aliases, key },
+      } = await API.getUser({ email });
+      const { funs } = await API.getFunctions({ aliases });
+      setFunctions(funs);
       setCurrentUser({ email, aliases, key });
     }
   }, [session]);
   const handleDeleteFunction = useCallback(
     async (alias: string) => {
       await API.deleteFunction({ alias });
-      const newUser = {
+      const { user } = await API.updateUser({
         ...currentUser,
         aliases: remove(currentUser.aliases, alias),
-      };
-      await API.updateUser(newUser);
-      setCurrentUser(newUser);
+      });
+      setCurrentUser(user);
       await refreshFunctions();
     },
     [currentUser, refreshFunctions]

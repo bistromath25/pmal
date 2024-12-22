@@ -1,5 +1,5 @@
+import { auth } from '@/services/auth';
 import { getFunctionsByAliases } from '@/services/supabase';
-import { auth } from '@/utils/auth';
 
 export async function POST(req: Request) {
   try {
@@ -11,7 +11,7 @@ export async function POST(req: Request) {
     }
     const { aliases } = await req.json();
     const functions = await getFunctionsByAliases(aliases);
-    return new Response(JSON.stringify({ functions }), { status: 200 });
+    return new Response(JSON.stringify({ funs: functions }), { status: 200 });
   } catch (error) {
     return new Response(null, { status: 500 });
   }

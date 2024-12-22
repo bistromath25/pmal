@@ -82,16 +82,6 @@ export const getFunctions = async ({ aliases }: { aliases: string[] }) => {
   throw new Error('Unable to get functions');
 };
 
-export const getAllFunctions = async () => {
-  const response = await fetch('/api/funs', {
-    method: 'POST',
-  });
-  if (response.ok) {
-    return await response.json();
-  }
-  return new Error('Unable to get all functions');
-};
-
 export const getUser = async ({ email }: Partial<User>) => {
   const response = await fetch('/api/user', {
     method: 'POST',
