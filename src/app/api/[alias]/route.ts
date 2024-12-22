@@ -1,4 +1,5 @@
 import JSZip from 'jszip';
+import { auth } from '@/services/auth';
 import * as GH from '@/services/gh';
 import {
   getFunctionByAlias,
@@ -18,17 +19,40 @@ export async function GET(req: Request) {
     const params = new URLSearchParams(url.search);
     const alias = url.pathname.split('/api/')[1];
     const f = await getFunctionByAlias(alias);
+    if (!f) {
+      return new Response(
+        JSON.stringify({
+          error: 'Function does not exist',
+        }),
+        { status: 500 }
+      );
+    }
+    const { code, anonymous, total_calls } = f;
     if (params.get('code')) {
+      const session = await auth();
+      if (!session) {
+        return new Response(null, {
+          status: 401,
+        });
+      }
       return new Response(JSON.stringify({ fun: f }), { status: 200 });
+    }
+    if (anonymous && total_calls >= 10) {
+      return new Response(
+        JSON.stringify({
+          error: 'Maximum calls exceeded',
+        }),
+        { status: 500 }
+      );
     }
 
     let result;
     let newFun: Function | null = null;
-    if (f?.code) {
+    if (code) {
       if (FF_USE_GITHUB_ACTIONS) {
-        const funName = getFunctionName(f.code);
+        const funName = getFunctionName(code);
         const contents =
-          f.code +
+          code +
           `\nconsole.log(${funName}(${Object.values(Object.fromEntries(params)).map((x) => `'${x}'`)}));`;
 
         let response = await GH.getFiles('/js');
@@ -122,10 +146,15 @@ export async function GET(req: Request) {
           result = cleanLogContent.split('##[endgroup]\n')[1].trim();
           newFun = await updateFunctionCallsOnceByAlias(alias);
         } catch (error) {
-          return new Response(null, { status: 500 });
+          return new Response(
+            JSON.stringify({
+              error: 'Execution timed out',
+            }),
+            { status: 500 }
+          );
         }
       } else {
-        const fun = getFunction(f.code);
+        const fun = getFunction(code);
         if (fun) {
           result = fun(...Object.values(Object.fromEntries(params)));
           newFun = await updateFunctionCallsOnceByAlias(alias);
@@ -133,7 +162,12 @@ export async function GET(req: Request) {
       }
 
       if (!newFun) {
-        return new Response(null, { status: 500 });
+        return new Response(
+          JSON.stringify({
+            error: 'Unable to update function after execution',
+          }),
+          { status: 500 }
+        );
       }
       return new Response(
         JSON.stringify({
@@ -143,9 +177,19 @@ export async function GET(req: Request) {
         { status: 200 }
       );
     }
-    return new Response(null, { status: 500 });
+    return new Response(
+      JSON.stringify({
+        error: 'Function is empty',
+      }),
+      { status: 500 }
+    );
   } catch (error) {
-    return new Response(null, { status: 500 });
+    return new Response(
+      JSON.stringify({
+        error: 'Error',
+      }),
+      { status: 500 }
+    );
   }
 }
 

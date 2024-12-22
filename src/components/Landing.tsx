@@ -21,7 +21,9 @@ function LandingEditor() {
   const [copied, setCopied] = useState(false);
   const onSubmit = async () => {
     if (code && isValidFunction(code)) {
-      const { alias } = await API.createFunction({
+      const {
+        fun: { alias },
+      } = await API.createFunction({
         code,
         anonymous: true,
       });
