@@ -2,6 +2,7 @@ import JSZip from 'jszip';
 import { auth } from '@/services/auth';
 import * as GH from '@/services/gh';
 import {
+  deleteFunctionByAlias,
   getFunctionByAlias,
   updateFunctionCallsOnceByAlias,
 } from '@/services/supabase';
@@ -38,6 +39,7 @@ export async function GET(req: Request) {
       return new Response(JSON.stringify({ fun: f }), { status: 200 });
     }
     if (anonymous && total_calls >= 10) {
+      await deleteFunctionByAlias(alias);
       return new Response(
         JSON.stringify({
           error: 'Maximum calls exceeded',
