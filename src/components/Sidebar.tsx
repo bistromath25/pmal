@@ -8,10 +8,6 @@ const sidebarOptions = [
     name: 'Home',
     path: '/home',
   },
-  // {
-  //   name: 'Settings',
-  //   path: '/settings',
-  // },
   {
     name: 'Editor',
     path: '/editor',
