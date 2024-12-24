@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import * as API from '@/app/api/api';
-import { Function, User } from '@/utils/types';
+import { Function, User } from '@/types/types';
 import { defaultFunctionValues, isValidFunction, remove } from '@/utils/utils';
 import Editor from './Editor';
 import FunctionTable from './FunctionTable';

@@ -1,4 +1,4 @@
-import { FunctionDatabaseEntity, User } from '@/utils/types';
+import { FunctionDatabaseEntity, User } from '@/types/types';
 
 export const createFunction = async ({
   code,

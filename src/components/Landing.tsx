@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import * as API from '@/app/api/api';
-import { APP_BASE_URL } from '@/utils/env';
+import { APP_BASE_URL } from '@/env/env';
 import {
   defaultFunctionValues,
   getDemoQuery,
@@ -71,8 +71,7 @@ function LandingEditor() {
                 }
               }}
             >
-              <DefaultIcon hidden={copied} />
-              <SuccessIcon hidden={!copied} />
+              {copied ? <SuccessIcon /> : <DefaultIcon />}
             </button>
           </div>
           <p className='text-gray-600'>

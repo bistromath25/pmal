@@ -1,4 +1,9 @@
 import JSZip from 'jszip';
+import {
+  FF_USE_GITHUB_ACTIONS,
+  GITHUB_ACTIONS_JS_STEP,
+  GITHUB_JS_INDEX,
+} from '@/env/env';
 import { auth } from '@/services/auth';
 import * as GH from '@/services/gh';
 import {
@@ -6,12 +11,7 @@ import {
   getFunctionByAlias,
   updateFunctionCallsOnceByAlias,
 } from '@/services/supabase';
-import {
-  FF_USE_GITHUB_ACTIONS,
-  GITHUB_ACTIONS_JS_STEP,
-  GITHUB_JS_INDEX,
-} from '@/utils/env';
-import { Function } from '@/utils/types';
+import { Function } from '@/types/types';
 import { getFunction, getFunctionName } from '@/utils/utils';
 
 export async function GET(req: Request) {
