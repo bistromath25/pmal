@@ -14,3 +14,5 @@ export const GITHUB_ACTIONS_JS_STEP = process.env
   .GITHUB_ACTIONS_JS_STEP as string;
 export const FF_USE_GITHUB_ACTIONS =
   (process.env.FF_USE_GITHUB_ACTIONS as string) === 'TRUE';
+export const FF_ONLY_JS_FUNCTIONS =
+  (process.env.NEXT_PUBLIC_FF_ONLY_JS_FUNCTIONS as string) === 'TRUE';

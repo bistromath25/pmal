@@ -4,15 +4,18 @@ import { useCallback, useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import * as API from '@/app/api/api';
 import { Function, User } from '@/types/types';
-import { defaultFunctionValues, isValidFunction, remove } from '@/utils/utils';
+import { getDefaultFunctionValue, isValidFunction } from '@/utils/functions';
+import { remove } from '@/utils/utils';
 import Editor from './Editor';
+import { LanguageSelection } from './EditorPlayground';
 import FunctionTable from './FunctionTable';
 import Modal from './Modal';
 
 export default function FunctionTableWrapper() {
   const session = useSession();
   const [functions, setFunctions] = useState<Function[]>([]);
-  const [currentCode, setCurrentCode] = useState(defaultFunctionValues['js']);
+  const [currentCode, setCurrentCode] = useState(getDefaultFunctionValue('js'));
+  const [currentLanguage, setCurrentLanguage] = useState('js');
   const [currentFunction, setCurrentFunction] = useState<Function>({
     alias: '',
     code: '',
@@ -28,10 +31,13 @@ export default function FunctionTableWrapper() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [error, setError] = useState(false);
   const onSubmit = async () => {
-    if (currentCode && isValidFunction(currentCode)) {
+    if (isValidFunction(currentCode, currentLanguage)) {
       const {
         fun: { alias },
-      } = await API.createFunction({ code: currentCode });
+      } = await API.createFunction({
+        code: currentCode,
+        language: currentLanguage,
+      });
       const { user } = await API.updateUser({
         ...currentUser,
         aliases: [...currentUser.aliases, alias],
@@ -77,6 +83,9 @@ export default function FunctionTableWrapper() {
   useEffect(() => {
     refreshFunctions();
   }, [session, refreshFunctions]);
+  useEffect(() => {
+    setCurrentCode(getDefaultFunctionValue(currentLanguage));
+  }, [currentLanguage, setCurrentCode]);
   return (
     <>
       <div className='w-full space-y-10'>
@@ -104,9 +113,15 @@ export default function FunctionTableWrapper() {
         title='Create function'
         contents={
           <div className='space-y-4 pt-4'>
+            <LanguageSelection
+              type='dashboard'
+              currentLanguage={currentLanguage}
+              setCurrentLanguage={setCurrentLanguage}
+            />
             <Editor
               code={currentCode}
               setCode={setCurrentCode}
+              language={currentLanguage}
               style={{ minHeight: '300px' }}
               error={error}
             />

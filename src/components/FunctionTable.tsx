@@ -3,7 +3,7 @@
 import { useCallback, useState } from 'react';
 import { APP_BASE_URL } from '@/env/env';
 import { Function } from '@/types/types';
-import { getDemoQuery } from '@/utils/utils';
+import { getDemoQuery } from '@/utils/functions';
 import Editor from './Editor';
 import Modal from './Modal';
 
@@ -104,11 +104,11 @@ export default function FunctionTable({
                   <td className='px-6 py-4'>
                     <input
                       className='p-2 cursor-copy focus:outline-none bg-transparent border border-gray-300 rounded-lg'
-                      value={`/${alias}?${getDemoQuery(code)}`}
+                      value={`/${alias}?${getDemoQuery(code, language)}`}
                       onClick={(e) => {
                         e.preventDefault();
                         navigator.clipboard.writeText(
-                          `${APP_BASE_URL}/api/${alias}?${getDemoQuery(code)}`
+                          `${APP_BASE_URL}/api/${alias}?${getDemoQuery(code, language)}`
                         );
                       }}
                       readOnly

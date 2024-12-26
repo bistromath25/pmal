@@ -2,7 +2,7 @@ import { useCallback, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import * as API from '@/app/api/api';
-import { defaultFunctionValues } from '@/utils/utils';
+import { getDefaultFunctionValue } from '@/utils/functions';
 
 export default function useAuthRedirect() {
   const session = useSession();
@@ -12,7 +12,7 @@ export default function useAuthRedirect() {
       const { key } = await API.getUser({ email: session.data.user.email });
       try {
         await API.createFunction({
-          code: defaultFunctionValues['js'],
+          code: getDefaultFunctionValue('js'),
           remaining_calls: 10,
           total_calls: 0,
           alias: key,

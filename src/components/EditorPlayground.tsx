@@ -4,9 +4,10 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import * as API from '@/app/api/api';
-import { APP_BASE_URL } from '@/env/env';
+import { APP_BASE_URL, FF_ONLY_JS_FUNCTIONS } from '@/env/env';
 import { User } from '@/types/types';
-import { getDemoQuery, isValidFunction } from '@/utils/utils';
+import { isValidFunction } from '@/utils/functions';
+import { getDemoQuery } from '@/utils/functions';
 import Editor, { EditorProps } from './Editor';
 import { DefaultIcon, SuccessIcon } from './Icons';
 
@@ -26,24 +27,38 @@ const languageOptions = [
   },
 ];
 
-function LanguageSelection({
+export function LanguageSelection({
+  type,
   currentLanguage,
   setCurrentLanguage,
 }: {
+  type: 'dashboard' | 'playground';
   currentLanguage: string;
   setCurrentLanguage: React.Dispatch<React.SetStateAction<string>>;
 }) {
+  const isPlayground = type === 'playground';
   return (
     <>
-      <h2 className='font-bold text-2xl'>Select language</h2>
+      {isPlayground && <h2 className='font-bold text-2xl'>Select language</h2>}
       <div className='flex flex-row gap-4'>
         {languageOptions.map(({ name, logoUrl }) => {
           return (
             <Link
-              className={`rounded-lg hover:bg-gray-100 h-[50px] justify-items-center ${name === currentLanguage ? 'bg-gray-100' : 'bg-white-100'}`}
+              className={`rounded-lg hover:bg-gray-100 h-[50px] justify-items-center ${name === currentLanguage ? 'bg-gray-100' : 'bg-white-100'} ${FF_ONLY_JS_FUNCTIONS && name !== 'js' ? 'hover:cursor-not-allowed hover:bg-white' : ''}`}
               key={`editor-language-option-${name}`}
-              href={`?language=${name}`}
-              onClick={() => setCurrentLanguage(name)}
+              href={
+                isPlayground
+                  ? FF_ONLY_JS_FUNCTIONS
+                    ? `?language=js`
+                    : `?language=${name}`
+                  : ''
+              }
+              onClick={() => {
+                if (FF_ONLY_JS_FUNCTIONS && name !== 'js') {
+                  return;
+                }
+                setCurrentLanguage(name);
+              }}
             >
               <img className='h-[50px]' src={logoUrl} alt={name} />
             </Link>
@@ -67,13 +82,13 @@ export default function EditorPlayground({
 }: EditorPlaygroundProps) {
   const searchParams = useSearchParams();
   const [error, setError] = useState(false);
-  const [demoQuery, setDemoQuery] = useState(getDemoQuery(code));
+  const [demoQuery, setDemoQuery] = useState(getDemoQuery(code, 'js'));
   const [copied, setCopied] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState('js');
   const onSubmit = async () => {
-    if (code && isValidFunction(code)) {
+    if (isValidFunction(code, currentLanguage)) {
       await API.updateFunction({ alias: currentUser.key, code });
-      setDemoQuery(getDemoQuery(code));
+      setDemoQuery(getDemoQuery(code, currentLanguage));
       setError(false);
     } else {
       setError(true);
@@ -123,6 +138,7 @@ export default function EditorPlayground({
       </div>
       <div className='basis-[30%] hidden lg:block space-y-4'>
         <LanguageSelection
+          type='playground'
           currentLanguage={currentLanguage}
           setCurrentLanguage={setCurrentLanguage}
         />
