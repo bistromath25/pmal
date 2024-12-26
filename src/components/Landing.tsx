@@ -91,28 +91,34 @@ function LandingEditor() {
 function FunctionExample() {
   const [code, setCode] = useState(getDefaultFunctionValue('js'));
   const [isAsync, setIsAsync] = useState(false);
-  const onSelectSync = () => {
-    setCode(getDefaultFunctionValue('js'));
-    setIsAsync(false);
+  const toggleFunctionType = (selectAsync: boolean) => {
+    setCode(
+      selectAsync
+        ? getDefaultAsyncFunctionValue('js')
+        : getDefaultFunctionValue('js')
+    );
+    setIsAsync(selectAsync);
   };
-  const onSelectAsync = () => {
-    setCode(getDefaultAsyncFunctionValue('js'));
-    setIsAsync(true);
-  };
+  const getButtonStyle = (active: boolean) =>
+    `font-bold rounded-full py-1 ${
+      active
+        ? 'border border-green-500 bg-green-300 hover:bg-green-400 text-black px-2'
+        : 'bg-transparent text-black'
+    }`;
   return (
     <div className='w-full flex flex-col items-center text-center gap-10'>
       <h2 className='text-3xl'>
         Create{' '}
         <button
-          className={`font-bold ${isAsync ? 'bg-transparent text-black' : 'border border-green-500 bg-green-300 hover:bg-green-400 text-black px-2'} rounded-full py-1`}
-          onClick={onSelectSync}
+          className={getButtonStyle(!isAsync)}
+          onClick={() => toggleFunctionType(false)}
         >
           synchronous
         </button>{' '}
         and{' '}
         <button
-          className={`font-bold ${!isAsync ? 'bg-transparent text-black' : 'border border-green-500 bg-green-300 hover:bg-green-400 text-black px-2'} rounded-full py-1`}
-          onClick={onSelectAsync}
+          className={getButtonStyle(isAsync)}
+          onClick={() => toggleFunctionType(true)}
         >
           asynchronous
         </button>{' '}

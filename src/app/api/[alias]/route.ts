@@ -12,7 +12,11 @@ import {
   updateFunctionCallsOnceByAlias,
 } from '@/services/supabase';
 import { Function } from '@/types/types';
-import { getFunction, getFunctionName } from '@/utils/functions';
+import {
+  getFunction,
+  getFunctionDetails,
+  getPrintFunctionReturnValueStatement,
+} from '@/utils/functions';
 
 export async function GET(req: Request) {
   try {
@@ -52,11 +56,10 @@ export async function GET(req: Request) {
     let newFun: Function | null = null;
     if (code) {
       if (FF_USE_GITHUB_ACTIONS) {
-        const funName = getFunctionName(code, language);
+        const { name, isAsync } = getFunctionDetails(code, language);
+        const call = `${name}(${Object.values(Object.fromEntries(params)).map((x) => `'${x}'`)})`;
         const contents =
-          code +
-          `\nconsole.log(${funName}(${Object.values(Object.fromEntries(params)).map((x) => `'${x}'`)}));`;
-
+          code + getPrintFunctionReturnValueStatement(call, language, isAsync);
         let response = await GH.getFiles('/js');
         const files = await response.json();
         const sha =

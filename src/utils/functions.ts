@@ -1,17 +1,17 @@
-export const getDefaultFunctionValue = (langauge: string) => {
+export const getDefaultFunctionValue = (language: string) => {
   const values: Record<string, string> = {
     js: 'function add(a, b) {\n  return parseInt(a) + parseInt(b);\n}',
     py: 'def add(a, b):\n  return int(a) + int(b)',
     php: 'function add($a, $b) {\n  return (int) $a + (int) $b;\n}',
   };
-  return values[langauge] ?? '';
+  return values[language] ?? '';
 };
 
-export const getDefaultAsyncFunctionValue = (langauge: string) => {
+export const getDefaultAsyncFunctionValue = (language: string) => {
   const values: Record<string, string> = {
     js: 'async function add(a, b) {\n  return Promise.resolve(parseInt(a) + parseInt(b));\n}',
   };
-  return values[langauge] ?? '';
+  return values[language] ?? '';
 };
 
 export const isValidFunction = (code: string, language: string) => {
@@ -28,41 +28,56 @@ export const isValidFunction = (code: string, language: string) => {
     py: /^\s*def\s+[a-zA-Z_]\w*\s*\(\s*[^\)]*\s*\)\s*:\s*$/,
     php: /^\s*function\s+[a-zA-Z_]\w*\s*\(\s*[^\)]*\s*\)\s*\{\s*$/,
   };
-  const regex = regexes[language];
-  return regex ? regex.test(code.split('\n')[0].trim()) : false;
+  return regexes[language]?.test(code.split('\n')[0].trim()) || false;
 };
 
 export const getFunctionName = (
   code: string,
-  language: string
+  language: string,
+  isAsync?: boolean
 ): string | null => {
-  const regexes: Record<string, RegExp> = {
+  let regexes: Record<string, RegExp> = {
     js: /^\s*function(.*?)\s*\(/,
     py: /^\s*def\s+([a-zA-Z_]\w*)\s*\(/,
     php: /^\s*function(.*?)\s*\(/,
   };
-  const regex = regexes[language];
-  const match = regex.exec(code);
-  return match ? match[1].trim() : null;
+  if (isAsync) {
+    regexes = {
+      js: /^\s*async\s+function\s+([a-zA-Z_]\w*)\s*\(/,
+    };
+  }
+  return regexes[language]?.exec(code)?.[1]?.trim() || null;
 };
 
 export const getParameterNames = (
   code: string,
-  language: string
+  language: string,
+  isAsync?: boolean
 ): string[] | null => {
-  const regexes: Record<string, RegExp> = {
+  let regexes: Record<string, RegExp> = {
     js: /^\s*function(?:\s+[a-zA-Z_]\w*)?\s*\(\s*([^\)]*)\s*\)/,
     py: /^\s*def\s+[a-zA-Z_]\w*\s*\(\s*([^\)]*)\s*\)\s*:/,
     php: /^\s*function(?:\s+[a-zA-Z_]\w*)?\s*\(\s*([^\)]*)\s*\)/,
   };
-  const regex = regexes[language];
-  if (!regex) return null;
-  const match = regex.exec(code);
-  if (!match || !match[1].trim()) return match ? [] : null;
-  return match[1]
-    .split(',')
-    .map((param) => param.trim())
-    .filter((param) => param);
+  if (isAsync) {
+    regexes = {
+      js: /^\s*async\s+function\s+\w+\s*\(([^)]*)\s*\)/,
+    };
+  }
+  const params = regexes[language]?.exec(code)?.[1]?.trim();
+  return params
+    ? params
+        .split(',')
+        .map((p) => p.trim())
+        .filter(Boolean)
+    : [];
+};
+
+export const isAsyncFunction = (code: string, language: string) => {
+  const regexes: Record<string, RegExp> = {
+    js: /^\s*async\s+function\s+[a-zA-Z_]\w*\s*\(/,
+  };
+  return regexes[language]?.test(code) || false;
 };
 
 export const getFunction = (
@@ -73,13 +88,33 @@ export const getFunction = (
   return f;
 };
 
-export const getDemoQuery = (code: string, langauge: string) => {
-  const params = getParameterNames(code, langauge);
-  if (!params) return '';
-  let result = '';
-  params.forEach((x, i) => {
-    result += x;
-    result += `=value${i + 1}&`;
-  });
-  return result.slice(0, -1);
+export const getDemoQuery = (code: string, language: string) => {
+  const params = getParameterNames(code, language);
+  return params?.map((p, i) => `${p}=value${i + 1}`).join('&') || '';
+};
+
+export const getPrintFunctionReturnValueStatement = (
+  call: string,
+  language: string,
+  isAsync?: boolean
+) => {
+  const statements: Record<string, string> = {
+    js: isAsync
+      ? `\n${call}.then((x) => console.log(JSON.stringify(x)));`
+      : `\nconsole.log(${call});`,
+    py: isAsync
+      ? `\nimport asyncio\nprint(asyncio.run(${call}))`
+      : `\nprint(${call})`,
+    php: `print ${call};`,
+  };
+  return statements[language] || '';
+};
+
+export const getFunctionDetails = (code: string, language: string) => {
+  const isAsync = isAsyncFunction(code, language);
+  return {
+    name: getFunctionName(code, language, isAsync),
+    parameterNames: getParameterNames(code, language, isAsync),
+    isAsync,
+  };
 };
