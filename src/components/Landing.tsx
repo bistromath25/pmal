@@ -3,9 +3,13 @@
 import { useState } from 'react';
 import * as API from '@/app/api/api';
 import { APP_BASE_URL } from '@/env/env';
-import { getDefaultFunctionValue, isValidFunction } from '@/utils/functions';
+import {
+  getDefaultAsyncFunctionValue,
+  getDefaultFunctionValue,
+  isValidFunction,
+} from '@/utils/functions';
 import { getDemoQuery } from '@/utils/functions';
-import Editor from './Editor';
+import Editor, { ViewOnlyEditor } from './Editor';
 import Footer from './Footer';
 import Header from './Header';
 import { DefaultIcon, SuccessIcon } from './Icons';
@@ -36,7 +40,7 @@ function LandingEditor() {
     <div className='w-full space-y-4 justify-items-center'>
       <Editor code={code} setCode={setCode} error={error} />
       <button
-        className='px-4 py-2 rounded-full border border-green-500 shadow-md bg-green-300 hover:bg-green-400 hover:border-transparent text-center disabled:cursor-not-allowed'
+        className='px-4 py-2 rounded-full border border-green-500 shadow-md bg-green-300 hover:bg-green-400 hover:border-transparent text-center disabled:cursor-not-allowed font-bold'
         onClick={onSubmit}
         disabled={!code}
       >
@@ -84,6 +88,41 @@ function LandingEditor() {
   );
 }
 
+function FunctionExample() {
+  const [code, setCode] = useState(getDefaultFunctionValue('js'));
+  const [isAsync, setIsAsync] = useState(false);
+  const onSelectSync = () => {
+    setCode(getDefaultFunctionValue('js'));
+    setIsAsync(false);
+  };
+  const onSelectAsync = () => {
+    setCode(getDefaultAsyncFunctionValue('js'));
+    setIsAsync(true);
+  };
+  return (
+    <div className='w-full flex flex-col items-center text-center gap-10'>
+      <h2 className='text-3xl'>
+        Create{' '}
+        <button
+          className={`font-bold ${isAsync ? 'bg-transparent text-black' : 'border border-green-500 bg-green-300 hover:bg-green-400 text-black px-2'} rounded-full py-1`}
+          onClick={onSelectSync}
+        >
+          synchronous
+        </button>{' '}
+        and{' '}
+        <button
+          className={`font-bold ${!isAsync ? 'bg-transparent text-black' : 'border border-green-500 bg-green-300 hover:bg-green-400 text-black px-2'} rounded-full py-1`}
+          onClick={onSelectAsync}
+        >
+          asynchronous
+        </button>{' '}
+        functions
+      </h2>
+      <ViewOnlyEditor code={code} />
+    </div>
+  );
+}
+
 export default function Landing() {
   return (
     <main className='w-full items-center justify-items-center min-h-screen gap-16 bg-[linear-gradient(120deg,_rgb(255_255_255)_50%,_rgb(239_246_255)_50%)] bg-fixed'>
@@ -127,11 +166,14 @@ export default function Landing() {
           </div>
         </div>
       </div>
+      <div className='py-10 pb-0 px-10 sm:px-0 sm:w-[60%]'>
+        <FunctionExample />
+      </div>
       <div className='w-full items-left px-10 sm:px-40 py-10 text-center'>
-        <p className='text-3xl'>
+        <h2 className='text-3xl'>
           🔓 Unlock limitless possibilities with{' '}
           <span className='font-bold'>{'GitHub Actions Lambda 🔑'}</span>
-        </p>
+        </h2>
         <div>
           <p className='text-gray-600 pt-1'>
             <a href='#' className='text-blue-500'>

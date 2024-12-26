@@ -20,6 +20,33 @@ export interface EditorProps {
   language?: string;
 }
 
+export function ViewOnlyEditor({
+  code,
+  language,
+}: {
+  code: string;
+  language?: string;
+}) {
+  const style = {
+    fontSize: '18px',
+    minHeight: '150px',
+    overflow: 'visible',
+    backgroundColor: '#f5f5f5',
+    fontFamily:
+      'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
+    cursor: 'copy',
+  };
+  return (
+    <CodeEditor
+      className='w-full p-2 rounded-lg border border-blue-100 shadow-sm cursor:copy'
+      style={style}
+      value={code}
+      language={language ?? 'js'}
+      disabled
+    />
+  );
+}
+
 export default function Editor({
   code,
   setCode,

@@ -7,6 +7,13 @@ export const getDefaultFunctionValue = (langauge: string) => {
   return values[langauge] ?? '';
 };
 
+export const getDefaultAsyncFunctionValue = (langauge: string) => {
+  const values: Record<string, string> = {
+    js: 'async function add(a, b) {\n  return Promise.resolve(parseInt(a) + parseInt(b));\n}',
+  };
+  return values[langauge] ?? '';
+};
+
 export const isValidFunction = (code: string, language: string) => {
   if (!code) return false;
   if (language === 'js') {
