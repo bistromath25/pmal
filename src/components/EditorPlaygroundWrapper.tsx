@@ -4,8 +4,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import * as API from '@/app/api/api';
-import { APP_BASE_URL } from '@/utils/env';
-import { User } from '@/utils/types';
+import { APP_BASE_URL } from '@/env/env';
+import { User } from '@/types/types';
 import EditorPlayground from './EditorPlayground';
 
 export default function EditorPlaygroundWrapper() {

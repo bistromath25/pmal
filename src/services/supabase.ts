@@ -1,6 +1,6 @@
+import { SUPABASE_ANON_KEY, SUPABASE_URL } from '@/env/env';
+import { Function, FunctionDatabaseEntity, User } from '@/types/types';
 import { createFetch } from '@/utils/cache';
-import { SUPABASE_ANON_KEY, SUPABASE_URL } from '@/utils/env';
-import { Function, FunctionDatabaseEntity, User } from '@/utils/types';
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
@@ -11,11 +11,15 @@ const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   },
 });
 
-export const createFunction = async (fun: FunctionDatabaseEntity) => {
-  const { error } = await supabaseClient.from('functions').insert(fun);
+const handleError = (error: Error | null) => {
   if (error) {
     throw error;
   }
+};
+
+export const createFunction = async (fun: FunctionDatabaseEntity) => {
+  const { error } = await supabaseClient.from('functions').insert(fun);
+  handleError(error);
   return fun as Function;
 };
 
@@ -25,13 +29,8 @@ export const getFunctionByAlias = async (alias: string) => {
     .select('*')
     .eq('alias', alias)
     .neq('frozen', true);
-  if (error) {
-    throw error;
-  }
-  if (data?.length) {
-    return data[0] as FunctionDatabaseEntity;
-  }
-  return null;
+  handleError(error);
+  return (data?.[0] as FunctionDatabaseEntity) ?? null;
 };
 
 export const updateFunctionCallsOnceByAlias = async (alias: string) => {
@@ -45,9 +44,7 @@ export const updateFunctionCallsOnceByAlias = async (alias: string) => {
     .from('functions')
     .update(newFun)
     .eq('alias', fun.alias);
-  if (error) {
-    throw error;
-  }
+  handleError(error);
   return newFun;
 };
 
@@ -56,9 +53,7 @@ export const updateFunction = async (fun: Function) => {
     .from('functions')
     .update(fun)
     .eq('alias', fun.alias);
-  if (error) {
-    throw error;
-  }
+  handleError(error);
   return fun;
 };
 
@@ -69,9 +64,7 @@ export const deleteFunctionByAlias = async (alias: string) => {
       frozen: true,
     })
     .eq('alias', alias);
-  if (error) {
-    throw error;
-  }
+  handleError(error);
   return null;
 };
 
@@ -81,17 +74,13 @@ export const getFunctionsByAliases = async (aliases: string[]) => {
     .select('*')
     .in('alias', aliases)
     .neq('frozen', true);
-  if (error) {
-    throw error;
-  }
+  handleError(error);
   return data?.length ? data.map((x) => x as Function) : [];
 };
 
 export const createUser = async (user: User) => {
   const { error } = await supabaseClient.from('users').insert(user);
-  if (error) {
-    throw error;
-  }
+  handleError(error);
   return user;
 };
 
@@ -100,9 +89,7 @@ export const getUserByEmail = async (email: string) => {
     .from('users')
     .select('email, aliases, key')
     .eq('email', email);
-  if (error) {
-    throw error;
-  }
+  handleError(error);
   return data?.length ? (data[0] as User) : null;
 };
 
@@ -111,8 +98,6 @@ export const updateUser = async (user: User) => {
     .from('users')
     .update(user)
     .eq('email', user.email);
-  if (error) {
-    throw error;
-  }
+  handleError(error);
   return user;
 };

@@ -2,25 +2,22 @@
 
 import { useState } from 'react';
 import * as API from '@/app/api/api';
-import { APP_BASE_URL } from '@/utils/env';
-import {
-  defaultFunctionValues,
-  getDemoQuery,
-  isValidFunction,
-} from '@/utils/utils';
+import { APP_BASE_URL } from '@/env/env';
+import { getDefaultFunctionValue, isValidFunction } from '@/utils/functions';
+import { getDemoQuery } from '@/utils/functions';
 import Editor from './Editor';
 import Footer from './Footer';
 import Header from './Header';
 import { DefaultIcon, SuccessIcon } from './Icons';
 
 function LandingEditor() {
-  const [code, setCode] = useState(defaultFunctionValues['js']);
+  const [code, setCode] = useState(getDefaultFunctionValue('js'));
   const [demoQuery, setDemoQuery] = useState<string | undefined>(undefined);
   const [error, setError] = useState(false);
   const [alias, setAlias] = useState<string | undefined>(undefined);
   const [copied, setCopied] = useState(false);
   const onSubmit = async () => {
-    if (code && isValidFunction(code)) {
+    if (isValidFunction(code, 'js')) {
       const {
         fun: { alias },
       } = await API.createFunction({
@@ -28,7 +25,7 @@ function LandingEditor() {
         anonymous: true,
       });
       setAlias(alias);
-      setDemoQuery(getDemoQuery(code));
+      setDemoQuery(getDemoQuery(code, 'js'));
       setCopied(false);
       setError(false);
     } else {
@@ -71,8 +68,7 @@ function LandingEditor() {
                 }
               }}
             >
-              <DefaultIcon hidden={copied} />
-              <SuccessIcon hidden={!copied} />
+              {copied ? <SuccessIcon /> : <DefaultIcon />}
             </button>
           </div>
           <p className='text-gray-600'>

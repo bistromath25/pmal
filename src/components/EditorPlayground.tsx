@@ -1,16 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import * as API from '@/app/api/api';
-import { APP_BASE_URL } from '@/utils/env';
-import { User } from '@/utils/types';
-import {
-  defaultFunctionValues,
-  getDemoQuery,
-  isValidFunction,
-} from '@/utils/utils';
+import { APP_BASE_URL, FF_ONLY_JS_FUNCTIONS } from '@/env/env';
+import { User } from '@/types/types';
+import { isValidFunction } from '@/utils/functions';
+import { getDemoQuery } from '@/utils/functions';
 import Editor, { EditorProps } from './Editor';
 import { DefaultIcon, SuccessIcon } from './Icons';
 
@@ -30,23 +27,38 @@ const languageOptions = [
   },
 ];
 
-function LanguageSelection() {
-  const searchParams = useSearchParams();
+export function LanguageSelection({
+  type,
+  currentLanguage,
+  setCurrentLanguage,
+}: {
+  type: 'dashboard' | 'playground';
+  currentLanguage: string;
+  setCurrentLanguage: React.Dispatch<React.SetStateAction<string>>;
+}) {
+  const isPlayground = type === 'playground';
   return (
     <>
-      <div className='font-bold text-2xl'>Select language</div>
+      {isPlayground && <h2 className='font-bold text-2xl'>Select language</h2>}
       <div className='flex flex-row gap-4'>
         {languageOptions.map(({ name, logoUrl }) => {
-          const isActive = name === searchParams.get('language');
           return (
             <Link
-              className={`rounded-lg hover:bg-gray-100 h-[50px] justify-items-center ${isActive ? 'bg-gray-100' : 'bg-white-100'}`}
+              className={`rounded-lg hover:bg-gray-100 h-[50px] justify-items-center ${name === currentLanguage ? 'bg-gray-100' : 'bg-white-100'} ${FF_ONLY_JS_FUNCTIONS && name !== 'js' ? 'hover:cursor-not-allowed hover:bg-white' : ''}`}
               key={`editor-language-option-${name}`}
-              // href={{} || `/editor?language=${name}`}
-              href=''
-              // onClick={() => {
-              //   setCurrentLanguage(name);
-              // }}
+              href={
+                isPlayground
+                  ? FF_ONLY_JS_FUNCTIONS
+                    ? `?language=js`
+                    : `?language=${name}`
+                  : ''
+              }
+              onClick={() => {
+                if (FF_ONLY_JS_FUNCTIONS && name !== 'js') {
+                  return;
+                }
+                setCurrentLanguage(name);
+              }}
             >
               <img className='h-[50px]' src={logoUrl} alt={name} />
             </Link>
@@ -68,28 +80,24 @@ export default function EditorPlayground({
   style,
   currentUser,
 }: EditorPlaygroundProps) {
+  const searchParams = useSearchParams();
   const [error, setError] = useState(false);
-  const [demoQuery, setDemoQuery] = useState(getDemoQuery(code));
+  const [demoQuery, setDemoQuery] = useState(getDemoQuery(code, 'js'));
   const [copied, setCopied] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState('js');
   const onSubmit = async () => {
-    if (code && isValidFunction(code)) {
+    if (isValidFunction(code, currentLanguage)) {
       await API.updateFunction({ alias: currentUser.key, code });
-      setDemoQuery(getDemoQuery(code));
+      setDemoQuery(getDemoQuery(code, currentLanguage));
       setError(false);
     } else {
       setError(true);
     }
   };
-  // useEffect(() => {
-  //   if (currentLanguage === 'js') {
-  //     setCode(defaultFunctionValues['js']);
-  //   } else if (currentLanguage === 'py') {
-  //     setCode(defaultFunctionValues['py']);
-  //   } else if (currentLanguage === 'php') {
-  //     setCode(defaultFunctionValues['php']);
-  //   }
-  // }, [currentLanguage, setCode]);
+  useEffect(() => {
+    const language = searchParams.get('language');
+    setCurrentLanguage(language ?? currentLanguage);
+  }, [searchParams, currentLanguage]);
   return (
     <div className='w-full lg:flex lg:flex-row lg:space-x-10'>
       <div className='basis-[70%] lg:basis-[100%] space-y-4'>
@@ -124,13 +132,16 @@ export default function EditorPlayground({
               setCopied(true);
             }}
           >
-            <DefaultIcon hidden={copied} />
-            <SuccessIcon hidden={!copied} />
+            {copied ? <SuccessIcon /> : <DefaultIcon />}
           </button>
         </div>
       </div>
       <div className='basis-[30%] hidden lg:block space-y-4'>
-        <LanguageSelection />
+        <LanguageSelection
+          type='playground'
+          currentLanguage={currentLanguage}
+          setCurrentLanguage={setCurrentLanguage}
+        />
       </div>
     </div>
   );

@@ -4,7 +4,7 @@ import {
   deleteFunctionByAlias,
   updateFunction,
 } from '@/services/supabase';
-import { Function } from '@/utils/types';
+import { Function } from '@/types/types';
 import { randomString } from '@/utils/utils';
 
 export async function POST(req: Request) {

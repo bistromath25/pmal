@@ -1,8 +1,8 @@
-export function DefaultIcon({ hidden }: { hidden: boolean }) {
+export function DefaultIcon() {
   return (
     <span id='default-icon'>
       <svg
-        className={`${hidden ? 'hidden' : 'block'} w-4 h-4`}
+        className='w-4 h-4'
         aria-hidden='true'
         xmlns='http://www.w3.org/2000/svg'
         fill='currentColor'
@@ -14,12 +14,9 @@ export function DefaultIcon({ hidden }: { hidden: boolean }) {
   );
 }
 
-export function SuccessIcon({ hidden }: { hidden: boolean }) {
+export function SuccessIcon() {
   return (
-    <span
-      id='success-icon'
-      className={`${hidden ? 'hidden' : 'block'} inline-flex items-center`}
-    >
+    <span id='success-icon' className='inline-flex items-center'>
       <svg
         className='w-4 h-4'
         aria-hidden='true'

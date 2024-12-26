@@ -5,20 +5,36 @@ import {
   GITHUB_OWNER,
   GITHUB_REPO,
   GITHUB_TOKEN,
-} from '@/utils/env';
+} from '@/env/env';
+
+const githubHeaders = {
+  Accept: 'application/vnd.github+json',
+  Authorization: `Bearer ${GITHUB_TOKEN}`,
+  'X-GitHub-Api-Version': '2022-11-28',
+};
+
+interface FetchOptions extends RequestInit {
+  headers?: Record<string, string>;
+}
+
+const fetchFromGitHub = async (url: string, options: FetchOptions = {}) => {
+  return fetch(url, {
+    ...options,
+    headers: {
+      ...githubHeaders,
+      ...options.headers,
+    },
+  });
+};
 
 export const getFiles = async (path = '') => {
   const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents${path}`;
-  const response = await fetch(url, {
+  return await fetchFromGitHub(url, {
     method: 'GET',
     headers: {
-      Accept: 'application/vnd.github+json',
-      Authorization: `Bearer ${GITHUB_TOKEN}`,
-      'X-GitHub-Api-Version': '2022-11-28',
       'Cache-Control': 'no-cache',
     },
   });
-  return response;
 };
 
 export const updateFile = async (
@@ -35,12 +51,9 @@ export const updateFile = async (
 ) => {
   const encodedContents = btoa(decodedContents);
   const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${path}${name}`;
-  const response = await fetch(url, {
+  return await fetchFromGitHub(url, {
     method: 'PUT',
     headers: {
-      Accept: 'application/vnd.github+json',
-      Authorization: `Bearer ${GITHUB_TOKEN}`,
-      'X-GitHub-Api-Version': '2022-11-28',
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
@@ -53,7 +66,6 @@ export const updateFile = async (
       sha,
     }),
   });
-  return response;
 };
 
 export const updateIndexFile = async ({
@@ -70,12 +82,9 @@ export const updateIndexFile = async ({
   const indexFile = GITHUB_JS_INDEX;
   const encodedContents = btoa(decodedContents);
   const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${language}/${indexFile}`;
-  const response = await fetch(url, {
+  return await fetchFromGitHub(url, {
     method: 'PUT',
     headers: {
-      Accept: 'application/vnd.github+json',
-      Authorization: `Bearer ${GITHUB_TOKEN}`,
-      'X-GitHub-Api-Version': '2022-11-28',
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
@@ -88,47 +97,34 @@ export const updateIndexFile = async ({
       sha,
     }),
   });
-  return response;
 };
 
 export const getWorkflows = async () => {
   const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/actions/runs`;
-  const response = await fetch(url, {
+  return await fetchFromGitHub(url, {
     method: 'GET',
     headers: {
-      Accept: 'application/vnd.github+json',
-      Authorization: `Bearer ${GITHUB_TOKEN}`,
-      'X-GitHub-Api-Version': '2022-11-28',
       'Cache-Control': 'no-cache',
     },
   });
-  return response;
 };
 
 export const getWorkflowRunById = async (id: number) => {
   const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/actions/runs/${id}`;
-  const response = await fetch(url, {
+  return await fetchFromGitHub(url, {
     method: 'GET',
     headers: {
-      Accept: 'application/vnd.github+json',
-      Authorization: `Bearer ${GITHUB_TOKEN}`,
-      'X-GitHub-Api-Version': '2022-11-28',
       'Cache-Control': 'no-cache',
     },
   });
-  return response;
 };
 
 export const getWorkflowRunLogsById = async (id: number) => {
   const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/actions/runs/${id}/logs`;
-  const response = await fetch(url, {
+  return await fetchFromGitHub(url, {
     method: 'GET',
     headers: {
-      Accept: 'application/vnd.github+json',
-      Authorization: `Bearer ${GITHUB_TOKEN}`,
-      'X-GitHub-Api-Version': '2022-11-28',
       'Cache-Control': 'no-cache',
     },
   });
-  return response;
 };

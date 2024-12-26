@@ -1,4 +1,9 @@
 import JSZip from 'jszip';
+import {
+  FF_USE_GITHUB_ACTIONS,
+  GITHUB_ACTIONS_JS_STEP,
+  GITHUB_JS_INDEX,
+} from '@/env/env';
 import { auth } from '@/services/auth';
 import * as GH from '@/services/gh';
 import {
@@ -6,13 +11,8 @@ import {
   getFunctionByAlias,
   updateFunctionCallsOnceByAlias,
 } from '@/services/supabase';
-import {
-  FF_USE_GITHUB_ACTIONS,
-  GITHUB_ACTIONS_JS_STEP,
-  GITHUB_JS_INDEX,
-} from '@/utils/env';
-import { Function } from '@/utils/types';
-import { getFunction, getFunctionName } from '@/utils/utils';
+import { Function } from '@/types/types';
+import { getFunction, getFunctionName } from '@/utils/functions';
 
 export async function GET(req: Request) {
   try {
@@ -28,7 +28,7 @@ export async function GET(req: Request) {
         { status: 500 }
       );
     }
-    const { code, anonymous, total_calls } = f;
+    const { code, anonymous, total_calls, language } = f;
     if (params.get('code')) {
       const session = await auth();
       if (!session) {
@@ -52,7 +52,7 @@ export async function GET(req: Request) {
     let newFun: Function | null = null;
     if (code) {
       if (FF_USE_GITHUB_ACTIONS) {
-        const funName = getFunctionName(code);
+        const funName = getFunctionName(code, language);
         const contents =
           code +
           `\nconsole.log(${funName}(${Object.values(Object.fromEntries(params)).map((x) => `'${x}'`)}));`;
