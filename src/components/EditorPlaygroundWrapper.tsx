@@ -48,12 +48,12 @@ export default function EditorPlaygroundWrapper() {
     <div className='w-full space-y-10 justify'>
       <div className='justify-items-left pl-4 space-y-4'>
         <h1 className='text-4xl font-bold'>Editor Playground</h1>
-        <p className='text-gray-600'>
+        <h2 className='text-gray-600'>
           This function will always be available at{' '}
           <span className='font-mono text-black'>
             {`${APP_BASE_URL}/api/${currentUser.key}`}
           </span>
-        </p>
+        </h2>
       </div>
       <div className='pl-4 pr-4'>
         <EditorPlayground
