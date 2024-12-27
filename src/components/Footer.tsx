@@ -12,7 +12,7 @@ export default function Footer({ type }: FooterProps) {
         className={`grid grid-cols-2 ${isLanding ? 'text-gray-100' : 'text-black'}`}
       >
         <div className='font-bold'>
-          <h1>Experiments with Github Actions as a Backend</h1>
+          <h1>Experiments with GitHub Actions as a Backend</h1>
         </div>
         <div className='ml-auto font-bold text-right sm:flex sm:flex-row gap-4'>
           <p>
