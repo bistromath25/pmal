@@ -124,11 +124,13 @@ export default function FunctionTableWrapper() {
               language={currentLanguage}
               style={{ minHeight: '300px' }}
               error={error}
+              setError={setError}
             />
             <div className='flex flex-row gap-4'>
               <button
-                className='px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-center text-white'
+                className='px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-center text-white disabled:hover:cursor-not-allowed'
                 onClick={onSubmit}
+                disabled={error}
               >
                 Deploy
               </button>

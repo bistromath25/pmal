@@ -13,6 +13,7 @@ export default function EditorPlaygroundWrapper() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [currentCode, setCurrentCode] = useState('');
+  const [currentLanguage, setCurrentLanguage] = useState('js');
   const [currentUser, setCurrentUser] = useState<User>({
     email: '',
     aliases: [],
@@ -59,6 +60,8 @@ export default function EditorPlaygroundWrapper() {
         <EditorPlayground
           code={currentCode}
           setCode={setCurrentCode}
+          language={currentLanguage}
+          setLanguage={setCurrentLanguage}
           currentUser={currentUser}
         />
       </div>

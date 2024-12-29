@@ -71,33 +71,40 @@ export function LanguageSelection({
 
 export interface EditorPlaygroundProps extends EditorProps {
   currentUser: User;
+  setLanguage: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export default function EditorPlayground({
   code,
   setCode,
+  language,
   onClick,
   style,
   currentUser,
+  setLanguage,
 }: EditorPlaygroundProps) {
   const searchParams = useSearchParams();
   const [error, setError] = useState(false);
   const [demoQuery, setDemoQuery] = useState(getDemoQuery(code, 'js'));
   const [copied, setCopied] = useState(false);
-  const [currentLanguage, setCurrentLanguage] = useState('js');
+  const [loading, setLoading] = useState(false);
   const onSubmit = async () => {
-    if (isValidFunction(code, currentLanguage)) {
-      await API.updateFunction({ alias: currentUser.key, code });
-      setDemoQuery(getDemoQuery(code, currentLanguage));
-      setError(false);
-    } else {
-      setError(true);
+    setLoading(true);
+    try {
+      if (isValidFunction(code, language)) {
+        await API.updateFunction({ alias: currentUser.key, code });
+        setDemoQuery(getDemoQuery(code, language));
+        setError(false);
+      } else {
+        setError(true);
+      }
+    } finally {
+      setLoading(false);
     }
   };
   useEffect(() => {
-    const language = searchParams.get('language');
-    setCurrentLanguage(language ?? currentLanguage);
-  }, [searchParams, currentLanguage]);
+    setLanguage(searchParams.get('language') ?? language);
+  }, [searchParams, language, setLanguage]);
   return (
     <div className='w-full lg:flex lg:flex-row lg:space-x-10'>
       <div className='basis-[70%] lg:basis-[100%] space-y-4'>
@@ -106,12 +113,14 @@ export default function EditorPlayground({
           setCode={setCode}
           style={style}
           error={error}
-          language={currentLanguage}
+          setError={setError}
+          language={language}
         />
         <div className='space-x-4'>
           <button
-            className='px-4 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-center text-white'
+            className={`px-4 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-center text-white hover:disabled:cursor-not-allowed ${loading ? 'opacity-50' : ''}`}
             onClick={onSubmit}
+            disabled={error}
           >
             Update
           </button>
@@ -139,8 +148,8 @@ export default function EditorPlayground({
       <div className='basis-[30%] hidden lg:block space-y-4'>
         <LanguageSelection
           type='playground'
-          currentLanguage={currentLanguage}
-          setCurrentLanguage={setCurrentLanguage}
+          currentLanguage={language}
+          setCurrentLanguage={setLanguage}
         />
       </div>
     </div>

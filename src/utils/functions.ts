@@ -8,7 +8,6 @@ export const getDefaultFunctionValue = (langauge: string) => {
 };
 
 export const isValidFunction = (code: string, language: string) => {
-  if (!code) return false;
   if (language === 'js') {
     try {
       new Function(code);

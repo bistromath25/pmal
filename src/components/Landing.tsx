@@ -16,27 +16,37 @@ function LandingEditor() {
   const [error, setError] = useState(false);
   const [alias, setAlias] = useState<string | undefined>(undefined);
   const [copied, setCopied] = useState(false);
+  const [loading, setLoading] = useState(false);
   const onSubmit = async () => {
-    if (isValidFunction(code, 'js')) {
-      const {
-        fun: { alias },
-      } = await API.createFunction({
-        code,
-        anonymous: true,
-      });
-      setAlias(alias);
-      setDemoQuery(getDemoQuery(code, 'js'));
-      setCopied(false);
-      setError(false);
-    } else {
-      setError(true);
+    setLoading(true);
+    try {
+      if (isValidFunction(code, 'js')) {
+        const {
+          fun: { alias },
+        } = await API.createFunction({
+          code,
+          anonymous: true,
+        });
+        setAlias(alias);
+        setDemoQuery(getDemoQuery(code, 'js'));
+        setCopied(false);
+        setError(false);
+      }
+    } finally {
+      setLoading(false);
     }
   };
   return (
     <div className='w-full space-y-4 justify-items-center'>
-      <Editor code={code} setCode={setCode} error={error} />
+      <Editor
+        code={code}
+        setCode={setCode}
+        language='js'
+        error={error}
+        setError={setError}
+      />
       <button
-        className='px-4 py-2 rounded-full border border-green-500 shadow-md bg-green-300 hover:bg-green-400 hover:border-transparent text-center disabled:cursor-not-allowed font-bold'
+        className={`px-4 py-2 rounded-full border border-green-500 shadow-md bg-green-300 hover:bg-green-400 hover:border-transparent text-center disabled:cursor-not-allowed font-bold ${loading ? 'opacity-50' : ''}`}
         onClick={onSubmit}
         disabled={!code}
       >
@@ -138,12 +148,12 @@ export default function Landing() {
               computing backend.
             </p>
           </div>
-          <div className='rounded-lg p-4 bg-gray-100 shadow-md my-auto'>
-            <p className='text-black text-lg'>
-              GitHub Actions offer containerized, multi-language environments
-              capable of running serverless functions in various programming
-              languages. Each function invocation triggers a new workflow,
-              returning its log output as a string.
+          <div className='rounded-lg p-4 bg-gray-50 shadow-md my-auto'>
+            <p className='text-gray-600 text-lg'>
+              Each function invocation triggers its own workflow, delivering an
+              event-driven architecture. Function arguments are provided through
+              query parameters, enabling seamless integration with webhooks,
+              APIs, and other event sources.
             </p>
           </div>
         </div>
