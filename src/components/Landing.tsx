@@ -150,10 +150,10 @@ export default function Landing() {
           </div>
           <div className='rounded-lg p-4 bg-gray-50 shadow-md my-auto'>
             <p className='text-gray-600 text-lg'>
-              Each function invocation triggers its own workflow, delivering an
-              event-driven architecture. Function arguments are provided through
-              query parameters, enabling seamless integration with webhooks,
-              APIs, and other event sources.
+              Each function invocation triggers its own containerized workflow
+              through GitHub Actions, delivering an event-driven architecture.
+              Function arguments are provided through query parameters, enabling
+              seamless integration with webhooks, APIs, and other event sources.
             </p>
           </div>
         </div>
