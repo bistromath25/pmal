@@ -9,8 +9,10 @@ export default function useAuthRedirect() {
   const router = useRouter();
   const handleSignin = useCallback(async () => {
     if (session.status === 'authenticated' && session.data.user?.email) {
-      const { key } = await API.getUser({ email: session.data.user.email });
       try {
+        const {
+          user: { key },
+        } = await API.getUser({ email: session.data.user.email });
         await API.createFunction({
           code: getDefaultFunctionValue('js'),
           remaining_calls: 10,
@@ -19,7 +21,6 @@ export default function useAuthRedirect() {
         });
         router.push('/home');
       } catch {}
-      router.push('/home');
     }
   }, [session, router]);
   useEffect(() => {

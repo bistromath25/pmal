@@ -1,6 +1,7 @@
 'use client';
 
-import React from 'react';
+import React, { useDeferredValue, useEffect } from 'react';
+import { isValidFunction } from '@/utils/functions';
 import CodeEditor from '@uiw/react-textarea-code-editor';
 
 export function Warning() {
@@ -14,19 +15,21 @@ export function Warning() {
 export interface EditorProps {
   code: string;
   setCode: React.Dispatch<React.SetStateAction<string>>;
+  language: string;
   onClick?: (e: any) => void;
   style?: React.CSSProperties;
   error?: boolean;
-  language?: string;
+  setError?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function Editor({
   code,
   setCode,
+  language,
   onClick,
   style,
   error,
-  language,
+  setError,
 }: EditorProps) {
   const combinedStyle = {
     fontSize: '18px',
@@ -37,13 +40,19 @@ export default function Editor({
     fontFamily:
       'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
   };
+  const deferredCode = useDeferredValue(code);
+  useEffect(() => {
+    if (setError) {
+      setError(!isValidFunction(deferredCode, language));
+    }
+  }, [language, deferredCode, setError]);
   return (
     <>
       <CodeEditor
         className='w-full p-2 rounded-lg border border-blue-100 shadow-sm'
         value={code}
-        language={language ?? 'js'}
-        onChange={(evn) => setCode(evn.target.value)}
+        language={language}
+        onChange={(e) => setCode(e.target.value)}
         padding={15}
         style={combinedStyle}
         onClick={onClick}

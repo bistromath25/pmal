@@ -3,7 +3,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import * as API from '@/app/api/api';
-import { Function, User } from '@/types/types';
+import { useUserContext } from '@/contexts/userContext';
+import { Function } from '@/types/types';
 import { getDefaultFunctionValue, isValidFunction } from '@/utils/functions';
 import { remove } from '@/utils/utils';
 import Editor from './Editor';
@@ -13,6 +14,7 @@ import Modal from './Modal';
 
 export default function FunctionTableWrapper() {
   const session = useSession();
+  const { user: currentUser, setUser: setCurrentUser } = useUserContext();
   const [functions, setFunctions] = useState<Function[]>([]);
   const [currentCode, setCurrentCode] = useState(getDefaultFunctionValue('js'));
   const [currentLanguage, setCurrentLanguage] = useState('js');
@@ -22,11 +24,6 @@ export default function FunctionTableWrapper() {
     total_calls: 0,
     remaining_calls: 0,
     language: 'js',
-  });
-  const [currentUser, setCurrentUser] = useState<User>({
-    email: '',
-    aliases: [],
-    key: '',
   });
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [error, setError] = useState(false);
@@ -60,7 +57,7 @@ export default function FunctionTableWrapper() {
       setFunctions(funs);
       setCurrentUser({ email, aliases, key });
     }
-  }, [session]);
+  }, [session, setCurrentUser]);
   const handleDeleteFunction = useCallback(
     async (alias: string) => {
       await API.deleteFunction({ alias });
@@ -71,7 +68,7 @@ export default function FunctionTableWrapper() {
       setCurrentUser(user);
       await refreshFunctions();
     },
-    [currentUser, refreshFunctions]
+    [currentUser, setCurrentUser, refreshFunctions]
   );
   const handleUpdateFunction = useCallback(
     async (fun: Function) => {
@@ -124,11 +121,13 @@ export default function FunctionTableWrapper() {
               language={currentLanguage}
               style={{ minHeight: '300px' }}
               error={error}
+              setError={setError}
             />
             <div className='flex flex-row gap-4'>
               <button
-                className='px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-center text-white'
+                className='px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-center text-white disabled:hover:cursor-not-allowed'
                 onClick={onSubmit}
+                disabled={error || !currentCode}
               >
                 Deploy
               </button>
