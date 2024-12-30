@@ -48,7 +48,7 @@ function LandingEditor() {
       <button
         className={`px-4 py-2 rounded-full border border-green-500 shadow-md bg-green-300 hover:bg-green-400 hover:border-transparent text-center disabled:cursor-not-allowed font-bold ${loading ? 'opacity-50' : ''}`}
         onClick={onSubmit}
-        disabled={!code}
+        disabled={error || !code}
       >
         Deploy my function!
       </button>
@@ -117,19 +117,19 @@ export default function Landing() {
       <div className='w-full justify-items-center bg-gray-50 px-10 sm:px-40 py-10 border border-1 border-e-0 border-s-0'>
         <div className='grid sm:grid-cols-3 gap-10'>
           <div className='rounded-lg p-4 bg-blue-100 shadow-md'>
-            <p className='font-bold text-2xl text-center'>Edit</p>
+            <p className='font-bold text-2xl text-center'>✏️ Edit ✏️</p>
             <p className='text-gray-600'>
               Edit your function in the built-in editor supporting 5+ languages.
             </p>
           </div>
           <div className='rounded-lg p-4 bg-blue-200 shadow-md'>
-            <p className='font-bold text-2xl text-center'>Deploy</p>
+            <p className='font-bold text-2xl text-center'>🚀 Deploy 🚀</p>
             <p className='text-gray-700'>
               Deploy your function at the click of a button.
             </p>
           </div>
           <div className='rounded-lg p-4 bg-blue-300 shadow-md'>
-            <p className='font-bold text-2xl text-center'>Call</p>
+            <p className='font-bold text-2xl text-center'>⚡ Call ⚡</p>
             <p className='text-gray-800'>
               Call your function whenever and wherever you want via{' '}
               <span className='font-mono'>GET</span> or{' '}

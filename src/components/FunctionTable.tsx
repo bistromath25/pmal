@@ -210,7 +210,7 @@ export default function FunctionTable({
                   handleUpdateFunction(newFunction);
                   setEditModalIsOpen(false);
                 }}
-                disabled={error}
+                disabled={error || !currentCode}
               >
                 Save
               </button>

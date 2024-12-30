@@ -120,7 +120,7 @@ export default function EditorPlayground({
           <button
             className={`px-4 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-center text-white hover:disabled:cursor-not-allowed ${loading ? 'opacity-50' : ''}`}
             onClick={onSubmit}
-            disabled={error}
+            disabled={error || !code}
           >
             Update
           </button>
