@@ -10,7 +10,9 @@ export default function useAuthRedirect() {
   const handleSignin = useCallback(async () => {
     if (session.status === 'authenticated' && session.data.user?.email) {
       try {
-        const { key } = await API.getUser({ email: session.data.user.email });
+        const {
+          user: { key },
+        } = await API.getUser({ email: session.data.user.email });
         await API.createFunction({
           code: getDefaultFunctionValue('js'),
           remaining_calls: 10,

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import * as API from '@/app/api/api';
 import { useUserContext } from '@/contexts/userContext';
-import { Function, User } from '@/types/types';
+import { Function } from '@/types/types';
 import { getDefaultFunctionValue, isValidFunction } from '@/utils/functions';
 import { remove } from '@/utils/utils';
 import Editor from './Editor';

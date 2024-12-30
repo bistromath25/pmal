@@ -1,6 +1,7 @@
 import { FunctionDatabaseEntity, User } from '@/types/types';
 
 export const createFunction = async ({
+  alias,
   code,
   remaining_calls,
   anonymous,
@@ -10,6 +11,7 @@ export const createFunction = async ({
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
+      alias,
       code,
       remaining_calls,
       total_calls: 0,

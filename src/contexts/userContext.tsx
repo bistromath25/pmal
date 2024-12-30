@@ -29,8 +29,9 @@ export default function UserContextProvider({
         setUser(user);
       }
     };
-    getUser();
-    console.log(JSON.stringify(user));
+    if (session && !user.email) {
+      getUser();
+    }
   }, [session, user]);
   return (
     <UserContext.Provider value={{ user, setUser }}>
@@ -42,7 +43,6 @@ export default function UserContextProvider({
 export function useUserContext() {
   const user = useContext(UserContext);
   if (!user) {
-    console.log(JSON.stringify(user));
     throw new Error('useUserContext must be used within a UserContextProvider');
   }
   return user;

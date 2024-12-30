@@ -15,16 +15,16 @@ export async function POST(req: Request) {
     let newFun: Function;
     if (anonymous) {
       newFun = await createFunction({
-        ...body,
         alias,
+        ...body,
         remaining_calls: 10,
         total_calls: 0,
         anonymous: true,
       });
     } else {
       newFun = await createFunction({
-        ...body,
         alias,
+        ...body,
         anonymous: false,
       });
     }
