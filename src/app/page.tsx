@@ -1,9 +1,9 @@
 'use client';
 
 import Landing from '@/components/Landing';
-import useAuthRedirect from '@/hooks/useAuthRedirect';
+import useInitializeUser from '@/hooks/useInitializeUser';
 
 export default function Home() {
-  useAuthRedirect();
+  useInitializeUser();
   return <Landing />;
 }

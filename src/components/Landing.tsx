@@ -116,25 +116,41 @@ export default function Landing() {
       </div>
       <div className='w-full justify-items-center bg-gray-50 px-10 sm:px-40 py-10 border border-1 border-e-0 border-s-0'>
         <div className='grid sm:grid-cols-3 gap-10'>
-          <div className='rounded-lg p-4 bg-blue-100 shadow-md'>
-            <p className='font-bold text-2xl text-center'>✏️ Edit ✏️</p>
-            <p className='text-gray-600'>
-              Edit your function in the built-in editor supporting 5+ languages.
-            </p>
+          <div className='rounded-lg p-4 bg-blue-100 shadow-md flex flex-row space-x-4'>
+            <div className='my-auto text-6xl'>
+              <p>✏️</p>
+            </div>
+            <div>
+              <p className='font-bold text-2xl'>Edit</p>
+              <p className='text-gray-800'>
+                Edit your function in the built-in editor supporting 5+
+                languages.
+              </p>
+            </div>
           </div>
-          <div className='rounded-lg p-4 bg-blue-200 shadow-md'>
-            <p className='font-bold text-2xl text-center'>🚀 Deploy 🚀</p>
-            <p className='text-gray-700'>
-              Deploy your function at the click of a button.
-            </p>
+          <div className='rounded-lg p-4 bg-blue-200 shadow-md flex flex-row space-x-4'>
+            <div className='my-auto text-6xl'>
+              <p>🚀</p>
+            </div>
+            <div>
+              <p className='font-bold text-2xl'>Deploy</p>
+              <p className='text-gray-800'>
+                Deploy your function at the click of a button.
+              </p>
+            </div>
           </div>
-          <div className='rounded-lg p-4 bg-blue-300 shadow-md'>
-            <p className='font-bold text-2xl text-center'>⚡ Call ⚡</p>
-            <p className='text-gray-800'>
-              Call your function whenever and wherever you want via{' '}
-              <span className='font-mono'>GET</span> or{' '}
-              <span className='font-mono'>POST</span>.
-            </p>
+          <div className='rounded-lg p-4 bg-blue-300 shadow-md flex flex-row space-x-4'>
+            <div className='my-auto text-6xl'>
+              <p>⚡</p>
+            </div>
+            <div>
+              <p className='font-bold text-2xl'>Call</p>
+              <p className='text-gray-800'>
+                Call your function wherever you want via{' '}
+                <span className='font-mono'>GET</span> or{' '}
+                <span className='font-mono'>POST</span>.
+              </p>
+            </div>
           </div>
         </div>
       </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useState } from 'react';
+import { useFunctionContext } from '@/contexts/functionContext';
 import { APP_BASE_URL } from '@/env/env';
 import { Function } from '@/types/types';
 import { getDemoQuery } from '@/utils/functions';
@@ -8,23 +9,21 @@ import Editor from './Editor';
 import Modal from './Modal';
 
 export interface FunctionTableProps {
-  functions: Function[];
-  setFunctions: React.Dispatch<React.SetStateAction<Function[]>>;
-  currentFunction: Function;
-  setCurrentFunction: React.Dispatch<React.SetStateAction<Function>>;
   handleDeleteFunction: (alias: string) => Promise<void>;
   handleUpdateFunction: (fun: Function) => Promise<void>;
 }
 
 export default function FunctionTable({
-  functions,
-  setFunctions,
-  currentFunction,
-  setCurrentFunction,
   handleDeleteFunction,
   handleUpdateFunction,
 }: FunctionTableProps) {
-  const [currentCode, setCurrentCode] = useState('');
+  const {
+    code: currentCode,
+    setCode: setCurrentCode,
+    currentFunction,
+    setCurrentFunction,
+    functions,
+  } = useFunctionContext();
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [error, setError] = useState(false);

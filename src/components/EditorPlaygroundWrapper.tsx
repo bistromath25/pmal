@@ -1,8 +1,9 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import * as API from '@/app/api/api';
+import { useFunctionContext } from '@/contexts/functionContext';
 import { useUserContext } from '@/contexts/userContext';
 import { APP_BASE_URL } from '@/env/env';
 import EditorPlayground from './EditorPlayground';
@@ -10,17 +11,19 @@ import EditorPlayground from './EditorPlayground';
 export default function EditorPlaygroundWrapper() {
   const router = useRouter();
   const { user: currentUser } = useUserContext();
+  const { setCode: setCurrentCode } = useFunctionContext();
   const searchParams = useSearchParams();
-  const [currentCode, setCurrentCode] = useState('');
-  const [currentLanguage, setCurrentLanguage] = useState('js');
-  const getKeyFunction = useCallback(async (alias: string) => {
-    if (alias) {
-      const {
-        fun: { code },
-      } = await API.getFunction({ alias }, true);
-      setCurrentCode(code);
-    }
-  }, []);
+  const getKeyFunction = useCallback(
+    async (alias: string) => {
+      if (alias) {
+        const {
+          fun: { code },
+        } = await API.getFunction({ alias });
+        setCurrentCode(code);
+      }
+    },
+    [setCurrentCode]
+  );
   useEffect(() => {
     getKeyFunction(currentUser.key);
   }, [currentUser, getKeyFunction]);
@@ -41,13 +44,7 @@ export default function EditorPlaygroundWrapper() {
         </p>
       </div>
       <div className='pl-4 pr-4'>
-        <EditorPlayground
-          code={currentCode}
-          setCode={setCurrentCode}
-          language={currentLanguage}
-          setLanguage={setCurrentLanguage}
-          currentUser={currentUser}
-        />
+        <EditorPlayground />
       </div>
     </div>
   );

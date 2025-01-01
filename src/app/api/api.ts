@@ -25,11 +25,8 @@ export const createFunction = async ({
   throw new Error('Unable to create function');
 };
 
-export const getFunction = async (
-  { alias }: { alias: string },
-  code = false
-) => {
-  const response = await fetch(`/api/${alias}${code ? '?code=true' : ''}`, {
+export const getFunction = async ({ alias }: { alias: string }) => {
+  const response = await fetch(`/api/fun/${alias}`, {
     method: 'GET',
   });
   if (response.ok) {
