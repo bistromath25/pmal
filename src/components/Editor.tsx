@@ -20,6 +20,7 @@ export interface EditorProps {
   style?: React.CSSProperties;
   error?: boolean;
   setError?: React.Dispatch<React.SetStateAction<boolean>>;
+  colorMode?: 'light' | 'dark';
 }
 
 export default function Editor({
@@ -30,13 +31,14 @@ export default function Editor({
   style,
   error,
   setError,
+  colorMode,
 }: EditorProps) {
   const combinedStyle = {
     fontSize: '18px',
     minHeight: '200px',
     overflow: 'visible',
-    ...style,
     backgroundColor: '#f5f5f5',
+    ...style,
     fontFamily:
       'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
   };
@@ -56,6 +58,7 @@ export default function Editor({
         padding={15}
         style={combinedStyle}
         onClick={onClick}
+        data-color-mode={colorMode ?? 'light'}
       />
       {error && <Warning />}
     </>

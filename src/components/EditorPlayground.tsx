@@ -7,26 +7,10 @@ import * as API from '@/app/api/api';
 import { useFunctionContext } from '@/contexts/functionContext';
 import { useUserContext } from '@/contexts/userContext';
 import { APP_BASE_URL, FF_ONLY_JS_FUNCTIONS } from '@/env/env';
-import { isValidFunction } from '@/utils/functions';
+import { isValidFunction, languageOptions } from '@/utils/functions';
 import { getDemoQuery } from '@/utils/functions';
 import Editor from './Editor';
 import { DefaultIcon, SuccessIcon } from './Icons';
-
-const languageOptions = [
-  {
-    name: 'js',
-    logoUrl: 'https://nodejs.org/static/logos/jsIconGreen.svg',
-  },
-  {
-    name: 'py',
-    logoUrl:
-      'https://s3.dualstack.us-east-2.amazonaws.com/pythondotorg-assets/media/community/logos/python-logo-only.png',
-  },
-  {
-    name: 'php',
-    logoUrl: 'https://www.php.net//images/logos/php-med-trans-light.gif',
-  },
-];
 
 export function LanguageSelection({
   type,
@@ -41,7 +25,7 @@ export function LanguageSelection({
   return (
     <>
       {isPlayground && <h2 className='font-bold text-2xl'>Select language</h2>}
-      <div className='flex flex-row gap-4'>
+      <div className='grid grid-cols-2 gap-4'>
         {languageOptions.map(({ name, logoUrl }) => {
           return (
             <Link
@@ -109,7 +93,7 @@ export default function EditorPlayground() {
         />
         <div className='space-x-4'>
           <button
-            className={`px-4 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-center text-white hover:disabled:cursor-not-allowed ${loading ? 'opacity-50' : ''}`}
+            className={`px-4 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-center text-white hover:disabled:cursor-not-allowed ${loading ? 'bg-green-700' : ''}`}
             onClick={onSubmit}
             disabled={error || !code}
           >
