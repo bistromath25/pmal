@@ -1,8 +1,8 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { useSession } from 'next-auth/react';
 import * as API from '@/app/api/api';
+import { useFunctionContext } from '@/contexts/functionContext';
 import { useUserContext } from '@/contexts/userContext';
 import { Function } from '@/types/types';
 import { getDefaultFunctionValue, isValidFunction } from '@/utils/functions';
@@ -13,18 +13,14 @@ import FunctionTable from './FunctionTable';
 import Modal from './Modal';
 
 export default function FunctionTableWrapper() {
-  const session = useSession();
   const { user: currentUser, setUser: setCurrentUser } = useUserContext();
-  const [functions, setFunctions] = useState<Function[]>([]);
-  const [currentCode, setCurrentCode] = useState(getDefaultFunctionValue('js'));
-  const [currentLanguage, setCurrentLanguage] = useState('js');
-  const [currentFunction, setCurrentFunction] = useState<Function>({
-    alias: '',
-    code: '',
-    total_calls: 0,
-    remaining_calls: 0,
-    language: 'js',
-  });
+  const {
+    code: currentCode,
+    setCode: setCurrentCode,
+    language: currentLanguage,
+    setLanguage: setCurrentLanguage,
+    setFunctions,
+  } = useFunctionContext();
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [error, setError] = useState(false);
   const onSubmit = async () => {
@@ -48,16 +44,11 @@ export default function FunctionTableWrapper() {
     }
   };
   const refreshFunctions = useCallback(async () => {
-    const email = session.data?.user?.email;
-    if (email) {
-      const {
-        user: { aliases, key },
-      } = await API.getUser({ email });
-      const { funs } = await API.getFunctions({ aliases });
-      setFunctions(funs);
-      setCurrentUser({ email, aliases, key });
-    }
-  }, [session, setCurrentUser]);
+    const { email, aliases, key } = currentUser;
+    const { funs } = await API.getFunctions({ aliases });
+    setFunctions(funs);
+    setCurrentUser({ email, aliases, key });
+  }, [currentUser, setCurrentUser, setFunctions]);
   const handleDeleteFunction = useCallback(
     async (alias: string) => {
       await API.deleteFunction({ alias });
@@ -78,9 +69,6 @@ export default function FunctionTableWrapper() {
     [refreshFunctions]
   );
   useEffect(() => {
-    refreshFunctions();
-  }, [session, refreshFunctions]);
-  useEffect(() => {
     setCurrentCode(getDefaultFunctionValue(currentLanguage));
   }, [currentLanguage, setCurrentCode]);
   return (
@@ -96,10 +84,6 @@ export default function FunctionTableWrapper() {
           </button>
         </div>
         <FunctionTable
-          functions={functions}
-          setFunctions={setFunctions}
-          currentFunction={currentFunction}
-          setCurrentFunction={setCurrentFunction}
           handleDeleteFunction={handleDeleteFunction}
           handleUpdateFunction={handleUpdateFunction}
         />

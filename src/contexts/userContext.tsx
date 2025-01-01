@@ -10,7 +10,7 @@ export const UserContext = createContext<
   | undefined
 >(undefined);
 
-export default function UserContextProvider({
+export function UserContextProvider({
   children,
 }: {
   children: React.ReactNode;

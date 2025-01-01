@@ -75,3 +75,23 @@ export const getDemoQuery = (code: string, langauge: string) => {
   });
   return result.slice(0, -1);
 };
+
+export const languageOptions = [
+  {
+    name: 'js',
+    logoUrl: 'https://nodejs.org/static/logos/jsIconGreen.svg',
+  },
+  {
+    name: 'py',
+    logoUrl:
+      'https://s3.dualstack.us-east-2.amazonaws.com/pythondotorg-assets/media/community/logos/python-logo-only.png',
+  },
+  {
+    name: 'php',
+    logoUrl: 'https://www.php.net//images/logos/php-med-trans-light.gif',
+  },
+  {
+    name: 'rb',
+    logoUrl: 'https://www.ruby-lang.org/images/header-ruby-logo.png',
+  },
+];

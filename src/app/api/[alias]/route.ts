@@ -4,7 +4,6 @@ import {
   GITHUB_ACTIONS_JS_STEP,
   GITHUB_JS_INDEX,
 } from '@/env/env';
-import { auth } from '@/services/auth';
 import * as GH from '@/services/gh';
 import {
   deleteFunctionByAlias,
@@ -29,15 +28,6 @@ export async function GET(req: Request) {
       );
     }
     const { code, anonymous, total_calls, language } = f;
-    if (params.get('code')) {
-      const session = await auth();
-      if (!session) {
-        return new Response(null, {
-          status: 401,
-        });
-      }
-      return new Response(JSON.stringify({ fun: f }), { status: 200 });
-    }
     if (anonymous && total_calls >= 10) {
       await deleteFunctionByAlias(alias);
       return new Response(
