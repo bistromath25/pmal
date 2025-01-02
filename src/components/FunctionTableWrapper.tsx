@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import * as API from '@/app/api/api';
 import { useFunctionContext } from '@/contexts/functionContext';
 import { useUserContext } from '@/contexts/userContext';
-import { Function } from '@/types/types';
+import { Function } from '@/types/Function';
 import { getDefaultFunctionValue, isValidFunction } from '@/utils/functions';
 import { remove } from '@/utils/utils';
 import Editor from './Editor';
@@ -23,16 +23,25 @@ export default function FunctionTableWrapper() {
   } = useFunctionContext();
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [error, setError] = useState(false);
+  const refreshFunctions = useCallback(async () => {
+    const { aliases } = currentUser;
+    const { funs } = await API.getFunctions({ aliases });
+    setFunctions(funs);
+  }, [currentUser, setFunctions]);
   const onSubmit = async () => {
     if (isValidFunction(currentCode, currentLanguage)) {
-      const {
-        fun: { alias },
-      } = await API.createFunction({
+      const payload = {
         code: currentCode,
         language: currentLanguage,
-      });
+        anonymous: false,
+        created_by: currentUser.id,
+        belongs_to: [currentUser.id],
+      };
+      const {
+        fun: { alias },
+      } = await API.createFunction(payload);
       const { user } = await API.updateUser({
-        ...currentUser,
+        id: currentUser.id,
         aliases: [...currentUser.aliases, alias],
       });
       setCurrentUser(user);
@@ -43,12 +52,6 @@ export default function FunctionTableWrapper() {
       setError(true);
     }
   };
-  const refreshFunctions = useCallback(async () => {
-    const { email, aliases, key } = currentUser;
-    const { funs } = await API.getFunctions({ aliases });
-    setFunctions(funs);
-    setCurrentUser({ email, aliases, key });
-  }, [currentUser, setCurrentUser, setFunctions]);
   const handleDeleteFunction = useCallback(
     async (alias: string) => {
       await API.deleteFunction({ alias });
@@ -57,9 +60,8 @@ export default function FunctionTableWrapper() {
         aliases: remove(currentUser.aliases, alias),
       });
       setCurrentUser(user);
-      await refreshFunctions();
     },
-    [currentUser, setCurrentUser, refreshFunctions]
+    [currentUser, setCurrentUser]
   );
   const handleUpdateFunction = useCallback(
     async (fun: Function) => {
@@ -71,6 +73,9 @@ export default function FunctionTableWrapper() {
   useEffect(() => {
     setCurrentCode(getDefaultFunctionValue(currentLanguage));
   }, [currentLanguage, setCurrentCode]);
+  useEffect(() => {
+    refreshFunctions();
+  }, [refreshFunctions]);
   return (
     <>
       <div className='w-full space-y-10'>

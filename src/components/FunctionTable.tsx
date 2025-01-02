@@ -3,7 +3,7 @@
 import { useCallback, useState } from 'react';
 import { useFunctionContext } from '@/contexts/functionContext';
 import { APP_BASE_URL } from '@/env/env';
-import { Function } from '@/types/types';
+import { Function } from '@/types/Function';
 import { getDemoQuery } from '@/utils/functions';
 import Editor from './Editor';
 import Modal from './Modal';
@@ -65,92 +65,65 @@ export default function FunctionTable({
           </tr>
         </thead>
         <tbody>
-          {functions.map(
-            ({ code, alias, total_calls, remaining_calls, language }) => {
-              return (
-                <tr
-                  className='border-b hover:bg-gray-50 align-top bg-white'
-                  key={`function-table-${alias}`}
+          {functions.map((fun: Function) => {
+            const url = `${fun.alias}?${getDemoQuery(fun.code, fun.language)}`;
+            return (
+              <tr
+                className='border-b hover:bg-gray-50 align-top bg-white'
+                key={`function-table-${fun.alias}`}
+              >
+                <td className='px-6 py-4 font-bold'>{fun.alias}</td>
+                <td
+                  scope='row'
+                  className='px-6 py-4 whitespace-nowrap flex flex-col gap-4'
                 >
-                  <td className='px-6 py-4 font-bold'>{alias}</td>
-                  <td
-                    scope='row'
-                    className='px-6 py-4 whitespace-nowrap flex flex-col gap-4'
-                  >
-                    <Editor
-                      code={code}
-                      setCode={setCurrentCode}
-                      language={language}
-                      style={{
-                        fontSize: '16px',
-                        maxHeight: '200px',
-                        overflow: 'scroll',
-                      }}
-                      onClick={() =>
-                        openEditModal({
-                          code,
-                          alias,
-                          total_calls,
-                          remaining_calls,
-                          language,
-                        })
-                      }
-                    />
-                  </td>
-                  <td className='px-6 py-4'>
-                    <p>
-                      <span className='font-bold'>{total_calls}</span> total
-                    </p>
-                  </td>
-                  <td className='px-6 py-4'>
-                    <input
-                      className='p-2 cursor-copy focus:outline-none bg-transparent border border-gray-300 rounded-lg'
-                      value={`/${alias}?${getDemoQuery(code, language)}`}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        navigator.clipboard.writeText(
-                          `${APP_BASE_URL}/api/${alias}?${getDemoQuery(code, language)}`
-                        );
-                      }}
-                      readOnly
-                    ></input>
-                  </td>
-                  <td className='px-6 py-4 text-right'>
-                    <div className='flex flex-row gap-2 text-black text-white'>
-                      <button
-                        className='px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-center'
-                        onClick={() =>
-                          openEditModal({
-                            code,
-                            alias,
-                            total_calls,
-                            remaining_calls,
-                            language,
-                          })
-                        }
-                      >
-                        Edit
-                      </button>
-                      <button
-                        className='px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-center'
-                        onClick={() =>
-                          openDeleteModal({
-                            code,
-                            alias,
-                            total_calls,
-                            remaining_calls,
-                            language,
-                          })
-                        }
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              );
-            }
-          )}
+                  <Editor
+                    code={fun.code}
+                    setCode={setCurrentCode}
+                    language={fun.language}
+                    style={{
+                      fontSize: '16px',
+                      maxHeight: '200px',
+                      overflow: 'scroll',
+                    }}
+                    onClick={() => openEditModal(fun)}
+                  />
+                </td>
+                <td className='px-6 py-4'>
+                  <p>
+                    <span className='font-bold'>{fun.total_calls}</span> total
+                  </p>
+                </td>
+                <td className='px-6 py-4'>
+                  <input
+                    className='p-2 cursor-copy focus:outline-none bg-transparent border border-gray-300 rounded-lg'
+                    value={url}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigator.clipboard.writeText(`${APP_BASE_URL}/${url}`);
+                    }}
+                    readOnly
+                  ></input>
+                </td>
+                <td className='px-6 py-4 text-right'>
+                  <div className='flex flex-row gap-2 text-black text-white'>
+                    <button
+                      className='px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-center'
+                      onClick={() => openEditModal(fun)}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className='px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-center'
+                      onClick={() => openDeleteModal(fun)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
       <Modal

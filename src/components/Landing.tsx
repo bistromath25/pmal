@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Marquee from 'react-fast-marquee';
 import * as API from '@/app/api/api';
 import { APP_BASE_URL } from '@/env/env';
+import { FunctionCreatePayload } from '@/types/Function';
 import {
   getDefaultFunctionValue,
   isValidFunction,
@@ -26,12 +27,16 @@ function LandingEditor() {
     setLoading(true);
     try {
       if (isValidFunction(code, 'js')) {
+        const payload: FunctionCreatePayload = {
+          code,
+          language: 'js',
+          anonymous: true,
+          created_by: null,
+          belongs_to: [],
+        };
         const {
           fun: { alias },
-        } = await API.createFunction({
-          code,
-          anonymous: true,
-        });
+        } = await API.createFunction(payload);
         setAlias(alias);
         setDemoQuery(getDemoQuery(code, 'js'));
         setCopied(false);

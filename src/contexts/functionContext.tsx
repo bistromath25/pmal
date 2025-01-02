@@ -3,7 +3,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import * as API from '@/app/api/api';
-import { Function } from '@/types/types';
+import { Function } from '@/types/Function';
 import { getDefaultFunctionValue } from '@/utils/functions';
 import { useUserContext } from './userContext';
 
@@ -29,6 +29,8 @@ export function FunctionContextProvider({
   const [code, setCode] = useState(getDefaultFunctionValue('js'));
   const [language, setLanguage] = useState('js');
   const [currentFunction, setCurrentFunction] = useState<Function>({
+    id: '',
+    created_at: new Date(),
     alias: '',
     code: '',
     total_calls: 0,

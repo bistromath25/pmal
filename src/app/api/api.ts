@@ -1,23 +1,21 @@
-import { FunctionDatabaseEntity, User } from '@/types/types';
+import {
+  FunctionCreatePayload,
+  FunctionDeletePayload,
+  FunctionGetManyPayload,
+  FunctionGetPayload,
+  FunctionUpdatePayload,
+} from '@/types/Function';
+import {
+  UserCreatePayload,
+  UserGetPayload,
+  UserUpdatePayload,
+} from '@/types/User';
 
-export const createFunction = async ({
-  alias,
-  code,
-  remaining_calls,
-  anonymous,
-  language,
-}: Partial<FunctionDatabaseEntity>) => {
+export const createFunction = async (payload: FunctionCreatePayload) => {
   const response = await fetch(`/api/fun`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      alias,
-      code,
-      remaining_calls,
-      total_calls: 0,
-      anonymous,
-      language,
-    }),
+    body: JSON.stringify(payload),
   });
   if (response.ok) {
     return await response.json();
@@ -25,82 +23,117 @@ export const createFunction = async ({
   throw new Error('Unable to create function');
 };
 
-export const getFunction = async ({ alias }: { alias: string }) => {
-  const response = await fetch(`/api/fun/${alias}`, {
+export const createFunctionWithAlias = async (
+  payload: FunctionCreatePayload & { alias: string }
+) => {
+  const response = await fetch(`/api/fun`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  if (response.ok) {
+    return await response.json();
+  }
+  throw new Error('Unable to create function');
+};
+
+export const getFunction = async ({ alias, id }: FunctionGetPayload) => {
+  const query = alias ? `alias=${alias}` : `id=${id}`;
+  const response = await fetch(`/api/fun?${query}`, {
     method: 'GET',
   });
   if (response.ok) {
     return await response.json();
   }
-  throw new Error(`Unable to get function by alias ${alias}`);
+  throw new Error(
+    alias
+      ? `Unable to get function by alias ${alias}`
+      : `Unable to get function by id ${id}`
+  );
 };
 
-export const updateFunction = async ({
-  alias,
-  code,
-  total_calls,
-  remaining_calls,
-}: Partial<FunctionDatabaseEntity>) => {
-  const response = await fetch('/api/fun', {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      alias,
-      code,
-      ...(total_calls && { total_calls }),
-      ...(remaining_calls && { remaining_calls }),
-    }),
-  });
-  if (response.ok) {
-    return await response.json();
-  }
-  throw new Error(`Unable to update function by alias ${alias}`);
-};
-
-export const deleteFunction = async ({ alias }: { alias: string }) => {
-  const response = await fetch('/api/fun', {
-    method: 'DELETE',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ alias }),
-  });
-  if (response.ok) {
-    return await response.json();
-  }
-  throw new Error(`Unable to delete function by alias ${alias}`);
-};
-
-export const getFunctions = async ({ aliases }: { aliases: string[] }) => {
+export const getFunctions = async ({
+  aliases,
+  ids,
+}: FunctionGetManyPayload) => {
   const response = await fetch('/api/funs', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ aliases }),
+    body: JSON.stringify({ aliases, ids }),
   });
   if (response.ok) {
     return await response.json();
   }
-  throw new Error('Unable to get functions');
+  throw new Error(
+    aliases
+      ? `Unable to get functions by aliases ${JSON.stringify(aliases, null, 2)}`
+      : `Unable to get functions by ids ${JSON.stringify(ids, null, 2)}`
+  );
 };
 
-export const getUser = async ({ email }: Partial<User>) => {
+export const updateFunction = async (payload: FunctionUpdatePayload) => {
+  const response = await fetch('/api/fun', {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  if (response.ok) {
+    return await response.json();
+  }
+  throw new Error(`Unable to update function by id ${payload.id}`);
+};
+
+export const deleteFunction = async ({ alias, id }: FunctionDeletePayload) => {
+  const response = await fetch('/api/fun', {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ alias, id }),
+  });
+  if (response.ok) {
+    return await response.json();
+  }
+  throw new Error(
+    alias
+      ? `Unable to delete function by alias ${alias}`
+      : `Unable to delete function by id ${id}`
+  );
+};
+
+export const createUser = async (payload: UserCreatePayload) => {
   const response = await fetch('/api/user', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email }),
+    body: JSON.stringify(payload),
   });
   if (response.ok) {
     return await response.json();
   }
-  return new Error(`Unable to create user by email ${email}`);
+  return new Error('Unable to create user');
 };
 
-export const updateUser = async (user: User) => {
+export const getUser = async ({ email, id }: UserGetPayload) => {
+  const query = email ? `email=${email}` : `id=${id}`;
+  const response = await fetch(`/api/user?${query}`, {
+    method: 'GET',
+  });
+  if (response.ok) {
+    return await response.json();
+  }
+  return new Error(
+    email
+      ? `Unable to get user by email ${email}`
+      : `Unable to get user by id ${id}`
+  );
+};
+
+export const updateUser = async (payload: UserUpdatePayload) => {
   const response = await fetch('/api/user', {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ user }),
+    body: JSON.stringify(payload),
   });
   if (response.ok) {
     return await response.json();
   }
-  return new Error(`Unable to update user by email ${user.email}`);
+  return new Error(`Unable to update user by id ${payload.id}`);
 };

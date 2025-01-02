@@ -68,7 +68,7 @@ export default function EditorPlayground() {
     setLoading(true);
     try {
       if (isValidFunction(code, language)) {
-        await API.updateFunction({ alias: key, code });
+        await API.updateFunction({ id: key, code });
         setDemoQuery(getDemoQuery(code, language));
         setError(false);
       } else {
