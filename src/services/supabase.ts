@@ -83,9 +83,10 @@ export const updateFunctionCallsOnceByAlias = async (alias: string) => {
   return newFun;
 };
 
-export const updateFunctionById = async (
-  fun: FunctionUpdatePayload & { id: FunctionRecord['id'] }
-) => {
+export const updateFunctionById = async (fun: FunctionUpdatePayload) => {
+  if (!fun.id) {
+    throw new Error();
+  }
   const { id, ...rest } = fun;
   const { error } = await supabaseClient
     .from(SUPABASE_FUNCTIONS_TABLE)
@@ -99,9 +100,10 @@ export const updateFunctionById = async (
   return newFun;
 };
 
-export const updateFunctionByAlias = async (
-  fun: FunctionUpdatePayload & { alias: FunctionRecord['alias'] }
-) => {
+export const updateFunctionByAlias = async (fun: FunctionUpdatePayload) => {
+  if (!fun.alias) {
+    throw new Error();
+  }
   const { alias, ...rest } = fun;
   const { error } = await supabaseClient
     .from(SUPABASE_FUNCTIONS_TABLE)
