@@ -169,7 +169,7 @@ export default function FunctionTable({
                   onClick={(e) => {
                     e.preventDefault();
                     navigator.clipboard.writeText(
-                      `${APP_BASE_URL}/${currentFunction.alias}?${getDemoQuery(currentFunction.code, currentFunction.language)}`
+                      `${APP_BASE_URL}/api/${currentFunction.alias}?${getDemoQuery(currentFunction.code, currentFunction.language)}`
                     );
                   }}
                   readOnly
