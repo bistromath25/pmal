@@ -22,35 +22,48 @@ export function LanguageSelection({
   setCurrentLanguage: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const isPlayground = type === 'playground';
+  const renderLanguageOption = (name: string, logoUrl: string) => {
+    return (
+      <Link
+        className={`rounded-lg hover:bg-gray-100 h-[50px] justify-items-center ${name === currentLanguage ? 'bg-gray-100' : 'bg-white-100'} ${FF_ONLY_JS_FUNCTIONS && name !== 'js' ? 'hover:cursor-not-allowed hover:bg-white' : ''}`}
+        key={`editor-language-option-${name}`}
+        href={
+          isPlayground
+            ? FF_ONLY_JS_FUNCTIONS
+              ? `?language=js`
+              : `?language=${name}`
+            : ''
+        }
+        onClick={() => {
+          if (FF_ONLY_JS_FUNCTIONS && name !== 'js') {
+            return;
+          }
+          setCurrentLanguage(name);
+        }}
+      >
+        <img className='h-[50px]' src={logoUrl} alt={name} />
+      </Link>
+    );
+  };
+  if (isPlayground) {
+    return (
+      <>
+        <h2 className='font-bold text-2xl'>Select language</h2>
+        <div className='grid grid-cols-2 gap-4'>
+          {languageOptions.map(({ name, logoUrl }) =>
+            renderLanguageOption(name, logoUrl)
+          )}
+        </div>
+      </>
+    );
+  }
   return (
-    <>
-      {isPlayground && <h2 className='font-bold text-2xl'>Select language</h2>}
-      <div className='grid grid-cols-2 gap-4'>
-        {languageOptions.map(({ name, logoUrl }) => {
-          return (
-            <Link
-              className={`rounded-lg hover:bg-gray-100 h-[50px] justify-items-center ${name === currentLanguage ? 'bg-gray-100' : 'bg-white-100'} ${FF_ONLY_JS_FUNCTIONS && name !== 'js' ? 'hover:cursor-not-allowed hover:bg-white' : ''}`}
-              key={`editor-language-option-${name}`}
-              href={
-                isPlayground
-                  ? FF_ONLY_JS_FUNCTIONS
-                    ? `?language=js`
-                    : `?language=${name}`
-                  : ''
-              }
-              onClick={() => {
-                if (FF_ONLY_JS_FUNCTIONS && name !== 'js') {
-                  return;
-                }
-                setCurrentLanguage(name);
-              }}
-            >
-              <img className='h-[50px]' src={logoUrl} alt={name} />
-            </Link>
-          );
-        })}
-      </div>
-    </>
+    <div className='hidden md:flex md:flex-row gap-4'>
+      <h2 className='font-bold my-auto'>Language:</h2>
+      {languageOptions.map(({ name, logoUrl }) =>
+        renderLanguageOption(name, logoUrl)
+      )}
+    </div>
   );
 }
 
@@ -68,7 +81,7 @@ export default function EditorPlayground() {
     setLoading(true);
     try {
       if (isValidFunction(code, language)) {
-        await API.updateFunction({ alias: key, code });
+        await API.updateFunction({ id: key, code });
         setDemoQuery(getDemoQuery(code, language));
         setError(false);
       } else {

@@ -20,7 +20,7 @@ export default function Modal({
     <>
       <div className='backdrop-blur-sm justify-center items-center text-left flex overflow-x-hidden overflow-y-auto fixed inset-0 z-40 outline-none focus:outline-none'>
         <div
-          className={`bg-white rounded-lg shadow z-50 p-0 ${editor ? 'w-[70%]' : 'w-[500px]'}`}
+          className={`bg-white rounded-lg shadow z-50 p-0 ${editor ? 'w-[100%] md:w-[70%]' : 'w-[500px]'}`}
         >
           <div className='space-y-2 p-6'>
             <div className='flex items-center justify-between rounded-t'>

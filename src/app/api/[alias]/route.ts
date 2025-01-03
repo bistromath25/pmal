@@ -10,7 +10,7 @@ import {
   getFunctionByAlias,
   updateFunctionCallsOnceByAlias,
 } from '@/services/supabase';
-import { Function } from '@/types/types';
+import { FunctionRecord } from '@/types/Function';
 import { getFunction, getFunctionName } from '@/utils/functions';
 
 export async function GET(req: Request) {
@@ -39,7 +39,7 @@ export async function GET(req: Request) {
     }
 
     let result;
-    let newFun: Function | null = null;
+    let newFun: FunctionRecord | null = null;
     if (code) {
       if (FF_USE_GITHUB_ACTIONS) {
         const funName = getFunctionName(code, language);
