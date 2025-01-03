@@ -8,6 +8,9 @@ import { getDemoQuery, languageOptions } from '@/utils/functions';
 import Editor from './Editor';
 import Modal from './Modal';
 
+const formatDate = (date: Date, full = true) =>
+  full ? date.toString() : date.toString().split('T')[0];
+
 function FunctionDetails({ fun }: { fun: Function }) {
   return (
     <>
@@ -28,24 +31,17 @@ function FunctionDetails({ fun }: { fun: Function }) {
             <p className='font-bold'>Updated at:</p>
           </div>
           <div>
-            <p>{fun.created_at.toString()}</p>
-            <p>
-              {fun.updated_at
-                ? fun.updated_at.toString()
-                : fun.created_at.toString()}
-            </p>
+            <p>{formatDate(fun.created_at)}</p>
+            <p>{formatDate(fun.updated_at ?? fun.created_at)}</p>
           </div>
         </div>
       </div>
       <div className='md:hidden'>
         <p className='font-bold'>Total calls: {fun.total_calls}</p>
         <p className='font-bold'>Language: {fun.language}</p>
-        <p className='font-bold'>Created at: {fun.created_at.toString()}</p>
+        <p className='font-bold'>Created at: {formatDate(fun.created_at)}</p>
         <p className='font-bold'>
-          Updated at:{' '}
-          {fun.updated_at
-            ? fun.updated_at.toString()
-            : fun.created_at.toString()}
+          Updated at: {formatDate(fun.updated_at ?? fun.created_at)}
         </p>
       </div>
     </>
@@ -93,7 +89,7 @@ export default function FunctionTable({
           const logo = languageOptions.find(
             ({ name }) => name === fun.language
           )?.logoUrl;
-          const createdAtDateString = fun.created_at.toString().split('T')[0];
+          const createdAtDateString = formatDate(fun.created_at, false);
           return (
             <div
               className='bg-gray-100 border border-gray-300 shadow-md rounded-lg p-1 md:p-4'
