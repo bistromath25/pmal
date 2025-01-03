@@ -8,6 +8,50 @@ import { getDemoQuery, languageOptions } from '@/utils/functions';
 import Editor from './Editor';
 import Modal from './Modal';
 
+function FunctionDetails({ fun }: { fun: Function }) {
+  return (
+    <>
+      <div className='hidden md:flex md:flex-row gap-10'>
+        <div className='flex flex-row gap-2'>
+          <div>
+            <p className='font-bold'>Total calls:</p>
+            <p className='font-bold'>Language:</p>
+          </div>
+          <div>
+            <p>{fun.total_calls}</p>
+            <p>{fun.language}</p>
+          </div>
+        </div>
+        <div className='flex flex-row gap-2'>
+          <div>
+            <p className='font-bold'>Created at:</p>
+            <p className='font-bold'>Updated at:</p>
+          </div>
+          <div>
+            <p>{fun.created_at.toString()}</p>
+            <p>
+              {fun.updated_at
+                ? fun.updated_at.toString()
+                : fun.created_at.toString()}
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className='md:hidden'>
+        <p className='font-bold'>Total calls: {fun.total_calls}</p>
+        <p className='font-bold'>Language: {fun.language}</p>
+        <p className='font-bold'>Created at: {fun.created_at.toString()}</p>
+        <p className='font-bold'>
+          Updated at:{' '}
+          {fun.updated_at
+            ? fun.updated_at.toString()
+            : fun.created_at.toString()}
+        </p>
+      </div>
+    </>
+  );
+}
+
 export interface FunctionTableProps {
   handleDeleteFunction: (alias: string) => Promise<void>;
   handleUpdateFunction: (fun: Function) => Promise<void>;
@@ -44,7 +88,7 @@ export default function FunctionTable({
   );
   return functions && functions.length ? (
     <div className='pl-4 pr-4'>
-      <div className='relative overflow-x-auto grid grid-cols-3 gap-10'>
+      <div className='relative overflow-x-auto grid grid-cols-2 md:grid-cols-3 gap-10'>
         {functions.map((fun: Function) => {
           const logo = languageOptions.find(
             ({ name }) => name === fun.language
@@ -52,11 +96,11 @@ export default function FunctionTable({
           const createdAtDateString = fun.created_at.toString().split('T')[0];
           return (
             <div
-              className='bg-gray-100 border border-gray-300 shadow-md rounded-lg p-4'
+              className='bg-gray-100 border border-gray-300 shadow-md rounded-lg p-1 md:p-4'
               key={`function-box-${fun.alias}`}
             >
-              <div className='flex flex-row space-x-4'>
-                <div className='basis-1/6 my-auto'>
+              <div className='flex flex-col md:flex-row p-1 md:p-0 md:space-x-4'>
+                <div className='hidden md:inline-block basis-1/6 my-auto'>
                   <img className='h-[50px]' src={logo} />
                 </div>
                 <div className='basis-2/3'>
@@ -120,36 +164,11 @@ export default function FunctionTable({
         contents={
           <div className='space-y-4 pt-2'>
             <div>
-              <div className='flex flex-row gap-10'>
-                <div className='flex flex-row gap-2'>
-                  <div>
-                    <p className='font-bold'>Language:</p>
-                    <p className='font-bold'>Total calls:</p>
-                  </div>
-                  <div>
-                    <p>{currentFunction.total_calls}</p>
-                    <p>{currentFunction.language}</p>
-                  </div>
-                </div>
-                <div className='flex flex-row gap-2'>
-                  <div>
-                    <p className='font-bold'>Created at:</p>
-                    <p className='font-bold'>Updated at:</p>
-                  </div>
-                  <div>
-                    <p>{currentFunction.created_at.toString()}</p>
-                    <p>
-                      {currentFunction.updated_at
-                        ? currentFunction.updated_at.toString()
-                        : currentFunction.created_at.toString()}
-                    </p>
-                  </div>
-                </div>
-              </div>
+              <FunctionDetails fun={currentFunction} />
               <div className='flex flex-row gap-2 pt-2'>
                 <p className='font-bold my-auto'>URL:</p>
                 <input
-                  className='w-full p-2 cursor-copy focus:outline-none bg-transparent border border-gray-300 rounded-lg'
+                  className='w-full px-1 cursor-copy focus:outline-none bg-transparent border border-gray-300 rounded-lg'
                   value={`${currentFunction.alias}?${getDemoQuery(currentFunction.code, currentFunction.language)}`}
                   onClick={(e) => {
                     e.preventDefault();

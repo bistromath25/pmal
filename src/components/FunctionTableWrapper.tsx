@@ -98,7 +98,7 @@ export default function FunctionTableWrapper() {
         onClose={() => setModalIsOpen(false)}
         title='Create function'
         contents={
-          <div className='space-y-4 pt-4'>
+          <div className='space-y-4 pt-1 md:pt-2'>
             <LanguageSelection
               type='dashboard'
               currentLanguage={currentLanguage}
