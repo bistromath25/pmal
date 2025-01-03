@@ -18,7 +18,7 @@ const sidebarOptions = [
   {
     name: 'Sign out',
     icon: <SignoutIcon />,
-    path: '/api/auth/signout',
+    path: '/signout',
   },
 ];
 

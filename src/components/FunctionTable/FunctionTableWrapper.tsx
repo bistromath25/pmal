@@ -7,10 +7,10 @@ import { useUserContext } from '@/contexts/userContext';
 import { Function } from '@/types/Function';
 import { getDefaultFunctionValue, isValidFunction } from '@/utils/functions';
 import { remove } from '@/utils/utils';
-import Editor from './Editor';
-import { LanguageSelection } from './EditorPlayground';
+import Editor from '../Editor';
+import LanguageSelection from '../LanguageSelection';
+import Modal from '../Modal';
 import FunctionTable from './FunctionTable';
-import Modal from './Modal';
 
 export default function FunctionTableWrapper() {
   const { user: currentUser, setUser: setCurrentUser } = useUserContext();
@@ -45,7 +45,6 @@ export default function FunctionTableWrapper() {
         aliases: [...currentUser.aliases, alias],
       });
       setCurrentUser(user);
-      await refreshFunctions();
       setError(false);
       setModalIsOpen(false);
     } else {

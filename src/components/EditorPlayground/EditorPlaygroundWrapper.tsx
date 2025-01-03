@@ -33,7 +33,7 @@ export default function EditorPlaygroundWrapper() {
     }
   }, [router, searchParams]);
   return (
-    <div className='w-full space-y-10 justify'>
+    <div className='w-full space-y-4 justify'>
       <div className='justify-items-left pl-4 space-y-4'>
         <h1 className='text-4xl font-bold'>Editor Playground</h1>
         <p className='text-gray-600'>

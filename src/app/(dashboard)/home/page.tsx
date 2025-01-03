@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import FunctionTableWrapper from '@/components/FunctionTableWrapper';
+import FunctionTableWrapper from '@/components/FunctionTable/FunctionTableWrapper';
 import DashboardLayout from '@/components/layouts/Dashboard';
 import { APP_BASE_URL } from '@/env/env';
 import { auth } from '@/services/auth';
