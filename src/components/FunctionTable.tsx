@@ -183,7 +183,7 @@ export default function FunctionTable({
             <Editor
               code={currentCode}
               setCode={setCurrentCode}
-              language='js'
+              language={currentFunction.language}
               style={{ minHeight: '300px' }}
               error={error}
               setError={setError}
