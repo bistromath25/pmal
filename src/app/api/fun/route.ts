@@ -4,7 +4,7 @@ import {
   deleteFunctionByAlias,
   deleteFunctionById,
   getFunctionByAlias,
-  updateFunction,
+  updateFunctionByAlias,
 } from '@/services/supabase';
 import { Function, FunctionRecord } from '@/types/Function';
 import { randomString } from '@/utils/utils';
@@ -70,7 +70,7 @@ export async function PATCH(req: Request) {
       });
     }
     const body = await req.json();
-    const newFun = await updateFunction(body);
+    const newFun = await updateFunctionByAlias(body);
     return new Response(JSON.stringify({ fun: newFun }), { status: 200 });
   } catch (error) {
     return new Response(null, { status: 500 });
