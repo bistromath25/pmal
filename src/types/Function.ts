@@ -18,10 +18,9 @@ export type FunctionCreatePayload = Pick<
   FunctionRecord,
   'code' | 'language' | 'anonymous' | 'created_by' | 'belongs_to'
 >;
-export type FunctionUpdatePayload = RequireAtLeastOne<{
-  id: FunctionRecord['id'];
-  alias: FunctionRecord['alias'];
-}> &
+export type FunctionUpdatePayload = RequireAtLeastOne<
+  Pick<FunctionRecord, 'id' | 'alias'>
+> &
   RequireAtLeastOne<Omit<FunctionRecord, 'id' | 'alias'>>;
 export type FunctionGetPayload = RequireAtLeastOne<
   Pick<FunctionRecord, 'id' | 'alias'>

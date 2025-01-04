@@ -6,7 +6,7 @@ export default function Footer({ type }: FooterProps) {
   const isLanding = type === 'landing';
   return (
     <div
-      className={`w-full ${isLanding ? 'bg-black' : 'bg-gray-50 border border-e-0 border-s-0'} p-4 bottom-0 fixed`}
+      className={`w-full ${isLanding ? 'bg-black' : 'bg-gray-50 border border-e-0 border-s-0'} p-4`}
     >
       <div
         className={`grid grid-cols-2 ${isLanding ? 'text-gray-100' : 'text-black'}`}
