@@ -14,9 +14,8 @@ export interface User extends BaseRecord {
 
 export type UserRecord = Required<User>;
 export type UserCreatePayload = Pick<UserRecord, 'email' | 'role'>;
-export type UserUpdatePayload = {
-  id: UserRecord['id'];
-} & RequireAtLeastOne<Omit<UserRecord, 'id'>>;
+export type UserUpdatePayload = Pick<UserRecord, 'id'> &
+  RequireAtLeastOne<Omit<UserRecord, 'id'>>;
 export type UserGetPayload = RequireAtLeastOne<
   Pick<UserRecord, 'id' | 'email'>
 >;

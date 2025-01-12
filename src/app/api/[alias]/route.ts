@@ -6,10 +6,12 @@ import {
 } from '@/env/env';
 import * as GH from '@/services/gh';
 import {
+  createExecutionEntry,
   deleteFunctionByAlias,
   getFunctionByAlias,
   updateFunctionCallsOnceByAlias,
 } from '@/services/supabase';
+import { ExecutionEntryRecord } from '@/types/ExecutionEntry';
 import { FunctionRecord } from '@/types/Function';
 import { getFunction, getFunctionName } from '@/utils/functions';
 
@@ -40,6 +42,7 @@ export async function GET(req: Request) {
 
     let result;
     let newFun: FunctionRecord | null = null;
+    const startDate = new Date();
     if (code) {
       if (FF_USE_GITHUB_ACTIONS) {
         const funName = getFunctionName(code, language);
@@ -161,6 +164,25 @@ export async function GET(req: Request) {
           { status: 500 }
         );
       }
+
+      const endDate = new Date();
+      const executionEntry: ExecutionEntryRecord = {
+        id: crypto.randomUUID(),
+        created_at: startDate,
+        updated_at: null,
+        deleted_at: null,
+        user_id: f.anonymous ? 'anonymous' : f.created_by,
+        function_id: f.id,
+        function_alias: f.alias,
+        code: f.code,
+        language: f.language,
+        query: params.toString(),
+        started_at: startDate,
+        ended_at: endDate,
+        time: endDate.getTime() - startDate.getTime(),
+        result,
+      };
+      await createExecutionEntry(executionEntry);
       return new Response(
         JSON.stringify({
           result,

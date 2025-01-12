@@ -1,8 +1,10 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import * as API from '@/app/api/api';
 import { useFunctionContext } from '@/contexts/functionContext';
 import { APP_BASE_URL } from '@/env/env';
+import { ExecutionEntry } from '@/types/ExecutionEntry';
 import { Function } from '@/types/Function';
 import { getDemoQuery, languageOptions } from '@/utils/functions';
 import Editor from '../Editor';
@@ -12,6 +14,21 @@ const formatDate = (date: Date, full = true) =>
   full ? date.toString() : date.toString().split('T')[0];
 
 function FunctionDetails({ fun }: { fun: Function }) {
+  const [executionEntries, setExecutionEntries] = useState<ExecutionEntry[]>(
+    []
+  );
+  const [totalExecutionTime, setTotalExecutionTime] = useState(0);
+  const getExecutionEntries = useCallback(async () => {
+    const { entries } = await API.getExecutionEntries({
+      function_alias: fun.alias,
+    });
+    console.log(JSON.stringify(entries, null, 2));
+    setExecutionEntries(entries ?? []);
+  }, []);
+  useEffect(() => {
+    getExecutionEntries();
+  }, [getExecutionEntries]);
+
   return (
     <>
       <div className='hidden md:flex md:flex-row gap-10'>
