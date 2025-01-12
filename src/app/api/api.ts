@@ -122,7 +122,7 @@ export const getExecutionEntries = async ({
   const query = function_id
     ? `function_id=${function_id}`
     : `function_alias=${function_alias}`;
-  const response = await fetch(`api/exec?${query}`, {
+  const response = await fetch(`api/execs?${query}`, {
     method: 'GET',
   });
   if (response.ok) {

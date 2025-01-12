@@ -193,11 +193,13 @@ export const getExecutionEntriesByFunctionId = async (function_id: string) => {
   return data?.length ? (data as ExecutionEntryRecord[]) : null;
 };
 
-export const getExecutionEntriesByFunctionAlias = async (alias: string) => {
+export const getExecutionEntriesByFunctionAlias = async (
+  function_alias: string
+) => {
   const { data, error } = await supabaseClient
     .from(SUPABASE_TIME_ENTRIES_TABLE)
     .select('*')
-    .eq('alias', alias);
+    .eq('function_alias', function_alias);
   handleError(error);
   return data?.length ? (data as ExecutionEntryRecord[]) : null;
 };

@@ -3,7 +3,7 @@ import {
   getExecutionEntriesByFunctionAlias,
   getExecutionEntriesByFunctionId,
 } from '@/services/supabase';
-import { ExecutionEntry } from '@/types/ExecutionEntry';
+import { ExecutionEntryRecord } from '@/types/ExecutionEntry';
 
 export async function GET(req: Request) {
   try {
@@ -17,7 +17,7 @@ export async function GET(req: Request) {
     const params = new URLSearchParams(url.search);
     const function_id = params.get('function_id');
     const function_alias = params.get('function_alias');
-    let entries: ExecutionEntry[] | null;
+    let entries: ExecutionEntryRecord[] | null;
     if (function_id) {
       entries = await getExecutionEntriesByFunctionId(function_id);
     } else if (function_alias) {
