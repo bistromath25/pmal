@@ -15,19 +15,23 @@ const formatDate = (date: Date, full = true) =>
 
 function FunctionDetails({ fun }: { fun: Function }) {
   const [executionEntries, setExecutionEntries] = useState<
-    ExecutionEntryRecord[]
-  >([]);
+    ExecutionEntryRecord[] | null
+  >(null);
   const [totalExecutionTime, setTotalExecutionTime] = useState(0);
   const getExecutionEntries = useCallback(async () => {
-    const { entries } = await API.getExecutionEntries({
-      function_alias: fun.alias,
-    });
-    setExecutionEntries(entries ?? []);
-    const totalExecutionTime = executionEntries.reduce(
-      (t, entry: ExecutionEntryRecord) => t + entry.time,
-      0
-    );
-    setTotalExecutionTime(totalExecutionTime);
+    if (!executionEntries) {
+      const { entries } = await API.getExecutionEntries({
+        function_alias: fun.alias,
+      });
+      setExecutionEntries(entries);
+      if (entries) {
+        const totalExecutionTime = entries.reduce(
+          (t: number, entry: ExecutionEntryRecord) => t + entry.time,
+          0
+        );
+        setTotalExecutionTime(totalExecutionTime);
+      }
+    }
   }, [executionEntries, fun.alias]);
   useEffect(() => {
     getExecutionEntries();
