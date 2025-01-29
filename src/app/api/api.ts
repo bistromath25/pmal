@@ -106,7 +106,7 @@ export const deleteFunction = async ({ alias, id }: FunctionDeletePayload) => {
 export const getExecutionEntryById = async ({
   id,
 }: ExecutionEntryGetPayload) => {
-  const response = await fetch(`api/exec?id=${id}`, {
+  const response = await fetch(`api/execentry?id=${id}`, {
     method: 'GET',
   });
   if (response.ok) {
@@ -122,7 +122,7 @@ export const getExecutionEntries = async ({
   const query = function_id
     ? `function_id=${function_id}`
     : `function_alias=${function_alias}`;
-  const response = await fetch(`api/execs?${query}`, {
+  const response = await fetch(`api/execentries?${query}`, {
     method: 'GET',
   });
   if (response.ok) {
