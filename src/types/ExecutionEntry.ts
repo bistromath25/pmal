@@ -15,7 +15,7 @@ export interface ExecutionEntry extends BaseRecord {
 }
 
 export type ExecutionEntryRecord = Required<ExecutionEntry>;
-export type ExecutionEntryCreatePayload = ExecutionEntryRecord;
+export type ExecutionEntryCreatePayload = Omit<ExecutionEntryRecord, 'id'>;
 export type ExecutionEntryGetPayload = Pick<ExecutionEntryRecord, 'id'>;
 
 export type ExecutionEntryGetManyPayload = RequireAtLeastOne<

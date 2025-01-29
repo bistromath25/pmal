@@ -11,7 +11,7 @@ import {
   getFunctionByAlias,
   updateFunctionCallsOnceByAlias,
 } from '@/services/supabase';
-import { ExecutionEntryRecord } from '@/types/ExecutionEntry';
+import { ExecutionEntryCreatePayload } from '@/types/ExecutionEntry';
 import { FunctionRecord } from '@/types/Function';
 import { getFunction, getFunctionName } from '@/utils/functions';
 
@@ -166,8 +166,7 @@ export async function GET(req: Request) {
       }
 
       const endDate = new Date();
-      const executionEntry: ExecutionEntryRecord = {
-        id: crypto.randomUUID(),
+      const executionEntry: ExecutionEntryCreatePayload = {
         created_at: startDate,
         updated_at: null,
         deleted_at: null,

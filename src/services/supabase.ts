@@ -5,7 +5,7 @@ import {
   SUPABASE_URL,
   SUPABASE_USERS_TABLE,
 } from '@/env/env';
-import { ExecutionEntryRecord } from '@/types/ExecutionEntry';
+import { ExecutionEntryRecord, ExecutionEntryCreatePayload } from '@/types/ExecutionEntry';
 import { FunctionRecord, FunctionUpdatePayload } from '@/types/Function';
 import { UserUpdatePayload, UserRecord } from '@/types/User';
 import { createFetch } from '@/utils/cache';
@@ -167,7 +167,7 @@ export const getFunctionsByAliases = async (aliases: string[]) => {
   return data?.length ? data.map((x) => x as FunctionRecord) : [];
 };
 
-export const createExecutionEntry = async (entry: ExecutionEntryRecord) => {
+export const createExecutionEntry = async (entry: ExecutionEntryCreatePayload) => {
   const { error } = await supabaseClient
     .from(SUPABASE_TIME_ENTRIES_TABLE)
     .insert(entry);
