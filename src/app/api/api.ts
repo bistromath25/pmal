@@ -1,4 +1,8 @@
 import {
+  ExecutionEntryGetPayload,
+  ExecutionEntryGetManyPayload,
+} from '@/types/ExecutionEntry';
+import {
   FunctionCreatePayload,
   FunctionDeletePayload,
   FunctionGetManyPayload,
@@ -96,6 +100,38 @@ export const deleteFunction = async ({ alias, id }: FunctionDeletePayload) => {
     alias
       ? `Unable to delete function by alias ${alias}`
       : `Unable to delete function by id ${id}`
+  );
+};
+
+export const getExecutionEntryById = async ({
+  id,
+}: ExecutionEntryGetPayload) => {
+  const response = await fetch(`api/execentry?id=${id}`, {
+    method: 'GET',
+  });
+  if (response.ok) {
+    return await response.json();
+  }
+  throw new Error(`Unable to get execution entry by id ${id}`);
+};
+
+export const getExecutionEntries = async ({
+  function_id,
+  function_alias,
+}: ExecutionEntryGetManyPayload) => {
+  const query = function_id
+    ? `function_id=${function_id}`
+    : `function_alias=${function_alias}`;
+  const response = await fetch(`api/execentries?${query}`, {
+    method: 'GET',
+  });
+  if (response.ok) {
+    return await response.json();
+  }
+  throw new Error(
+    function_id
+      ? `Unable to get execution entries by function_id ${function_id}`
+      : `Unable to get execution entries by function_alias ${function_alias}`
   );
 };
 

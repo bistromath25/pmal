@@ -1,8 +1,10 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import * as API from '@/app/api/api';
 import { useFunctionContext } from '@/contexts/functionContext';
 import { APP_BASE_URL } from '@/env/env';
+import { ExecutionEntryRecord } from '@/types/ExecutionEntry';
 import { Function } from '@/types/Function';
 import { getDemoQuery, languageOptions } from '@/utils/functions';
 import Editor from '../Editor';
@@ -12,16 +14,40 @@ const formatDate = (date: Date, full = true) =>
   full ? date.toString() : date.toString().split('T')[0];
 
 function FunctionDetails({ fun }: { fun: Function }) {
+  const [executionEntries, setExecutionEntries] = useState<
+    ExecutionEntryRecord[] | null
+  >(null);
+  const [totalExecutionTime, setTotalExecutionTime] = useState(0);
+  const getExecutionEntries = useCallback(async () => {
+    if (!executionEntries) {
+      const { entries } = await API.getExecutionEntries({
+        function_alias: fun.alias,
+      });
+      setExecutionEntries(entries);
+      if (entries) {
+        const totalExecutionTime = entries.reduce(
+          (t: number, entry: ExecutionEntryRecord) => t + entry.time,
+          0
+        );
+        setTotalExecutionTime(totalExecutionTime);
+      }
+    }
+  }, [executionEntries, fun.alias]);
+  useEffect(() => {
+    getExecutionEntries();
+  }, [getExecutionEntries]);
   return (
     <>
       <div className='hidden md:flex md:flex-row gap-10'>
         <div className='flex flex-row gap-2'>
           <div>
             <p className='font-bold'>Total calls:</p>
+            <p className='font-bold'>Total time:</p>
             <p className='font-bold'>Language:</p>
           </div>
           <div>
             <p>{fun.total_calls}</p>
+            <p>{totalExecutionTime} ms</p>
             <p>{fun.language}</p>
           </div>
         </div>
@@ -36,7 +62,7 @@ function FunctionDetails({ fun }: { fun: Function }) {
           </div>
         </div>
       </div>
-      <div className='md:hidden'>
+      <div className='md:hidden text-gray-600'>
         <p className='font-bold'>Total calls: {fun.total_calls}</p>
         <p className='font-bold'>Language: {fun.language}</p>
         <p className='font-bold'>Created at: {formatDate(fun.created_at)}</p>
@@ -84,7 +110,7 @@ export default function FunctionTable({
   );
   return functions && functions.length ? (
     <div className='pl-4 pr-4'>
-      <div className='relative overflow-x-auto grid grid-cols-2 md:grid-cols-3 gap-10'>
+      <div className='relative overflow-x-auto grid grid-cols-2 md:grid-cols-3 gap-6'>
         {functions.map((fun: Function) => {
           const logo = languageOptions.find(
             ({ name }) => name === fun.language
@@ -92,7 +118,7 @@ export default function FunctionTable({
           const createdAtDateString = formatDate(fun.created_at, false);
           return (
             <div
-              className='bg-gray-100 border border-gray-300 shadow-md rounded-lg p-1 md:p-4'
+              className='bg-white border border-[rgb(227_232_239)] shadow-sm rounded-lg p-1 md:p-4'
               key={`function-box-${fun.alias}`}
             >
               <div className='flex flex-col md:flex-row p-1 md:p-0 md:space-x-4'>
@@ -101,8 +127,10 @@ export default function FunctionTable({
                 </div>
                 <div className='basis-2/3'>
                   <p className='font-bold text-2xl'>{fun.alias}</p>
-                  <p>Calls: {fun.total_calls}</p>
-                  <p>Created: {createdAtDateString}</p>
+                  <p className='text-gray-600'>Calls: {fun.total_calls}</p>
+                  <p className='text-gray-600'>
+                    Created: {createdAtDateString}
+                  </p>
                 </div>
                 <div className='basis-1/6 my-auto flex flex-col space-y-2'>
                   <button

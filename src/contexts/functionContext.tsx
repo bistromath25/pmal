@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import * as API from '@/app/api/api';
+import { ExecutionEntry } from '@/types/ExecutionEntry';
 import { Function } from '@/types/Function';
 import { getDefaultFunctionValue } from '@/utils/functions';
 import { useUserContext } from './userContext';
@@ -17,6 +18,7 @@ export const FunctionContext = createContext<
       setCurrentFunction: React.Dispatch<React.SetStateAction<Function>>;
       functions: Function[];
       setFunctions: React.Dispatch<React.SetStateAction<Function[]>>;
+      executionEntries: ExecutionEntry[];
     }
   | undefined
 >(undefined);
@@ -38,6 +40,9 @@ export function FunctionContextProvider({
     language: '',
   });
   const [functions, setFunctions] = useState<Function[]>([]);
+  const [executionEntries, setExecutionEntries] = useState<ExecutionEntry[]>(
+    []
+  );
   const session = useSession();
   const {
     user: { aliases },
@@ -46,6 +51,16 @@ export function FunctionContextProvider({
     const getFunctions = async () => {
       const { funs } = await API.getFunctions({ aliases });
       setFunctions(funs);
+      let allEntries: ExecutionEntry[] = [];
+      for (const fun of funs) {
+        const { entries } = await API.getExecutionEntries({
+          function_alias: fun.alias,
+        });
+        if (entries) {
+          allEntries = [...allEntries, ...entries];
+        }
+      }
+      setExecutionEntries(allEntries);
     };
     if (session.status === 'authenticated' && !functions.length) {
       getFunctions();
@@ -62,6 +77,7 @@ export function FunctionContextProvider({
         setCurrentFunction,
         functions,
         setFunctions,
+        executionEntries,
       }}
     >
       {children}

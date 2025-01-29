@@ -53,6 +53,7 @@ export default function EditorPlayground() {
           error={error}
           setError={setError}
           language={language}
+          style={{ backgroundColor: 'white' }}
         />
         <div className='space-x-4'>
           <button
