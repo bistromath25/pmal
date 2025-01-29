@@ -1,9 +1,11 @@
 import {
   SUPABASE_ANON_KEY,
   SUPABASE_FUNCTIONS_TABLE,
+  SUPABASE_TIME_ENTRIES_TABLE,
   SUPABASE_URL,
   SUPABASE_USERS_TABLE,
 } from '@/env/env';
+import { ExecutionEntryRecord, ExecutionEntryCreatePayload } from '@/types/ExecutionEntry';
 import { FunctionRecord, FunctionUpdatePayload } from '@/types/Function';
 import { UserUpdatePayload, UserRecord } from '@/types/User';
 import { createFetch } from '@/utils/cache';
@@ -163,6 +165,43 @@ export const getFunctionsByAliases = async (aliases: string[]) => {
     .neq('frozen', true);
   handleError(error);
   return data?.length ? data.map((x) => x as FunctionRecord) : [];
+};
+
+export const createExecutionEntry = async (entry: ExecutionEntryCreatePayload) => {
+  const { error } = await supabaseClient
+    .from(SUPABASE_TIME_ENTRIES_TABLE)
+    .insert(entry);
+  handleError(error);
+  return entry;
+};
+
+export const getExecutionEntryById = async (id: string) => {
+  const { data, error } = await supabaseClient
+    .from(SUPABASE_TIME_ENTRIES_TABLE)
+    .select('*')
+    .eq('id', id);
+  handleError(error);
+  return data?.length ? (data[0] as ExecutionEntryRecord) : null;
+};
+
+export const getExecutionEntriesByFunctionId = async (function_id: string) => {
+  const { data, error } = await supabaseClient
+    .from(SUPABASE_TIME_ENTRIES_TABLE)
+    .select('*')
+    .eq('function_id', function_id);
+  handleError(error);
+  return data?.length ? (data as ExecutionEntryRecord[]) : null;
+};
+
+export const getExecutionEntriesByFunctionAlias = async (
+  function_alias: string
+) => {
+  const { data, error } = await supabaseClient
+    .from(SUPABASE_TIME_ENTRIES_TABLE)
+    .select('*')
+    .eq('function_alias', function_alias);
+  handleError(error);
+  return data?.length ? (data as ExecutionEntryRecord[]) : null;
 };
 
 export const createUser = async (user: UserRecord) => {

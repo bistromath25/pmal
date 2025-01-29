@@ -1,8 +1,10 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import * as API from '@/app/api/api';
 import { useFunctionContext } from '@/contexts/functionContext';
 import { APP_BASE_URL } from '@/env/env';
+import { ExecutionEntryRecord } from '@/types/ExecutionEntry';
 import { Function } from '@/types/Function';
 import { getDemoQuery, languageOptions } from '@/utils/functions';
 import Editor from '../Editor';
@@ -12,16 +14,40 @@ const formatDate = (date: Date, full = true) =>
   full ? date.toString() : date.toString().split('T')[0];
 
 function FunctionDetails({ fun }: { fun: Function }) {
+  const [executionEntries, setExecutionEntries] = useState<
+    ExecutionEntryRecord[] | null
+  >(null);
+  const [totalExecutionTime, setTotalExecutionTime] = useState(0);
+  const getExecutionEntries = useCallback(async () => {
+    if (!executionEntries) {
+      const { entries } = await API.getExecutionEntries({
+        function_alias: fun.alias,
+      });
+      setExecutionEntries(entries);
+      if (entries) {
+        const totalExecutionTime = entries.reduce(
+          (t: number, entry: ExecutionEntryRecord) => t + entry.time,
+          0
+        );
+        setTotalExecutionTime(totalExecutionTime);
+      }
+    }
+  }, [executionEntries, fun.alias]);
+  useEffect(() => {
+    getExecutionEntries();
+  }, [getExecutionEntries]);
   return (
     <>
       <div className='hidden md:flex md:flex-row gap-10'>
         <div className='flex flex-row gap-2'>
           <div>
             <p className='font-bold'>Total calls:</p>
+            <p className='font-bold'>Total time:</p>
             <p className='font-bold'>Language:</p>
           </div>
           <div>
             <p>{fun.total_calls}</p>
+            <p>{totalExecutionTime} ms</p>
             <p>{fun.language}</p>
           </div>
         </div>
