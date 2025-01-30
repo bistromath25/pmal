@@ -1,6 +1,4 @@
 import { useFunctionContext } from '@/contexts/functionContext';
-import { ExecutionEntry } from '@/types/ExecutionEntry';
-import { Function } from '@/types/Function';
 
 function StatDetail({
   label,
@@ -19,9 +17,12 @@ function StatDetail({
 
 export default function FunctionStats() {
   const { functions, executionEntries } = useFunctionContext();
-  const totalCalls = functions.reduce((c, f: Function) => c + f.total_calls, 0);
+  const totalCalls = functions.reduce(
+    (c, { total_calls }) => c + total_calls,
+    0
+  );
   const totalTime = executionEntries.reduce(
-    (t, e: ExecutionEntry) => t + (e.time ?? 0),
+    (t, { time }) => t + (time ?? 0),
     0
   );
   const stats = [

@@ -1,10 +1,8 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
-import * as API from '@/app/api/api';
+import { useCallback, useState } from 'react';
 import { useFunctionContext } from '@/contexts/functionContext';
 import { APP_BASE_URL } from '@/env/env';
-import { ExecutionEntryRecord } from '@/types/ExecutionEntry';
 import { Function } from '@/types/Function';
 import { getDemoQuery, languageOptions } from '@/utils/functions';
 import Editor from '../Editor';
@@ -14,28 +12,12 @@ const formatDate = (date: Date, full = true) =>
   full ? date.toString() : date.toString().split('T')[0];
 
 function FunctionDetails({ fun }: { fun: Function }) {
-  const [executionEntries, setExecutionEntries] = useState<
-    ExecutionEntryRecord[] | null
-  >(null);
-  const [totalExecutionTime, setTotalExecutionTime] = useState(0);
-  const getExecutionEntries = useCallback(async () => {
-    if (!executionEntries) {
-      const { entries } = await API.getExecutionEntries({
-        function_alias: fun.alias,
-      });
-      setExecutionEntries(entries);
-      if (entries) {
-        const totalExecutionTime = entries.reduce(
-          (t: number, entry: ExecutionEntryRecord) => t + entry.time,
-          0
-        );
-        setTotalExecutionTime(totalExecutionTime);
-      }
-    }
-  }, [executionEntries, fun.alias]);
-  useEffect(() => {
-    getExecutionEntries();
-  }, [getExecutionEntries]);
+  const { executionEntries } = useFunctionContext();
+  const totalExecutionTime = executionEntries.reduce(
+    (t, { function_alias, time }) =>
+      t + (function_alias === fun.alias ? (time ?? 0) : 0),
+    0
+  );
   return (
     <>
       <div className='hidden md:flex md:flex-row gap-10'>
