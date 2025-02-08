@@ -3,13 +3,18 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import logo from '@/app/favicon.ico';
-import { FilePenIcon, HouseIcon, SignoutIcon } from './Icons';
+import { FilePenIcon, HouseIcon, ListIcon, SignoutIcon } from './Icons';
 
 const sidebarOptions = [
   {
     name: 'Home',
     icon: <HouseIcon />,
     path: '/home',
+  },
+  {
+    name: 'Functions',
+    icon: <ListIcon />,
+    path: '/functions',
   },
   {
     name: 'Editor',
@@ -31,14 +36,14 @@ export default function Sidebar() {
         <img src={logo.src} className='m-auto mx-0 w-[30px] h-[30px]' />
         <div className='p-2 font-bold text-2xl text-white'>PMAL</div>
       </div>
-      <div className='grid grid-cols-2 lg:flex lg:flex-col gap-2'>
+      <div className='grid grid-cols-3 lg:flex lg:flex-col gap-2'>
         {sidebarOptions.map(({ name, icon, path }) => {
           const isActive = path === pathname;
-          const isSignout = name === 'Sign out';
+          const isEditor = name === 'Editor';
           return (
             <div
               key={`sidebar-option-${name}`}
-              className={`${isSignout ? 'hidden' : ''} lg:block`}
+              className={`${isEditor ? 'hidden' : ''} lg:block`}
             >
               <Link href={path}>
                 <div

@@ -8,7 +8,7 @@ function StatDetail({
   value: string | number;
 }) {
   return (
-    <div className='flex flex-col bg-white border border-[rgb(227_232_239)] shadow-sm rounded-lg p-1 md:p-4'>
+    <div className='flex flex-col'>
       <p className='font-bold text-2xl'>{value}</p>
       <p>{label}</p>
     </div>
@@ -32,7 +32,7 @@ export default function FunctionStats() {
     { label: 'Saved', value: `$${(totalTime * 0.0000000021).toFixed(10)}` },
   ];
   return (
-    <div className='grid grid-cols-4 gap-6'>
+    <div className='grid grid-cols-1 sm:grid-cols-4 gap-6 bg-white border border-[rgb(227_232_239)] shadow-sm rounded-lg p-4'>
       {stats.map(({ label, value }) => (
         <StatDetail
           key={`function-stats-${label}`}

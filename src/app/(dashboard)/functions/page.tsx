@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import HomeWrapper from '@/components/Home/HomeWrapper';
+import FunctionTableWrapper from '@/components/FunctionTable/FunctionTableWrapper';
 import DashboardLayout from '@/components/layouts/Dashboard';
 import { APP_BASE_URL } from '@/env/env';
 import { auth } from '@/services/auth';
@@ -11,7 +11,7 @@ export default async function Page() {
   }
   return (
     <DashboardLayout>
-      <HomeWrapper />
+      <FunctionTableWrapper />
     </DashboardLayout>
   );
 }

@@ -14,10 +14,10 @@ export default function DashboardLayout({
         <meta name='viewport' content='width=device-width, initial-scale=1.0' />
       </Head>
       <div className='w-full flex flex-col lg:flex-row bg-[rgb(242_245_249)]'>
-        <div className='h-screen sticky top-0 basis-[15%]'>
+        <div className='h-screen sticky lg:top-0 basis-[15%]'>
           <Sidebar />
         </div>
-        <div className='basis-[85%] pt-4 p-2'>{children}</div>
+        <div className='basis-[85%] pt-4 pb-6 p-2'>{children}</div>
       </div>
     </>
   );

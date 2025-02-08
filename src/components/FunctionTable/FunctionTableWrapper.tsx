@@ -10,7 +10,6 @@ import { remove } from '@/utils/utils';
 import Editor from '../Editor';
 import LanguageSelection from '../LanguageSelection';
 import Modal from '../Modal';
-import FunctionStats from './FunctionStats';
 import FunctionTable from './FunctionTable';
 
 export default function FunctionTableWrapper() {
@@ -81,7 +80,6 @@ export default function FunctionTableWrapper() {
       <div className='w-full space-y-10'>
         <div className='justify-items-left pl-4 pr-4 space-y-6'>
           <h1 className='text-4xl font-bold'>Functions</h1>
-          <FunctionStats />
           <button
             className='px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-center text-white'
             onClick={() => setModalIsOpen(true)}

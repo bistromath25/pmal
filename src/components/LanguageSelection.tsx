@@ -15,7 +15,7 @@ export default function LanguageSelection({
   const renderLanguageOption = (name: string, logoUrl: string) => {
     return (
       <Link
-        className={`rounded-lg hover:bg-gray-100 h-[50px] justify-items-center ${name === currentLanguage ? 'bg-gray-100' : 'bg-white-100'} ${FF_ONLY_JS_FUNCTIONS && name !== 'js' ? 'hover:cursor-not-allowed hover:bg-white' : ''}`}
+        className={`rounded-lg hover:bg-white h-[50px] justify-items-center ${name === currentLanguage ? 'bg-white' : ''} ${FF_ONLY_JS_FUNCTIONS && name !== 'js' ? 'hover:cursor-not-allowed hover:bg-white' : ''}`}
         key={`editor-language-option-${name}`}
         href={
           isPlayground

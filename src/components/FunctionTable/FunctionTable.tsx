@@ -5,11 +5,9 @@ import { useFunctionContext } from '@/contexts/functionContext';
 import { APP_BASE_URL } from '@/env/env';
 import { Function } from '@/types/Function';
 import { getDemoQuery, languageOptions } from '@/utils/functions';
+import { formatDate } from '@/utils/utils';
 import Editor from '../Editor';
 import Modal from '../Modal';
-
-const formatDate = (date: Date, full = true) =>
-  full ? date.toString() : date.toString().split('T')[0];
 
 function FunctionDetails({ fun }: { fun: Function }) {
   const { executionEntries } = useFunctionContext();

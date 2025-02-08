@@ -16,3 +16,6 @@ export const remove = (items, item) => {
 export const getNumberOfLines = (f: string) => {
   return f.split('\n').length;
 };
+
+export const formatDate = (date: Date, full = true) =>
+  full ? date.toString() : date.toString().split('T')[0];
