@@ -7,7 +7,7 @@ const routeConfig = {
     requiresAuth: false,
   },
   dashboard: {
-    patterns: ['/home', '/editor'],
+    patterns: ['/home', '/functions'],
     requiresAuth: true,
   },
 };
