@@ -51,7 +51,7 @@ export default function Editor({
   return (
     <>
       <CodeEditor
-        className='w-full p-2 rounded-lg border border-blue-100 shadow-sm'
+        className='w-full p-2 rounded-lg border border-[rgb(227_232_239)] shadow-sm'
         value={code}
         language={language}
         onChange={(e) => setCode(e.target.value)}
