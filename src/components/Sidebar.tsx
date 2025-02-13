@@ -17,11 +17,6 @@ const sidebarOptions = [
     path: '/functions',
   },
   {
-    name: 'Editor',
-    icon: <FilePenIcon />,
-    path: '/editor',
-  },
-  {
     name: 'Sign out',
     icon: <SignoutIcon />,
     path: '/signout',
