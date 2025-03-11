@@ -204,7 +204,7 @@ export default function Landing() {
           </div>
         </div>
       </div>
-      <div className='w-full justify-items-center p-4 sm:px-40 bg-gray-50 border border-1 border-e-0 border-s-0 hidden sm:inline-block'>
+      <div className='w-full justify-items-center p-4 sm:px-40 bg-gray-50 border border-1 border-e-0 border-s-0 hidden sm:block'>
         <p className='w-[80%] text-center text-black font-bold text-2xl'>
           Where performance meets simplicity
         </p>
