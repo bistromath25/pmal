@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
 import { SessionProvider } from 'next-auth/react';
 import { Inter } from 'next/font/google';
 import { FunctionContextProvider } from '@/contexts/functionContext';
@@ -18,14 +19,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <SessionProvider>
-      <UserContextProvider>
-        <FunctionContextProvider>
-          <html lang='en'>
-            <body className={inter.className}>{children}</body>
-          </html>
-        </FunctionContextProvider>
-      </UserContextProvider>
-    </SessionProvider>
+    <html lang='en'>
+      <body className={inter.className}>
+        <SessionProvider>
+          <AppRouterCacheProvider>
+            <UserContextProvider>
+              <FunctionContextProvider>{children}</FunctionContextProvider>
+            </UserContextProvider>
+          </AppRouterCacheProvider>
+        </SessionProvider>
+      </body>
+    </html>
   );
 }
