@@ -7,6 +7,7 @@ import { useUserContext } from '@/contexts/userContext';
 import { getDefaultFunctionValue } from '@/utils/functions';
 import FunctionCharts from './Charts';
 import FunctionStats from './Stats';
+import { Stack, Typography } from '@mui/material';
 
 export default function HomeWrapper() {
   const { user: currentUser } = useUserContext();
@@ -27,12 +28,10 @@ export default function HomeWrapper() {
     refreshFunctions();
   }, [refreshFunctions]);
   return (
-    <div className='w-full space-y-10'>
-      <div className='justify-items-left pl-4 pr-4 space-y-6'>
-        <h1 className='text-4xl font-bold'>Home</h1>
-        <FunctionStats />
-        <FunctionCharts />
-      </div>
-    </div>
+    <Stack spacing={2}>
+      <Typography variant='h4'>Home</Typography>
+      <FunctionStats />
+      <FunctionCharts />
+    </Stack>
   );
 }

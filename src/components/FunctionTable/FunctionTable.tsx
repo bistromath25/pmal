@@ -8,6 +8,7 @@ import { getDemoQuery, languageOptions } from '@/utils/functions';
 import { formatDate } from '@/utils/utils';
 import Editor from '../Editor';
 import Modal from '../Modal';
+import { Box, Button, Grid, Stack, TextField, Typography } from '@mui/material';
 
 function FunctionDetails({ fun }: { fun: Function }) {
   const { executionEntries } = useFunctionContext();
@@ -17,40 +18,33 @@ function FunctionDetails({ fun }: { fun: Function }) {
     0
   );
   return (
-    <>
-      <div className='hidden md:flex md:flex-row gap-10'>
-        <div className='flex flex-row gap-2'>
-          <div>
-            <p className='font-bold'>Total calls:</p>
-            <p className='font-bold'>Total time:</p>
-            <p className='font-bold'>Language:</p>
-          </div>
-          <div>
-            <p>{fun.total_calls}</p>
-            <p>{totalExecutionTime} ms</p>
-            <p>{fun.language}</p>
-          </div>
-        </div>
-        <div className='flex flex-row gap-2'>
-          <div>
-            <p className='font-bold'>Created at:</p>
-            <p className='font-bold'>Updated at:</p>
-          </div>
-          <div>
-            <p>{formatDate(fun.created_at)}</p>
-            <p>{formatDate(fun.updated_at ?? fun.created_at)}</p>
-          </div>
-        </div>
-      </div>
-      <div className='md:hidden text-gray-600'>
-        <p className='font-bold'>Total calls: {fun.total_calls}</p>
-        <p className='font-bold'>Language: {fun.language}</p>
-        <p className='font-bold'>Created at: {formatDate(fun.created_at)}</p>
-        <p className='font-bold'>
-          Updated at: {formatDate(fun.updated_at ?? fun.created_at)}
-        </p>
-      </div>
-    </>
+    <Box sx={{ display: 'flex', gap: 2 }}>
+      <Box sx={{ display: 'flex', gap: 1 }}>
+        <Box>
+          <Typography variant='h6'>Total calls:</Typography>
+          <Typography variant='h6'>Total time:</Typography>
+          <Typography variant='h6'>Language:</Typography>
+        </Box>
+        <Box>
+          <Typography variant='h6'>{fun.total_calls}</Typography>
+          <Typography variant='h6'>{totalExecutionTime} ms</Typography>
+          <Typography variant='h6'>{fun.language}</Typography>
+        </Box>
+      </Box>
+      <Box sx={{ display: 'flex', gap: 1 }}>
+        <Box>
+          <Typography variant='h6'>Created at:</Typography>
+          <Typography variant='h6'>Updated at:</Typography>
+          <Typography variant='h6'>Language:</Typography>
+        </Box>
+        <Box>
+          <Typography variant='h6'>{formatDate(fun.created_at)}</Typography>
+          <Typography variant='h6'>
+            {formatDate(fun.updated_at ?? fun.created_at)}
+          </Typography>
+        </Box>
+      </Box>
+    </Box>
   );
 }
 
@@ -89,76 +83,59 @@ export default function FunctionTable({
     [setCurrentFunction, setDeleteModalIsOpen]
   );
   return functions && functions.length ? (
-    <div className='pl-4 pr-4'>
-      <div className='relative overflow-x-auto grid grid-cols-2 md:grid-cols-3 gap-6'>
+    <Box>
+      <Grid container spacing={4}>
         {functions.map((fun: Function) => {
           const logo = languageOptions.find(
             ({ name }) => name === fun.language
           )?.logoUrl;
           const createdAtDateString = formatDate(fun.created_at, false);
           return (
-            <div
-              className='bg-white border border-[rgb(227_232_239)] shadow-sm rounded-lg p-1 md:p-4'
-              key={`function-box-${fun.alias}`}
-            >
-              <div className='flex flex-col md:flex-row p-1 md:p-0 md:space-x-4'>
-                <div className='hidden md:inline-block basis-1/6 my-auto'>
+            <Box key={`function-box-${fun.alias}`}>
+              <Box sx={{ display: 'flex', gap: 2 }}>
+                <Box sx={{ flexBasis: '1/6' }}>
                   <img className='h-[50px]' src={logo} />
-                </div>
-                <div className='basis-2/3'>
-                  <p className='font-bold text-2xl'>{fun.alias}</p>
-                  <p className='text-gray-600'>Calls: {fun.total_calls}</p>
-                  <p className='text-gray-600'>
+                </Box>
+                <Box sx={{ flexBasis: '2/3' }}>
+                  <Typography variant='h5'>{fun.alias}</Typography>
+                  <Typography variant='h6'>Calls: {fun.total_calls}</Typography>
+                  <Typography variant='h6'>
                     Created: {createdAtDateString}
-                  </p>
-                </div>
-                <div className='basis-1/6 my-auto flex flex-col space-y-2'>
-                  <button
-                    className='px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-center text-white'
-                    onClick={() => openEditModal(fun)}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className='px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-center text-white'
-                    onClick={() => openDeleteModal(fun)}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            </div>
+                  </Typography>
+                </Box>
+                <Stack sx={{ flexBasis: '1/6' }}>
+                  <Button onClick={() => openEditModal(fun)}>Edit</Button>
+                  <Button onClick={() => openDeleteModal(fun)}>Delete</Button>
+                </Stack>
+              </Box>
+            </Box>
           );
         })}
-      </div>
+      </Grid>
       <Modal
         modalIsOpen={deleteModalIsOpen}
         onClose={() => setDeleteModalIsOpen(false)}
         title={`Delete function ${currentFunction.alias}?`}
         contents={
-          <div className='space-y-4 justify-items-center'>
-            <p className='text-gray-600'>
+          <Stack spacing={2}>
+            <Typography variant='h6'>
               Are you sure you want to delete this function? This action cannot
               be undone.
-            </p>
-            <div className='flex flex-row gap-4'>
-              <button
-                className='px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-center text-white'
+            </Typography>
+            <Box>
+              <Button
                 onClick={() => {
                   handleDeleteFunction(currentFunction.alias);
                   setDeleteModalIsOpen(false);
                 }}
               >
                 Yes, I'm sure
-              </button>
-              <button
-                className='px-4 py-2 rounded-lg bg-white hover:bg-gray-100 border border-gray-300 text-center text-black'
-                onClick={() => setDeleteModalIsOpen(false)}
-              >
+              </Button>
+              <Button onClick={() => setDeleteModalIsOpen(false)}>
                 No, Cancel
-              </button>
-            </div>
-          </div>
+              </Button>
+            </Box>
+          </Stack>
         }
       />
       <Modal
@@ -166,13 +143,12 @@ export default function FunctionTable({
         onClose={() => setEditModalIsOpen(false)}
         title={`Edit function ${currentFunction.alias}`}
         contents={
-          <div className='space-y-4 pt-2'>
-            <div>
+          <Stack spacing={2}>
+            <Box>
               <FunctionDetails fun={currentFunction} />
-              <div className='flex flex-row gap-2 pt-2'>
-                <p className='font-bold my-auto'>URL:</p>
-                <input
-                  className='w-full px-1 cursor-copy focus:outline-none bg-transparent border border-gray-300 rounded-lg'
+              <Box className='flex flex-row gap-2 pt-2'>
+                <Typography variant='h6'>URL:</Typography>
+                <TextField
                   value={`${currentFunction.alias}?${getDemoQuery(currentFunction.code, currentFunction.language)}`}
                   onClick={(e) => {
                     e.preventDefault();
@@ -180,10 +156,14 @@ export default function FunctionTable({
                       `${APP_BASE_URL}/api/${currentFunction.alias}?${getDemoQuery(currentFunction.code, currentFunction.language)}`
                     );
                   }}
-                  readOnly
+                  slotProps={{
+                    input: {
+                      readOnly: true,
+                    },
+                  }}
                 />
-              </div>
-            </div>
+              </Box>
+            </Box>
             <Editor
               code={currentCode}
               setCode={setCurrentCode}
@@ -192,9 +172,8 @@ export default function FunctionTable({
               error={error}
               setError={setError}
             />
-            <div className='flex flex-row gap-4'>
-              <button
-                className='px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-center text-white disabled:hover:cursor-not-allowed'
+            <Box>
+              <Button
                 onClick={() => {
                   const newFunction = {
                     ...currentFunction,
@@ -207,12 +186,12 @@ export default function FunctionTable({
                 disabled={error || !currentCode}
               >
                 Save
-              </button>
-            </div>
-          </div>
+              </Button>
+            </Box>
+          </Stack>
         }
         editor
       />
-    </div>
+    </Box>
   ) : null;
 }

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { FF_ONLY_JS_FUNCTIONS } from '@/env/env';
 import { languageOptions } from '@/utils/functions';
+import { Box, Typography } from '@mui/material';
 
 export default function LanguageSelection({
   type,
@@ -36,11 +37,11 @@ export default function LanguageSelection({
     );
   };
   return (
-    <div className='hidden md:flex md:flex-row gap-4'>
-      <h2 className='font-bold my-auto'>Language:</h2>
+    <Box className='hidden md:flex md:flex-row gap-4'>
+      <Typography variant='h6'>Language:</Typography>
       {languageOptions.map(({ name, logoUrl }) =>
         renderLanguageOption(name, logoUrl)
       )}
-    </div>
+    </Box>
   );
 }

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
 
 export interface HeaderProps {
   type: 'landing' | 'dashboard';
@@ -15,23 +16,21 @@ export default function Header({ type }: HeaderProps) {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
   return (
-    <div
-      className={`w-full p-4 ${isLanding ? 'bg-black sticky top-0 z-50' : 'bg-gray-50 border border-e-0 border-s-0'} transition duration-1000 ${scrollY > 50 ? 'bg-gray-50 border border-gray-300 border-e-0 border-s-0' : ''}`}
+    <Box
+      sx={{
+        flexGrow: 1,
+        backgroundColor: '#000',
+      }}
     >
-      <div className='grid grid-cols-2'>
-        <div
-          className={`px-2 py-1 font-bold text-2xl transition duration-1000 ${isLanding && scrollY <= 50 ? 'text-white' : 'text-black'}`}
-        >
-          PMAL
-        </div>
-        <div className='text-right px-2'>
-          <button className='px-4 py-2 rounded-full border border-blue-800 shadow-md bg-blue-600 hover:border-transparent hover:bg-blue-700 text-center text-white'>
-            <Link href={isLanding ? '/signin' : '/signout'}>
-              {isLanding ? 'Sign in with Google' : 'Sign out'}
-            </Link>
-          </button>
-        </div>
-      </div>
-    </div>
+      <AppBar position='static'>
+        <Toolbar>
+          <Typography variant='h5'>PMAL</Typography>
+          <Box sx={{ flexGrow: 1 }} />
+          <Button href={isLanding ? '/signin' : '/signout'} color='inherit'>
+            {isLanding ? 'Sign in with Google' : 'Sign out'}
+          </Button>
+        </Toolbar>
+      </AppBar>
+    </Box>
   );
 }

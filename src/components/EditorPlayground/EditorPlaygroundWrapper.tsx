@@ -7,6 +7,7 @@ import { useFunctionContext } from '@/contexts/functionContext';
 import { useUserContext } from '@/contexts/userContext';
 import { APP_BASE_URL } from '@/env/env';
 import EditorPlayground from './EditorPlayground';
+import { Box, Stack, Typography } from '@mui/material';
 
 export default function EditorPlaygroundWrapper() {
   const router = useRouter();
@@ -33,19 +34,15 @@ export default function EditorPlaygroundWrapper() {
     }
   }, [router, searchParams]);
   return (
-    <div className='w-full space-y-4 justify'>
-      <div className='justify-items-left pl-4 space-y-4'>
-        <h1 className='text-4xl font-bold'>Editor Playground</h1>
-        <p className='text-gray-600'>
-          This function will always be available at{' '}
-          <span className='font-mono text-black'>
-            {`${APP_BASE_URL}/api/${currentUser.key}`}
-          </span>
-        </p>
-      </div>
-      <div className='pl-4 pr-4'>
-        <EditorPlayground />
-      </div>
-    </div>
+    <Stack spacing={2}>
+      <Typography variant='h4'>Editor Playground</Typography>
+      <Typography variant='h6'>
+        This function will always be available at{' '}
+        <span className='font-mono text-black'>
+          {`${APP_BASE_URL}/api/${currentUser.key}`}
+        </span>
+      </Typography>
+      <EditorPlayground />
+    </Stack>
   );
 }

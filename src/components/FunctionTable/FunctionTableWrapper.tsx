@@ -11,6 +11,7 @@ import Editor from '../Editor';
 import LanguageSelection from '../LanguageSelection';
 import Modal from '../Modal';
 import FunctionTable from './FunctionTable';
+import { Box, Button, Stack, Typography } from '@mui/material';
 
 export default function FunctionTableWrapper() {
   const { user: currentUser, setUser: setCurrentUser } = useUserContext();
@@ -76,28 +77,21 @@ export default function FunctionTableWrapper() {
     refreshFunctions();
   }, [refreshFunctions]);
   return (
-    <>
-      <div className='w-full space-y-10'>
-        <div className='justify-items-left pl-4 pr-4 space-y-6'>
-          <h1 className='text-4xl font-bold'>Functions</h1>
-          <button
-            className='px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-center text-white'
-            onClick={() => setModalIsOpen(true)}
-          >
-            Create
-          </button>
-        </div>
-        <FunctionTable
-          handleDeleteFunction={handleDeleteFunction}
-          handleUpdateFunction={handleUpdateFunction}
-        />
-      </div>
+    <Stack spacing={2}>
+      <Typography variant='h4'>Functions</Typography>
+      <Box>
+        <Button onClick={() => setModalIsOpen(true)}>Create</Button>
+      </Box>
+      <FunctionTable
+        handleDeleteFunction={handleDeleteFunction}
+        handleUpdateFunction={handleUpdateFunction}
+      />
       <Modal
         modalIsOpen={modalIsOpen}
         onClose={() => setModalIsOpen(false)}
         title='Create function'
         contents={
-          <div className='space-y-4 pt-1 md:pt-2'>
+          <Stack spacing={2}>
             <LanguageSelection
               type='dashboard'
               currentLanguage={currentLanguage}
@@ -111,19 +105,15 @@ export default function FunctionTableWrapper() {
               error={error}
               setError={setError}
             />
-            <div className='flex flex-row gap-4'>
-              <button
-                className='px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-center text-white disabled:hover:cursor-not-allowed'
-                onClick={onSubmit}
-                disabled={error || !currentCode}
-              >
+            <Box>
+              <Button onClick={onSubmit} disabled={error || !currentCode}>
                 Deploy
-              </button>
-            </div>
-          </div>
+              </Button>
+            </Box>
+          </Stack>
         }
         editor
       />
-    </>
+    </Stack>
   );
 }

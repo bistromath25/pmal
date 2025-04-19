@@ -2,13 +2,12 @@
 
 import { useDeferredValue, useEffect } from 'react';
 import { isValidFunction } from '@/utils/functions';
+import { Typography } from '@mui/material';
 import CodeEditor from '@uiw/react-textarea-code-editor';
 
 export function Warning() {
   return (
-    <p className='w-full p-2 rounded-lg bg-red-500 text-center text-white'>
-      ⚠️ Error! Not a valid function! ⚠️
-    </p>
+    <Typography variant='h6'>⚠️ Error! Not a valid function! ⚠️</Typography>
   );
 }
 
