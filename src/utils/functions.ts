@@ -79,19 +79,18 @@ export const getDemoQuery = (code: string, langauge: string) => {
 export const languageOptions = [
   {
     name: 'js',
-    logoUrl: 'https://nodejs.org/static/logos/jsIconGreen.svg',
+    logoUrl: '/logos/nodejs.png',
   },
   {
     name: 'py',
-    logoUrl:
-      'https://s3.dualstack.us-east-2.amazonaws.com/pythondotorg-assets/media/community/logos/python-logo-only.png',
+    logoUrl: '/logos/python.png',
   },
   {
     name: 'php',
-    logoUrl: 'https://www.php.net//images/logos/php-med-trans-light.gif',
+    logoUrl: '/logos/php.png',
   },
   {
     name: 'rb',
-    logoUrl: 'https://www.ruby-lang.org/images/header-ruby-logo.png',
+    logoUrl: '/logos/ruby.png',
   },
 ];
