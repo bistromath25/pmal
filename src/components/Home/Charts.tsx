@@ -50,9 +50,20 @@ function CallsAndRuntimeLineChart() {
         },
       ]}
       yAxis={[
-        { scaleType: 'linear', tickMinStep: 1, min: 0 },
-        { id: 'left', scaleType: 'linear', tickMinStep: 1, min: 0 },
-        { id: 'right', scaleType: 'linear', tickMinStep: 200, min: 0 },
+        {
+          id: 'left',
+          scaleType: 'linear',
+          tickMinStep: 1,
+          min: 0,
+          position: 'left',
+        },
+        {
+          id: 'right',
+          scaleType: 'linear',
+          tickMinStep: 200,
+          min: 0,
+          position: 'right',
+        },
       ]}
       series={[
         {
@@ -70,8 +81,6 @@ function CallsAndRuntimeLineChart() {
           color: 'rgb(37,99,235)',
         },
       ]}
-      leftAxis='left'
-      rightAxis='right'
       height={400}
       sx={{ width: '100%' }}
     />
