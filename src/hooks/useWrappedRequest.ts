@@ -24,6 +24,6 @@ export default function useWrappedRequest() {
     },
     [setAppError, setAppLoading]
   );
-  const resetError = () => setError(null);
+  const resetError = useCallback(() => setError(null), []);
   return { loading, wrappedRequest, error, resetError };
 }
