@@ -3,9 +3,10 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import * as API from '@/app/api/api';
-import { useFunctionContext } from '@/contexts/functionContext';
-import { useUserContext } from '@/contexts/userContext';
+import { useFunction } from '@/contexts/function';
+import { useUser } from '@/contexts/user';
 import { APP_BASE_URL } from '@/env/env';
+import useWrappedRequest from '@/hooks/useWrappedRequest';
 import { isValidFunction } from '@/utils/functions';
 import { getDemoQuery } from '@/utils/functions';
 import Editor from '../Editor';
@@ -17,8 +18,9 @@ export default function EditorPlayground() {
   const searchParams = useSearchParams();
   const {
     user: { key },
-  } = useUserContext();
-  const { code, setCode, language, setLanguage } = useFunctionContext();
+  } = useUser();
+  const { code, setCode, language, setLanguage } = useFunction();
+  const { wrappedRequest } = useWrappedRequest();
   const [error, setError] = useState(false);
   const [demoQuery, setDemoQuery] = useState(getDemoQuery(code, 'js'));
   const [copied, setCopied] = useState(false);
@@ -27,7 +29,7 @@ export default function EditorPlayground() {
     setLoading(true);
     try {
       if (isValidFunction(code, language)) {
-        await API.updateFunction({ alias: key, code });
+        await wrappedRequest(() => API.updateFunction({ alias: key, code }));
         setDemoQuery(getDemoQuery(code, language));
         setError(false);
       } else {

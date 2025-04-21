@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useFunctionContext } from '@/contexts/functionContext';
+import { useFunction } from '@/contexts/function';
 import { formatDate } from '@/utils/utils';
 import {
   Box,
@@ -16,7 +16,7 @@ import {
 import { BarChart, LineChart } from '@mui/x-charts';
 
 function CallsAndRuntimeLineChart() {
-  const { executionEntries } = useFunctionContext();
+  const { executionEntries } = useFunction();
   const data = useMemo(() => {
     return [
       ...executionEntries.reduce((m, { started_at, time }) => {
@@ -79,7 +79,7 @@ function CallsAndRuntimeLineChart() {
 }
 
 function EntryBarChart() {
-  const { executionEntries } = useFunctionContext();
+  const { executionEntries } = useFunction();
   const data = useMemo(() => {
     return executionEntries
       .map((d) => ({
@@ -106,7 +106,7 @@ function EntryBarChart() {
 }
 
 function EntryList() {
-  const { executionEntries } = useFunctionContext();
+  const { executionEntries } = useFunction();
   const data = useMemo(() => {
     return executionEntries
       .map((d) => ({

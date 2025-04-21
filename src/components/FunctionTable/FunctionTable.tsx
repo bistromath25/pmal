@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useState } from 'react';
-import { useFunctionContext } from '@/contexts/functionContext';
+import { useFunction } from '@/contexts/function';
 import { APP_BASE_URL } from '@/env/env';
 import { Function } from '@/types/Function';
 import { getDemoQuery, languageOptions } from '@/utils/functions';
@@ -19,7 +19,7 @@ import {
 } from '@mui/material';
 
 function FunctionDetails({ fun }: { fun: Function }) {
-  const { executionEntries } = useFunctionContext();
+  const { executionEntries } = useFunction();
   const totalExecutionTime = executionEntries.reduce(
     (t, { function_alias, time }) =>
       t + (function_alias === fun.alias ? (time ?? 0) : 0),
@@ -70,7 +70,7 @@ export default function FunctionTable({
     currentFunction,
     setCurrentFunction,
     functions,
-  } = useFunctionContext();
+  } = useFunction();
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [error, setError] = useState(false);

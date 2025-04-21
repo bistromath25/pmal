@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Marquee from 'react-fast-marquee';
 import * as API from '@/app/api/api';
 import { APP_BASE_URL } from '@/env/env';
+import useWrappedRequest from '@/hooks/useWrappedRequest';
 import theme from '@/theme/theme';
 import { FunctionCreatePayload } from '@/types/Function';
 import {
@@ -19,13 +20,13 @@ import { DefaultIcon, SuccessIcon } from './Icons';
 import { Box, Button, Grid, Link, Stack, Typography } from '@mui/material';
 
 function LandingEditor() {
+  const { wrappedRequest } = useWrappedRequest();
   const [code, setCode] = useState(getDefaultFunctionValue('js'));
   const [demoQuery, setDemoQuery] = useState<string | undefined>(undefined);
   const [error, setError] = useState(false);
   const [alias, setAlias] = useState<string | undefined>(undefined);
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
-
   const onSubmit = async () => {
     setLoading(true);
     try {
@@ -39,7 +40,7 @@ function LandingEditor() {
         };
         const {
           fun: { alias },
-        } = await API.createFunction(payload);
+        } = await wrappedRequest(() => API.createFunction(payload));
         setAlias(alias);
         setDemoQuery(getDemoQuery(code, 'js'));
         setCopied(false);

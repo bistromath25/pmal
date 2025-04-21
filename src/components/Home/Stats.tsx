@@ -1,4 +1,4 @@
-import { useFunctionContext } from '@/contexts/functionContext';
+import { useFunction } from '@/contexts/function';
 import { Box, Paper, Stack, Typography } from '@mui/material';
 
 function StatDetail({
@@ -17,7 +17,7 @@ function StatDetail({
 }
 
 export default function FunctionStats() {
-  const { functions, executionEntries } = useFunctionContext();
+  const { functions, executionEntries } = useFunction();
   const totalCalls = functions.reduce(
     (c, { total_calls }) => c + total_calls,
     0

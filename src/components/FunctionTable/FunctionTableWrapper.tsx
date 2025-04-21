@@ -2,8 +2,10 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import * as API from '@/app/api/api';
-import { useFunctionContext } from '@/contexts/functionContext';
-import { useUserContext } from '@/contexts/userContext';
+import { useApp } from '@/contexts/app';
+import { useFunction } from '@/contexts/function';
+import { useUser } from '@/contexts/user';
+import useWrappedRequest from '@/hooks/useWrappedRequest';
 import { Function } from '@/types/Function';
 import { getDefaultFunctionValue, isValidFunction } from '@/utils/functions';
 import { remove } from '@/utils/utils';
@@ -11,24 +13,32 @@ import Editor from '../Editor';
 import LanguageSelection from '../LanguageSelection';
 import Modal from '../Modal';
 import FunctionTable from './FunctionTable';
-import { Box, Button, Stack, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Stack,
+  Typography,
+} from '@mui/material';
 
 export default function FunctionTableWrapper() {
-  const { user: currentUser, setUser: setCurrentUser } = useUserContext();
+  const { user: currentUser, setUser: setCurrentUser } = useUser();
   const {
     code: currentCode,
     setCode: setCurrentCode,
     language: currentLanguage,
     setLanguage: setCurrentLanguage,
     setFunctions,
-  } = useFunctionContext();
+  } = useFunction();
+  const { loading, setSuccess } = useApp();
+  const { wrappedRequest } = useWrappedRequest();
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [error, setError] = useState(false);
   const refreshFunctions = useCallback(async () => {
     const { aliases } = currentUser;
-    const { funs } = await API.getFunctions({ aliases });
+    const { funs } = await wrappedRequest(() => API.getFunctions({ aliases }));
     setFunctions(funs);
-  }, [currentUser, setFunctions]);
+  }, [currentUser, setFunctions, wrappedRequest]);
   const onSubmit = async () => {
     if (isValidFunction(currentCode, currentLanguage)) {
       const payload = {
@@ -40,35 +50,42 @@ export default function FunctionTableWrapper() {
       };
       const {
         fun: { alias },
-      } = await API.createFunction(payload);
-      const { user } = await API.updateUser({
-        id: currentUser.id,
-        aliases: [...currentUser.aliases, alias],
-      });
+      } = await wrappedRequest(() => API.createFunction(payload));
+      const { user } = await wrappedRequest(() =>
+        API.updateUser({
+          id: currentUser.id,
+          aliases: [...currentUser.aliases, alias],
+        })
+      );
       setCurrentUser(user);
       setError(false);
       setModalIsOpen(false);
+      setSuccess(`Created function ${alias}`);
     } else {
       setError(true);
     }
   };
   const handleDeleteFunction = useCallback(
     async (alias: string) => {
-      await API.deleteFunction({ alias });
-      const { user } = await API.updateUser({
-        ...currentUser,
-        aliases: remove(currentUser.aliases, alias),
-      });
+      await wrappedRequest(() => API.deleteFunction({ alias }));
+      const { user } = await wrappedRequest(() =>
+        API.updateUser({
+          ...currentUser,
+          aliases: remove(currentUser.aliases, alias),
+        })
+      );
       setCurrentUser(user);
+      setSuccess(`Deleted function ${alias}`);
     },
-    [currentUser, setCurrentUser]
+    [currentUser, setCurrentUser, setSuccess, wrappedRequest]
   );
   const handleUpdateFunction = useCallback(
     async (fun: Function) => {
-      await API.updateFunction(fun);
+      await wrappedRequest(() => API.updateFunction(fun));
       await refreshFunctions();
+      setSuccess(`Updated function ${fun.alias}`);
     },
-    [refreshFunctions]
+    [refreshFunctions, setSuccess, wrappedRequest]
   );
   useEffect(() => {
     setCurrentCode(getDefaultFunctionValue(currentLanguage));
@@ -77,19 +94,25 @@ export default function FunctionTableWrapper() {
     refreshFunctions();
   }, [refreshFunctions]);
   return (
-    <Stack spacing={2}>
-      <Typography variant='h4' sx={{ fontWeight: 'bold' }}>
-        Functions
-      </Typography>
-      <Box>
-        <Button variant='contained' onClick={() => setModalIsOpen(true)}>
-          Create
-        </Button>
-      </Box>
-      <FunctionTable
-        handleDeleteFunction={handleDeleteFunction}
-        handleUpdateFunction={handleUpdateFunction}
-      />
+    <>
+      <Stack spacing={2}>
+        <Typography variant='h4' sx={{ fontWeight: 'bold' }}>
+          Functions
+        </Typography>
+        <Box>
+          <Button variant='contained' onClick={() => setModalIsOpen(true)}>
+            Create
+          </Button>
+        </Box>
+        {loading ? (
+          <CircularProgress />
+        ) : (
+          <FunctionTable
+            handleDeleteFunction={handleDeleteFunction}
+            handleUpdateFunction={handleUpdateFunction}
+          />
+        )}
+      </Stack>
       <Modal
         modalIsOpen={modalIsOpen}
         onClose={() => setModalIsOpen(false)}
@@ -122,6 +145,6 @@ export default function FunctionTableWrapper() {
         }
         editor
       />
-    </Stack>
+    </>
   );
 }

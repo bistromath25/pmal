@@ -2,25 +2,29 @@
 
 import { useCallback, useEffect } from 'react';
 import * as API from '@/app/api/api';
-import { useFunctionContext } from '@/contexts/functionContext';
-import { useUserContext } from '@/contexts/userContext';
+import { useApp } from '@/contexts/app';
+import { useFunction } from '@/contexts/function';
+import { useUser } from '@/contexts/user';
+import useWrappedRequest from '@/hooks/useWrappedRequest';
 import { getDefaultFunctionValue } from '@/utils/functions';
 import FunctionCharts from './Charts';
 import FunctionStats from './Stats';
-import { Stack, Typography } from '@mui/material';
+import { CircularProgress, Stack, Typography } from '@mui/material';
 
 export default function HomeWrapper() {
-  const { user: currentUser } = useUserContext();
+  const { user: currentUser } = useUser();
   const {
     setCode: setCurrentCode,
     language: currentLanguage,
     setFunctions,
-  } = useFunctionContext();
+  } = useFunction();
+  const { loading } = useApp();
+  const { wrappedRequest } = useWrappedRequest();
   const refreshFunctions = useCallback(async () => {
     const { aliases } = currentUser;
-    const { funs } = await API.getFunctions({ aliases });
+    const { funs } = await wrappedRequest(() => API.getFunctions({ aliases }));
     setFunctions(funs);
-  }, [currentUser, setFunctions]);
+  }, [currentUser, setFunctions, wrappedRequest]);
   useEffect(() => {
     setCurrentCode(getDefaultFunctionValue(currentLanguage));
   }, [currentLanguage, setCurrentCode]);
@@ -32,8 +36,14 @@ export default function HomeWrapper() {
       <Typography variant='h4' sx={{ fontWeight: 'bold' }}>
         Home
       </Typography>
-      <FunctionStats />
-      <FunctionCharts />
+      {loading ? (
+        <CircularProgress />
+      ) : (
+        <>
+          <FunctionStats />
+          <FunctionCharts />
+        </>
+      )}
     </Stack>
   );
 }

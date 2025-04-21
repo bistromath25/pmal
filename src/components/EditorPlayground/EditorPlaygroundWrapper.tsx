@@ -3,27 +3,29 @@
 import { useCallback, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import * as API from '@/app/api/api';
-import { useFunctionContext } from '@/contexts/functionContext';
-import { useUserContext } from '@/contexts/userContext';
+import { useFunction } from '@/contexts/function';
+import { useUser } from '@/contexts/user';
 import { APP_BASE_URL } from '@/env/env';
+import useWrappedRequest from '@/hooks/useWrappedRequest';
 import EditorPlayground from './EditorPlayground';
 import { Stack, Typography } from '@mui/material';
 
 export default function EditorPlaygroundWrapper() {
   const router = useRouter();
-  const { user: currentUser } = useUserContext();
-  const { setCode: setCurrentCode } = useFunctionContext();
+  const { user: currentUser } = useUser();
+  const { setCode: setCurrentCode } = useFunction();
+  const { wrappedRequest } = useWrappedRequest();
   const searchParams = useSearchParams();
   const getKeyFunction = useCallback(
     async (alias: string) => {
       if (alias) {
         const {
           fun: { code },
-        } = await API.getFunction({ alias });
+        } = await wrappedRequest(() => API.getFunction({ alias }));
         setCurrentCode(code);
       }
     },
-    [setCurrentCode]
+    [setCurrentCode, wrappedRequest]
   );
   useEffect(() => {
     getKeyFunction(currentUser.key);

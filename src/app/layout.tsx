@@ -2,8 +2,9 @@ import type { Metadata } from 'next';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
 import { SessionProvider } from 'next-auth/react';
 import { Inter } from 'next/font/google';
-import { FunctionContextProvider } from '@/contexts/functionContext';
-import { UserContextProvider } from '@/contexts/userContext';
+import { AppContextProvider } from '@/contexts/app';
+import { FunctionContextProvider } from '@/contexts/function';
+import { UserContextProvider } from '@/contexts/user';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -23,9 +24,11 @@ export default function RootLayout({
       <body className={inter.className}>
         <SessionProvider>
           <AppRouterCacheProvider>
-            <UserContextProvider>
-              <FunctionContextProvider>{children}</FunctionContextProvider>
-            </UserContextProvider>
+            <AppContextProvider>
+              <UserContextProvider>
+                <FunctionContextProvider>{children}</FunctionContextProvider>
+              </UserContextProvider>
+            </AppContextProvider>
           </AppRouterCacheProvider>
         </SessionProvider>
       </body>
