@@ -78,9 +78,13 @@ export default function FunctionTableWrapper() {
   }, [refreshFunctions]);
   return (
     <Stack spacing={2}>
-      <Typography variant='h4'>Functions</Typography>
+      <Typography variant='h4' sx={{ fontWeight: 'bold' }}>
+        Functions
+      </Typography>
       <Box>
-        <Button onClick={() => setModalIsOpen(true)}>Create</Button>
+        <Button variant='contained' onClick={() => setModalIsOpen(true)}>
+          Create
+        </Button>
       </Box>
       <FunctionTable
         handleDeleteFunction={handleDeleteFunction}
@@ -106,7 +110,11 @@ export default function FunctionTableWrapper() {
               setError={setError}
             />
             <Box>
-              <Button onClick={onSubmit} disabled={error || !currentCode}>
+              <Button
+                variant='contained'
+                onClick={onSubmit}
+                disabled={error || !currentCode}
+              >
                 Deploy
               </Button>
             </Box>

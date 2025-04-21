@@ -1,3 +1,4 @@
+import theme from '@/theme/theme';
 import { AppBar, Box, Button, Grid, Toolbar, Typography } from '@mui/material';
 
 export interface FooterProps {
@@ -7,8 +8,8 @@ export interface FooterProps {
 export default function Footer({ type }: FooterProps) {
   const isLanding = type === 'landing';
   return (
-    <Box sx={{ backgroundColor: '#000' }}>
-      <AppBar position='static'>
+    <Box>
+      <AppBar position='static' sx={{ backgroundColor: theme.colors.black }}>
         <Toolbar>
           <Box>
             <Typography variant='h6'>
@@ -16,7 +17,7 @@ export default function Footer({ type }: FooterProps) {
             </Typography>
           </Box>
           <Box sx={{ flexGrow: 1 }} />
-          <Grid container spacing={2}>
+          <Grid container>
             <Grid>
               <Button
                 href='https://github.com/bistromath25/pmal'

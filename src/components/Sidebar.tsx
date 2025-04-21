@@ -3,8 +3,9 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import logo from '@/app/favicon.ico';
+import theme from '@/theme/theme';
 import { HouseIcon, ListIcon, SignoutIcon } from './Icons';
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Button, Stack, Typography } from '@mui/material';
 
 const sidebarOptions = [
   {
@@ -27,23 +28,54 @@ const sidebarOptions = [
 export default function Sidebar() {
   const pathname = usePathname();
   return (
-    <Stack spacing={2}>
-      <Box sx={{ display: 'flex', gap: 2 }}>
+    <Stack spacing={0}>
+      <Box sx={{ display: 'flex', p: 4, gap: 2 }}>
         <img src={logo.src} className='m-auto mx-0 w-[30px] h-[30px]' />
-        <Typography variant='h4'>PMAL</Typography>
+        <Typography variant='h4' sx={{ color: theme.colors.offwhite }}>
+          PMAL
+        </Typography>
       </Box>
-      <Stack spacing={2}>
+      <Stack spacing={1}>
         {sidebarOptions.map(({ name, icon, path }) => {
           const isActive = path === pathname;
-          const isEditor = name === 'Editor';
           return (
-            <Box key={`sidebar-option-${name}`}>
-              <Link href={path}>
-                <Box sx={{ display: 'flex', gap: 2 }}>
-                  {icon}
-                  <Typography variant='h6'>{name}</Typography>
-                </Box>
-              </Link>
+            <Box
+              key={`sidebar-option-${name}`}
+              sx={{
+                backgroundColor: theme.colors.darkergrayblue,
+              }}
+            >
+              <Box
+                sx={{
+                  display: 'flex',
+                  mx: 2,
+                  borderRadius: 2,
+                  '&:hover': {
+                    backgroundColor: theme.colors.darkgrayblue,
+                  },
+                  backgroundColor: isActive
+                    ? theme.colors.darkgrayblue
+                    : theme.colors.darkergrayblue,
+                }}
+              >
+                <Button
+                  component={Link}
+                  sx={{ justifyContent: 'flex-start' }}
+                  href={path}
+                  startIcon={icon}
+                  fullWidth
+                >
+                  <Typography
+                    variant='body1'
+                    sx={{
+                      color: theme.colors.offwhite,
+                      textTransform: 'none',
+                    }}
+                  >
+                    {name}
+                  </Typography>
+                </Button>
+              </Box>
             </Box>
           );
         })}

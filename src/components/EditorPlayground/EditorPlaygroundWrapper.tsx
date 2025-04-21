@@ -7,7 +7,7 @@ import { useFunctionContext } from '@/contexts/functionContext';
 import { useUserContext } from '@/contexts/userContext';
 import { APP_BASE_URL } from '@/env/env';
 import EditorPlayground from './EditorPlayground';
-import { Box, Stack, Typography } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 
 export default function EditorPlaygroundWrapper() {
   const router = useRouter();
@@ -35,7 +35,9 @@ export default function EditorPlaygroundWrapper() {
   }, [router, searchParams]);
   return (
     <Stack spacing={2}>
-      <Typography variant='h4'>Editor Playground</Typography>
+      <Typography variant='h4' sx={{ fontWeight: 'bold' }}>
+        Editor Playground
+      </Typography>
       <Typography variant='h6'>
         This function will always be available at{' '}
         <span className='font-mono text-black'>

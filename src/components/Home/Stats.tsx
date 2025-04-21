@@ -1,5 +1,5 @@
 import { useFunctionContext } from '@/contexts/functionContext';
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Paper, Stack, Typography } from '@mui/material';
 
 function StatDetail({
   label,
@@ -33,16 +33,12 @@ export default function FunctionStats() {
     { label: 'Saved', value: `$${(totalTime * 0.0000000021).toFixed(10)}` },
   ];
   return (
-    <Box sx={{ display: 'flex', gap: 4 }}>
+    <Paper sx={{ display: 'flex', p: 2, gap: 4, borderRadius: '4px' }}>
       {stats.map(({ label, value }) => (
-        <Box sx={{ flexBasis: '25%' }}>
-          <StatDetail
-            key={`function-stats-${label}`}
-            label={label}
-            value={value}
-          />
+        <Box sx={{ flexBasis: '25%' }} key={`function-stats-${label}`}>
+          <StatDetail label={label} value={value} />
         </Box>
       ))}
-    </Box>
+    </Paper>
   );
 }

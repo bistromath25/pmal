@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
+import theme from '@/theme/theme';
 import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
 
 export interface HeaderProps {
@@ -22,11 +22,13 @@ export default function Header({ type }: HeaderProps) {
         backgroundColor: '#000',
       }}
     >
-      <AppBar position='static'>
+      <AppBar position='fixed' sx={{ backgroundColor: theme.colors.black }}>
         <Toolbar>
-          <Typography variant='h5'>PMAL</Typography>
+          <Typography variant='h5' sx={{ fontWeight: 'bold' }}>
+            PMAL
+          </Typography>
           <Box sx={{ flexGrow: 1 }} />
-          <Button href={isLanding ? '/signin' : '/signout'} color='inherit'>
+          <Button href={isLanding ? '/signin' : '/signout'} variant='contained'>
             {isLanding ? 'Sign in with Google' : 'Sign out'}
           </Button>
         </Toolbar>

@@ -118,7 +118,7 @@ function EntryList() {
       .slice(-6);
   }, [executionEntries]);
   return (
-    <Box>
+    <Stack spacing={2}>
       <Typography variant='h5'>Recent activity</Typography>
       <TableContainer component={Paper}>
         <Table>
@@ -142,7 +142,7 @@ function EntryList() {
           </TableBody>
         </Table>
       </TableContainer>
-    </Box>
+    </Stack>
   );
 }
 
@@ -151,9 +151,9 @@ export default function FunctionCharts() {
     <Stack spacing={2}>
       <EntryBarChart />
       <Box sx={{ display: 'flex', gap: 4 }}>
-        <Box sx={{ flexBasis: '65%' }}>
+        <Paper sx={{ flexBasis: '65%' }}>
           <CallsAndRuntimeLineChart />
-        </Box>
+        </Paper>
         <Box sx={{ flexBasis: '35%' }}>
           <EntryList />
         </Box>

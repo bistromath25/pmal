@@ -29,7 +29,9 @@ export default function HomeWrapper() {
   }, [refreshFunctions]);
   return (
     <Stack spacing={2}>
-      <Typography variant='h4'>Home</Typography>
+      <Typography variant='h4' sx={{ fontWeight: 'bold' }}>
+        Home
+      </Typography>
       <FunctionStats />
       <FunctionCharts />
     </Stack>

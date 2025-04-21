@@ -8,7 +8,15 @@ import { getDemoQuery, languageOptions } from '@/utils/functions';
 import { formatDate } from '@/utils/utils';
 import Editor from '../Editor';
 import Modal from '../Modal';
-import { Box, Button, Grid, Stack, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Grid,
+  Paper,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
 
 function FunctionDetails({ fun }: { fun: Function }) {
   const { executionEntries } = useFunctionContext();
@@ -20,29 +28,28 @@ function FunctionDetails({ fun }: { fun: Function }) {
   return (
     <Box sx={{ display: 'flex', gap: 2 }}>
       <Box sx={{ display: 'flex', gap: 1 }}>
-        <Box>
-          <Typography variant='h6'>Total calls:</Typography>
-          <Typography variant='h6'>Total time:</Typography>
-          <Typography variant='h6'>Language:</Typography>
-        </Box>
-        <Box>
-          <Typography variant='h6'>{fun.total_calls}</Typography>
-          <Typography variant='h6'>{totalExecutionTime} ms</Typography>
-          <Typography variant='h6'>{fun.language}</Typography>
-        </Box>
+        <Stack>
+          <Typography variant='body1'>Total calls:</Typography>
+          <Typography variant='body1'>Total time:</Typography>
+          <Typography variant='body1'>Language:</Typography>
+        </Stack>
+        <Stack>
+          <Typography variant='body1'>{fun.total_calls}</Typography>
+          <Typography variant='body1'>{totalExecutionTime} ms</Typography>
+          <Typography variant='body1'>{fun.language}</Typography>
+        </Stack>
       </Box>
       <Box sx={{ display: 'flex', gap: 1 }}>
-        <Box>
-          <Typography variant='h6'>Created at:</Typography>
-          <Typography variant='h6'>Updated at:</Typography>
-          <Typography variant='h6'>Language:</Typography>
-        </Box>
-        <Box>
-          <Typography variant='h6'>{formatDate(fun.created_at)}</Typography>
-          <Typography variant='h6'>
+        <Stack>
+          <Typography variant='body1'>Created at:</Typography>
+          <Typography variant='body1'>Updated at:</Typography>
+        </Stack>
+        <Stack>
+          <Typography variant='body1'>{formatDate(fun.created_at)}</Typography>
+          <Typography variant='body1'>
             {formatDate(fun.updated_at ?? fun.created_at)}
           </Typography>
-        </Box>
+        </Stack>
       </Box>
     </Box>
   );
@@ -84,31 +91,56 @@ export default function FunctionTable({
   );
   return functions && functions.length ? (
     <Box>
-      <Grid container spacing={4}>
+      <Grid container spacing={3}>
         {functions.map((fun: Function) => {
           const logo = languageOptions.find(
             ({ name }) => name === fun.language
           )?.logoUrl;
           const createdAtDateString = formatDate(fun.created_at, false);
           return (
-            <Box key={`function-box-${fun.alias}`}>
+            <Paper
+              elevation={2}
+              sx={{ padding: 2, borderRadius: 2 }}
+              key={`function-box-${fun.alias}`}
+            >
               <Box sx={{ display: 'flex', gap: 2 }}>
-                <Box sx={{ flexBasis: '1/6' }}>
+                <Stack
+                  sx={{
+                    display: 'flex',
+                    flexBasis: '1/6',
+                    justifyContent: 'center',
+                  }}
+                >
                   <img className='h-[50px]' src={logo} />
-                </Box>
-                <Box sx={{ flexBasis: '2/3' }}>
-                  <Typography variant='h5'>{fun.alias}</Typography>
-                  <Typography variant='h6'>Calls: {fun.total_calls}</Typography>
-                  <Typography variant='h6'>
+                </Stack>
+                <Stack sx={{ flexBasis: '2/3' }}>
+                  <Typography variant='h6'>{fun.alias}</Typography>
+                  <Typography variant='body1'>
+                    Calls: {fun.total_calls}
+                  </Typography>
+                  <Typography variant='body1'>
                     Created: {createdAtDateString}
                   </Typography>
-                </Box>
-                <Stack sx={{ flexBasis: '1/6' }}>
-                  <Button onClick={() => openEditModal(fun)}>Edit</Button>
-                  <Button onClick={() => openDeleteModal(fun)}>Delete</Button>
+                </Stack>
+                <Stack
+                  sx={{ flexBasis: '1/6', gap: 1, justifyContent: 'center' }}
+                >
+                  <Button
+                    variant='contained'
+                    onClick={() => openEditModal(fun)}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    variant='outlined'
+                    color='error'
+                    onClick={() => openDeleteModal(fun)}
+                  >
+                    Delete
+                  </Button>
                 </Stack>
               </Box>
-            </Box>
+            </Paper>
           );
         })}
       </Grid>
@@ -118,12 +150,14 @@ export default function FunctionTable({
         title={`Delete function ${currentFunction.alias}?`}
         contents={
           <Stack spacing={2}>
-            <Typography variant='h6'>
+            <Typography variant='body1'>
               Are you sure you want to delete this function? This action cannot
               be undone.
             </Typography>
-            <Box>
+            <Box sx={{ display: 'flex', gap: 2 }}>
               <Button
+                variant='contained'
+                color='error'
                 onClick={() => {
                   handleDeleteFunction(currentFunction.alias);
                   setDeleteModalIsOpen(false);
@@ -131,7 +165,10 @@ export default function FunctionTable({
               >
                 Yes, I'm sure
               </Button>
-              <Button onClick={() => setDeleteModalIsOpen(false)}>
+              <Button
+                variant='outlined'
+                onClick={() => setDeleteModalIsOpen(false)}
+              >
                 No, Cancel
               </Button>
             </Box>
@@ -147,8 +184,19 @@ export default function FunctionTable({
             <Box>
               <FunctionDetails fun={currentFunction} />
               <Box className='flex flex-row gap-2 pt-2'>
-                <Typography variant='h6'>URL:</Typography>
-                <TextField
+                <Typography variant='body1'>URL:</Typography>
+                <input
+                  className='w-full px-1 cursor-copy focus:outline-none bg-transparent border border-gray-300 rounded-lg'
+                  value={`${currentFunction.alias}?${getDemoQuery(currentFunction.code, currentFunction.language)}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigator.clipboard.writeText(
+                      `${APP_BASE_URL}/api/${currentFunction.alias}?${getDemoQuery(currentFunction.code, currentFunction.language)}`
+                    );
+                  }}
+                  readOnly
+                />
+                {/* <TextField
                   value={`${currentFunction.alias}?${getDemoQuery(currentFunction.code, currentFunction.language)}`}
                   onClick={(e) => {
                     e.preventDefault();
@@ -161,7 +209,7 @@ export default function FunctionTable({
                       readOnly: true,
                     },
                   }}
-                />
+                /> */}
               </Box>
             </Box>
             <Editor
@@ -174,6 +222,7 @@ export default function FunctionTable({
             />
             <Box>
               <Button
+                variant='contained'
                 onClick={() => {
                   const newFunction = {
                     ...currentFunction,
