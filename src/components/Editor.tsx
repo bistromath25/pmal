@@ -7,7 +7,9 @@ import CodeEditor from '@uiw/react-textarea-code-editor';
 
 export function Warning() {
   return (
-    <Typography variant='h6'>⚠️ Error! Not a valid function! ⚠️</Typography>
+    <Typography variant='body1' color='error'>
+      ⚠️ Error! Not a valid function! ⚠️
+    </Typography>
   );
 }
 
