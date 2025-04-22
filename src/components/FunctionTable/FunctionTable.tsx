@@ -1,22 +1,14 @@
 'use client';
 
 import { useCallback, useState } from 'react';
+import Editor from '@/components/Editor';
+import Modal from '@/components/Modal';
 import { useFunction } from '@/contexts/function';
 import { APP_BASE_URL } from '@/env/env';
 import { Function } from '@/types/Function';
 import { getDemoQuery, languageOptions } from '@/utils/functions';
 import { formatDate } from '@/utils/utils';
-import Editor from '../Editor';
-import Modal from '../Modal';
-import {
-  Box,
-  Button,
-  Grid,
-  Paper,
-  Stack,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Box, Button, Grid, Paper, Stack, Typography } from '@mui/material';
 
 function FunctionDetails({ fun }: { fun: Function }) {
   const { executionEntries } = useFunction();

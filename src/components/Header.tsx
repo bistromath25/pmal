@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import theme from '@/theme/theme';
 import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
 
 export interface HeaderProps {
@@ -22,7 +21,7 @@ export default function Header({ type }: HeaderProps) {
         backgroundColor: '#000',
       }}
     >
-      <AppBar position='fixed' sx={{ backgroundColor: theme.colors.black }}>
+      <AppBar position='fixed' sx={{ backgroundColor: '#000' }}>
         <Toolbar>
           <Typography variant='h5' sx={{ fontWeight: 'bold' }}>
             PMAL

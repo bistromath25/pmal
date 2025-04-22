@@ -2,6 +2,9 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import * as API from '@/app/api/api';
+import Editor from '@/components/Editor';
+import LanguageSelection from '@/components/LanguageSelection';
+import Modal from '@/components/Modal';
 import { useApp } from '@/contexts/app';
 import { useFunction } from '@/contexts/function';
 import { useUser } from '@/contexts/user';
@@ -9,9 +12,6 @@ import useWrappedRequest from '@/hooks/useWrappedRequest';
 import { Function } from '@/types/Function';
 import { getDefaultFunctionValue, isValidFunction } from '@/utils/functions';
 import { remove } from '@/utils/utils';
-import Editor from '../Editor';
-import LanguageSelection from '../LanguageSelection';
-import Modal from '../Modal';
 import FunctionTable from './FunctionTable';
 import {
   Box,

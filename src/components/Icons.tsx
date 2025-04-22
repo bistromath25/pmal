@@ -1,3 +1,5 @@
+'use client';
+
 export function DefaultIcon() {
   return (
     <span id='default-icon'>
@@ -145,4 +147,8 @@ export function ListIcon() {
       />
     </svg>
   );
+}
+
+export function LogoIcon() {
+  return <img className='w-5 h-5' src='/favicon.ico' />;
 }

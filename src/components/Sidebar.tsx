@@ -3,8 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useApp } from '@/contexts/app';
-import theme from '@/theme/theme';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import { SIDEBAR_COLLAPSE_WIDTH, SIDEBAR_FULL_WIDTH } from '@/utils/constants';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import HomeIcon from '@mui/icons-material/Home';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -50,15 +49,14 @@ export default function Sidebar() {
         sx={{
           flexShrink: 0,
           '& .MuiDrawer-paper': {
-            width: sidebarOpen ? 240 : 60,
+            width: sidebarOpen ? SIDEBAR_FULL_WIDTH : SIDEBAR_COLLAPSE_WIDTH,
             transition: 'width 0.3s',
             overflowX: 'hidden',
             whiteSpace: 'nowrap',
-            backgroundColor: theme.colors.darkergrayblue,
             top: 0,
             position: 'sticky',
             height: '100vh',
-            px: 1,
+            px: 2,
           },
         }}
       >
@@ -66,33 +64,47 @@ export default function Sidebar() {
           sx={{
             pt: 2,
             flexShrink: 0,
-            backgroundColor: theme.colors.darkergrayblue,
             top: 0,
             position: 'sticky',
             height: '100vh',
           }}
         >
           <Stack spacing={1}>
-            <Box>
-              <IconButton
+            <Box
+              sx={{
+                height: 48,
+              }}
+            >
+              <Box
                 sx={{
-                  justifyContent: 'center',
-                  backgroundColor: theme.colors.offwhite,
+                  display: 'flex',
+                  height: '100%',
+                  width: 48,
+                  borderRadius: 2,
                   '&:hover': {
-                    backgroundColor: theme.colors.offwhite,
-                    color: theme.colors.darkergrayblue,
+                    backgroundColor: 'background.paper',
                   },
-                  transition: 'transform 0.3s ease-in-out', // Smooth rotation transition
                 }}
-                onClick={() => setSidebarOpen(!sidebarOpen)}
               >
-                <ChevronLeftIcon
+                <IconButton
+                  onClick={() => setSidebarOpen(!sidebarOpen)}
                   sx={{
-                    transform: sidebarOpen ? 'rotate(0deg)' : 'rotate(180deg)', // Rotate by 180 degrees when open
-                    transition: 'transform 0.3s ease-in-out', // Smooth rotation transition
+                    justifyContent: 'flex-start',
+                    width: '100%',
+                    height: '100%',
+                    color: 'primary.main',
+                    fontSize: 24,
                   }}
-                />
-              </IconButton>
+                  disabled
+                >
+                  <img src='/favicon.ico' />
+                </IconButton>
+                {sidebarOpen && (
+                  <Typography variant='h5' sx={{ my: 'auto' }}>
+                    PMAL
+                  </Typography>
+                )}
+              </Box>
             </Box>
             {sidebarOptions.map(({ name, icon, path }) => {
               const isActive = path === pathname;
@@ -100,7 +112,6 @@ export default function Sidebar() {
                 <Box
                   key={`sidebar-option-${name}`}
                   sx={{
-                    backgroundColor: theme.colors.darkergrayblue,
                     height: 48,
                   }}
                 >
@@ -110,11 +121,11 @@ export default function Sidebar() {
                       height: '100%',
                       borderRadius: 2,
                       '&:hover': {
-                        backgroundColor: theme.colors.darkgrayblue,
+                        backgroundColor: 'background.paper',
                       },
                       backgroundColor: isActive
-                        ? theme.colors.darkgrayblue
-                        : theme.colors.darkergrayblue,
+                        ? 'background.default'
+                        : 'background.paper',
                     }}
                   >
                     {sidebarOpen ? (
@@ -124,7 +135,7 @@ export default function Sidebar() {
                           justifyContent: 'flex-start',
                           px: 2,
                           height: '100%',
-                          color: theme.colors.offwhite,
+                          color: 'primary.main',
                         }}
                         href={path}
                         startIcon={
@@ -151,7 +162,7 @@ export default function Sidebar() {
                           justifyContent: 'center',
                           width: '100%',
                           height: '100%',
-                          color: theme.colors.offwhite,
+                          color: 'primary.main',
                           fontSize: 24,
                         }}
                       >

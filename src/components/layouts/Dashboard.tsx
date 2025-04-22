@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
+import DashboardHeader from '@/components/DashboardHeader';
 import Sidebar from '@/components/Sidebar';
+import Toast from '@/components/Toast';
 import { useApp } from '@/contexts/app';
-import theme from '@/theme/theme';
-import Toast from '../Toast';
-import { Box } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 
 export default function DashboardLayout({
   children,
@@ -46,7 +46,7 @@ export default function DashboardLayout({
             flexGrow: 1,
             padding: 4,
             height: '100%',
-            backgroundColor: theme.colors.offwhite,
+            backgroundColor: 'background.default',
             minHeight: '100vh',
           }}
         >
@@ -66,7 +66,10 @@ export default function DashboardLayout({
               message={success}
             />
           )}
-          {children}
+          <Stack>
+            <DashboardHeader />
+            {children}
+          </Stack>
         </Box>
       </Box>
     </>

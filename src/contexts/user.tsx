@@ -36,6 +36,7 @@ export function UserContextProvider({
       try {
         setLoading(true);
         const email = session.data?.user?.email;
+        const image = session.data?.user?.image;
         if (email) {
           let { user } = await API.getUser({ email });
           if (!user) {
@@ -55,7 +56,7 @@ export function UserContextProvider({
               alias: user.key,
             });
           }
-          setUser(user);
+          setUser({ ...user, image });
         }
       } catch (error) {
         setError(error as string);

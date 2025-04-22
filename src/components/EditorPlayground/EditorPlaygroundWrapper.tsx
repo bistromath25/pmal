@@ -12,7 +12,9 @@ import { Stack, Typography } from '@mui/material';
 
 export default function EditorPlaygroundWrapper() {
   const router = useRouter();
-  const { user: currentUser } = useUser();
+  const {
+    user: { key },
+  } = useUser();
   const { setCode: setCurrentCode } = useFunction();
   const { wrappedRequest } = useWrappedRequest();
   const searchParams = useSearchParams();
@@ -28,8 +30,8 @@ export default function EditorPlaygroundWrapper() {
     [setCurrentCode, wrappedRequest]
   );
   useEffect(() => {
-    getKeyFunction(currentUser.key);
-  }, [currentUser, getKeyFunction]);
+    getKeyFunction(key);
+  }, [key, getKeyFunction]);
   useEffect(() => {
     if (!searchParams.get('language')) {
       router.push('/editor?language=js');
@@ -43,7 +45,7 @@ export default function EditorPlaygroundWrapper() {
       <Typography variant='h6'>
         This function will always be available at{' '}
         <span className='font-mono text-black'>
-          {`${APP_BASE_URL}/api/${currentUser.key}`}
+          {`${APP_BASE_URL}/api/${key}`}
         </span>
       </Typography>
       <EditorPlayground />

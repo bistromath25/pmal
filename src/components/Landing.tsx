@@ -5,7 +5,6 @@ import Marquee from 'react-fast-marquee';
 import * as API from '@/app/api/api';
 import { APP_BASE_URL } from '@/env/env';
 import useWrappedRequest from '@/hooks/useWrappedRequest';
-import theme from '@/theme/theme';
 import { FunctionCreatePayload } from '@/types/Function';
 import {
   getDefaultFunctionValue,
@@ -99,7 +98,7 @@ function LandingEditor() {
               }}
             /> */}
             <input
-              className={`bg-slate-950 text-white text-sm border border-e-0 ${`border-${theme.colors.lightblue}`} rounded-s-lg block w-full p-2.5 overflow-x-scroll line-clamp-1 focus:outline-none`}
+              className='bg-slate-950 text-white text-sm border border-e-0 border-[#dbeafe] rounded-s-lg block w-full p-2.5 overflow-x-scroll line-clamp-1 focus:outline-none'
               style={{
                 fontFamily:
                   'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
@@ -177,7 +176,7 @@ export default function Landing() {
             sx={{
               textAlign: 'center',
               fontWeight: 'bold',
-              color: theme.colors.white,
+              color: 'background.paper',
             }}
           >
             Deploy{' '}
@@ -191,7 +190,7 @@ export default function Landing() {
             <LandingEditor />
           </Box>
         </Stack>
-        <Box sx={{ px: '5%', py: 4, backgroundColor: theme.colors.offwhite }}>
+        <Box sx={{ px: '5%', py: 4, backgroundColor: 'background.paper' }}>
           <Grid container spacing={2} sx={{ justifyContent: 'center' }}>
             <Grid sx={{ display: 'flex', gap: 2, maxWidth: '30%' }}>
               <Typography variant='h3' sx={{ my: 'auto' }}>
@@ -281,7 +280,7 @@ export default function Landing() {
           </Grid>
         </Grid> */}
         </Box>
-        <Box sx={{ px: '10%', py: 4, backgroundColor: theme.colors.offwhite }}>
+        <Box sx={{ px: '10%', py: 4, backgroundColor: 'background.paper' }}>
           <Typography
             variant='h5'
             sx={{ textAlign: 'center', fontWeight: 'bold' }}

@@ -19,7 +19,10 @@ export default function Modal({
 }: ModalProps) {
   return modalIsOpen ? (
     <>
-      <Box className='backdrop-blur-sm justify-center items-center text-left flex overflow-x-hidden overflow-y-auto fixed inset-0 z-40 outline-none focus:outline-none'>
+      <Box
+        sx={{ zIndex: 1300 }}
+        className='backdrop-blur-sm justify-center items-center text-left flex overflow-x-hidden overflow-y-auto fixed inset-0 z-40 outline-none focus:outline-none'
+      >
         <Box
           className={`bg-white rounded-lg shadow z-50 p-0 ${editor ? 'w-[100%] md:w-[70%]' : 'w-[500px]'}`}
         >

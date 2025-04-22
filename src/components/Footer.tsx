@@ -1,4 +1,3 @@
-import theme from '@/theme/theme';
 import { AppBar, Box, Button, Grid, Toolbar, Typography } from '@mui/material';
 
 export interface FooterProps {
@@ -9,7 +8,7 @@ export default function Footer({ type }: FooterProps) {
   const isLanding = type === 'landing';
   return (
     <Box>
-      <AppBar position='static' sx={{ backgroundColor: theme.colors.black }}>
+      <AppBar position='static' sx={{ backgroundColor: '#000' }}>
         <Toolbar>
           <Box>
             <Typography variant='h6'>

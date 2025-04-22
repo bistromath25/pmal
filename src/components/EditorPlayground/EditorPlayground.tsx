@@ -3,15 +3,15 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import * as API from '@/app/api/api';
+import Editor from '@/components/Editor';
+import { DefaultIcon, SuccessIcon } from '@/components/Icons';
+import LanguageSelection from '@/components/LanguageSelection';
 import { useFunction } from '@/contexts/function';
 import { useUser } from '@/contexts/user';
 import { APP_BASE_URL } from '@/env/env';
 import useWrappedRequest from '@/hooks/useWrappedRequest';
 import { isValidFunction } from '@/utils/functions';
 import { getDemoQuery } from '@/utils/functions';
-import Editor from '../Editor';
-import { DefaultIcon, SuccessIcon } from '../Icons';
-import LanguageSelection from '../LanguageSelection';
 import { Box, Button, Stack, TextField } from '@mui/material';
 
 export default function EditorPlayground() {
