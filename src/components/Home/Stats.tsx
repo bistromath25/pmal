@@ -1,4 +1,5 @@
-import { useFunctionContext } from '@/contexts/functionContext';
+import { useFunction } from '@/contexts/function';
+import { Box, Paper, Stack, Typography } from '@mui/material';
 
 function StatDetail({
   label,
@@ -8,15 +9,15 @@ function StatDetail({
   value: string | number;
 }) {
   return (
-    <div className='flex flex-col'>
-      <p className='font-bold text-2xl'>{value}</p>
-      <p>{label}</p>
-    </div>
+    <Stack>
+      <Typography variant='h6'>{value}</Typography>
+      <Typography variant='h6'>{label}</Typography>
+    </Stack>
   );
 }
 
 export default function FunctionStats() {
-  const { functions, executionEntries } = useFunctionContext();
+  const { functions, executionEntries } = useFunction();
   const totalCalls = functions.reduce(
     (c, { total_calls }) => c + total_calls,
     0
@@ -32,14 +33,12 @@ export default function FunctionStats() {
     { label: 'Saved', value: `$${(totalTime * 0.0000000021).toFixed(10)}` },
   ];
   return (
-    <div className='grid grid-cols-1 sm:grid-cols-4 gap-6 bg-white border border-[rgb(227_232_239)] shadow-sm rounded-lg p-4'>
+    <Paper sx={{ display: 'flex', p: 2, gap: 4, borderRadius: '4px' }}>
       {stats.map(({ label, value }) => (
-        <StatDetail
-          key={`function-stats-${label}`}
-          label={label}
-          value={value}
-        />
+        <Box sx={{ flexBasis: '25%' }} key={`function-stats-${label}`}>
+          <StatDetail label={label} value={value} />
+        </Box>
       ))}
-    </div>
+    </Paper>
   );
 }

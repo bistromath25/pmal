@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Marquee from 'react-fast-marquee';
 import * as API from '@/app/api/api';
 import { APP_BASE_URL } from '@/env/env';
+import useWrappedRequest from '@/hooks/useWrappedRequest';
 import { FunctionCreatePayload } from '@/types/Function';
 import {
   getDefaultFunctionValue,
@@ -15,8 +16,10 @@ import Editor from './Editor';
 import Footer from './Footer';
 import Header from './Header';
 import { DefaultIcon, SuccessIcon } from './Icons';
+import { Box, Button, Grid, Link, Stack, Typography } from '@mui/material';
 
 function LandingEditor() {
+  const { wrappedRequest } = useWrappedRequest();
   const [code, setCode] = useState(getDefaultFunctionValue('js'));
   const [demoQuery, setDemoQuery] = useState<string | undefined>(undefined);
   const [error, setError] = useState(false);
@@ -36,7 +39,7 @@ function LandingEditor() {
         };
         const {
           fun: { alias },
-        } = await API.createFunction(payload);
+        } = await wrappedRequest(() => API.createFunction(payload));
         setAlias(alias);
         setDemoQuery(getDemoQuery(code, 'js'));
         setCopied(false);
@@ -47,7 +50,7 @@ function LandingEditor() {
     }
   };
   return (
-    <div className='w-full space-y-4 justify-items-center pb-20'>
+    <Stack spacing={2}>
       <Editor
         code={code}
         setCode={setCode}
@@ -59,18 +62,43 @@ function LandingEditor() {
         }}
         colorMode='dark'
       />
-      <button
-        className={`px-4 py-2 rounded-full border border-blue-800 shadow-md bg-blue-600 hover:border-transparent hover:bg-blue-700 text-center text-white disabled:cursor-not-allowed font-bold ${loading ? 'bg-blue-700' : ''}`}
-        onClick={onSubmit}
-        disabled={error || !code}
+      <Box
+        sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
       >
-        Deploy my function!
-      </button>
+        <Button
+          variant='contained'
+          onClick={onSubmit}
+          disabled={error || !code}
+          loading={loading}
+        >
+          Deploy my function!
+        </Button>
+      </Box>
       {alias && (
-        <>
-          <div className='flex items-center shadow-md rounded-lg bg-green-300'>
+        <Stack
+          spacing={1}
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Box sx={{ display: 'flex' }}>
+            {/* <TextField
+              value={`curl -X GET '${APP_BASE_URL}/api/${alias}?${demoQuery}'`}
+              sx={{
+                minWidth: 560,
+                // backgroundColor: theme.colors.black,
+              }}
+              slotProps={{
+                input: {
+                  readOnly: true,
+                  color: 'primary'
+                },
+              }}
+            /> */}
             <input
-              className='bg-slate-950 border border-e-0 border-blue-100 text-white text-sm rounded-s-lg block w-full p-2.5 overflow-x-scroll line-clamp-1 focus:outline-none'
+              className='bg-slate-950 text-white text-sm border border-e-0 border-[#dbeafe] rounded-s-lg block w-full p-2.5 overflow-x-scroll line-clamp-1 focus:outline-none'
               style={{
                 fontFamily:
                   'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
@@ -79,8 +107,15 @@ function LandingEditor() {
               value={`curl -X GET '${APP_BASE_URL}/api/${alias}?${demoQuery}'`}
               readOnly
             />
-            <button
-              className='flex-shrink-0 inline-flex items-center py-3 px-4 text-sm font-medium text-center text-gray-500 bg-gray-100 border border-blue-100 rounded-e-lg focus:outline-none focus:ring-gray-100 hover:bg-gray-200 hover:text-gray-900 cursor-pointer'
+            <Button
+              sx={{
+                borderTopRightRadius: '8px',
+                borderBottomRightRadius: '8px',
+                borderTopLeftRadius: 0,
+                borderBottomLeftRadius: 0,
+                border: 1,
+                borderLeft: 0,
+              }}
               onClick={(e) => {
                 e.preventDefault();
                 if (alias) {
@@ -92,18 +127,21 @@ function LandingEditor() {
               }}
             >
               {copied ? <SuccessIcon /> : <DefaultIcon />}
-            </button>
-          </div>
-          <p className='text-gray-600 invert mix-blend-difference'>
+            </Button>
+          </Box>
+          <Typography
+            variant='h6'
+            sx={{ filter: 'invert(1)', mixBlendMode: 'difference' }}
+          >
             Free functions are automatically deleted after 10 calls.{' '}
-            <a href='/signin' className='text-blue-500'>
+            <Link href='/signin' color='inherit' underline='hover'>
               Sign in
-            </a>{' '}
+            </Link>{' '}
             to get more calls!
-          </p>
-        </>
+          </Typography>
+        </Stack>
       )}
-    </div>
+    </Stack>
   );
 }
 
@@ -123,76 +161,114 @@ function LanguageMarquee() {
 
 export default function Landing() {
   return (
-    <main className='w-full items-center justify-items-center min-h-screen bg-black'>
+    <Box>
       <Header type='landing' />
-      <div className='w-full p-10 bg-black sm:bg-[linear-gradient(170deg,_rgb(0_0_0)_48%,_rgb(255_255_255)_48%)] bg-fixed items-center justify-items-center'>
-        <div className='sm:px-0 sm:w-[60%] flex flex-col items-center text-center gap-10'>
-          <div>
-            <h1 className='w-full font-bold text-6xl text-white'>
-              Deploy{' '}
-              <span className='bg-gradient-to-r from-blue-600 via-yellow-200 to-blue-600 inline-block text-transparent bg-clip-text animate-shimmer bg-[length:200%_100%]'>
-                Serverless Functions
-              </span>
-              <br />
-              right from your browser
-            </h1>
-          </div>
-          <LandingEditor />
-        </div>
-      </div>
-      <div className='w-full justify-items-center bg-gray-50 p-4 px-10 sm:px-40 border border-1 border-e-0 border-s-0'>
-        <div className='grid sm:grid-cols-3 gap-10'>
-          <div className='rounded-lg p-4 flex flex-row space-x-4'>
-            <div className='my-auto text-6xl'>
-              <p>✏️</p>
-            </div>
-            <div>
-              <p className='text-black text-2xl font-bold'>Edit</p>
-              <p className='text-gray-600'>
-                Edit your function in the built-in editor supporting 5+
-                languages.
-              </p>
-            </div>
-          </div>
-          <div className='rounded-lg p-4 flex flex-row space-x-4'>
-            <div className='my-auto text-6xl'>
-              <p>🚀</p>
-            </div>
-            <div>
-              <p className='text-black text-2xl font-bold'>Deploy</p>
-              <p className='text-gray-600'>
-                Deploy your function at the click of a button.
-              </p>
-            </div>
-          </div>
-          <div className='rounded-lg p-4 flex flex-row space-x-4'>
-            <div className='my-auto text-6xl'>
-              <p>⚡</p>
-            </div>
-            <div>
-              <p className='text-black text-2xl font-bold'>Call</p>
-              <p className='text-gray-600'>
-                Call your function wherever you want via{' '}
-                <span className='font-mono'>GET</span> or{' '}
-                <span className='font-mono'>POST</span>.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className='w-full justify-items-center p-4 sm:px-40 sm:py-20 bg-white'>
-        <div className='grid sm:grid-cols-2 gap-12'>
-          <div className='my-auto text-center sm:text-left'>
-            <p className='font-bold text-3xl'>
+      <Stack>
+        <Stack
+          spacing={4}
+          sx={{
+            py: 10,
+          }}
+          className='sm:bg-[linear-gradient(170deg,_rgb(0_0_0)_48%,_rgb(255_255_255)_48%)] bg-fixed'
+        >
+          <Typography
+            variant='h2'
+            sx={{
+              textAlign: 'center',
+              fontWeight: 'bold',
+              color: 'background.paper',
+            }}
+          >
+            Deploy{' '}
+            <span className='bg-gradient-to-r from-blue-600 via-yellow-200 to-blue-600 inline-block text-transparent bg-clip-text animate-shimmer bg-[length:200%_100%]'>
+              Serverless Functions
+            </span>
+            <br />
+            right from your browser
+          </Typography>
+          <Box sx={{ px: '20%' }}>
+            <LandingEditor />
+          </Box>
+        </Stack>
+        <Box sx={{ px: '5%', py: 4, backgroundColor: 'background.paper' }}>
+          <Grid container spacing={2} sx={{ justifyContent: 'center' }}>
+            <Grid sx={{ display: 'flex', gap: 2, maxWidth: '30%' }}>
+              <Typography variant='h3' sx={{ my: 'auto' }}>
+                ✏️
+              </Typography>
+              <Stack>
+                <Typography
+                  variant='h5'
+                  sx={{
+                    fontWeight: 'bold',
+                  }}
+                >
+                  Edit
+                </Typography>
+                <Typography variant='h6'>
+                  Edit your function in the built-in editor supporting 5+
+                  languages.
+                </Typography>
+              </Stack>
+            </Grid>
+            <Grid sx={{ display: 'flex', gap: 2, maxWidth: '30%' }}>
+              <Typography variant='h3' sx={{ my: 'auto' }}>
+                🚀
+              </Typography>
+              <Stack>
+                <Typography
+                  variant='h5'
+                  sx={{
+                    fontWeight: 'bold',
+                  }}
+                >
+                  Deploy
+                </Typography>
+                <Typography variant='h6'>
+                  Deploy your function at the click of a button.
+                </Typography>
+              </Stack>
+            </Grid>
+            <Grid sx={{ display: 'flex', gap: 2, maxWidth: '30%' }}>
+              <Typography variant='h3' sx={{ my: 'auto' }}>
+                ⚡
+              </Typography>
+              <Stack>
+                <Typography
+                  variant='h5'
+                  sx={{
+                    fontWeight: 'bold',
+                  }}
+                >
+                  Call
+                </Typography>
+                <Typography variant='h6'>
+                  Call your function wherever you want via{' '}
+                  <span className='font-mono'>GET</span> or{' '}
+                  <span className='font-mono'>POST</span>.
+                </Typography>
+              </Stack>
+            </Grid>
+          </Grid>
+        </Box>
+        <Box sx={{ px: '10%', py: 10 }}>
+          <Typography variant='h4' sx={{ textAlign: 'justify' }}>
+            Deploy <span className='bg-green-300'>serverless functions</span>{' '}
+            right from your browser using{' '}
+            <span className='bg-yellow-200'>GitHub Actions</span> as a computing
+            backend.
+          </Typography>
+          {/* <Grid container spacing={2}>
+          <Grid>
+            <Typography variant='h5'>
               Deploy <span className='bg-green-300'>serverless functions</span>{' '}
               right from your browser using{' '}
               <span className='bg-yellow-200'>GitHub Actions</span> as a
               computing backend.
-            </p>
-          </div>
-          <div className='my-auto hidden sm:inline-block'>
-            <div
-              className='w-full pt-8 pb-8 bg-gray-50 border border-1 border-e-0 border-s-0'
+            </Typography>
+          </Grid>
+          <Grid>
+            <Box
               style={{
                 maskImage:
                   'linear-gradient(to right, rgba(248, 251, 253, 0), black 10%, black 90%, rgba(248, 251, 253, 0))',
@@ -200,39 +276,41 @@ export default function Landing() {
               }}
             >
               <LanguageMarquee />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className='w-full justify-items-center p-4 sm:px-40 bg-gray-50 border border-1 border-e-0 border-s-0 hidden sm:block'>
-        <p className='w-[80%] text-center text-black font-bold text-2xl'>
-          Where performance meets simplicity
-        </p>
-        <p className='w-[80%] text-gray-600 text-lg'>
-          <span className='font-bold'>Each function invocation</span> triggers
-          its own containerized workflow through GitHub Actions, delivering an
-          event-driven architecture powered by some of the toughest machines
-          available. <span className='font-bold'>Function arguments</span> are
-          provided through query parameters, enabling seamless integration with
-          webhooks, APIs, and other event sources.
-        </p>
-      </div>
-      <div className='w-full items-left p-4 sm:px-40 sm:py-20 text-center bg-white'>
-        <p className='text-3xl'>
-          🔓 Unlock limitless possibilities with{' '}
-          <span className='font-bold'>{'GitHub Actions Lambda 🔑'}</span>
-        </p>
-        <div>
-          <p className='text-gray-600 pt-1'>
-            <a href='/signin' className='text-blue-500'>
+            </Box>
+          </Grid>
+        </Grid> */}
+        </Box>
+        <Box sx={{ px: '10%', py: 4, backgroundColor: 'background.paper' }}>
+          <Typography
+            variant='h5'
+            sx={{ textAlign: 'center', fontWeight: 'bold' }}
+          >
+            Where performance meets simplicity
+          </Typography>
+          <Typography variant='h6'>
+            <span className='font-bold'>Each function invocation</span> triggers
+            its own containerized workflow through GitHub Actions, delivering an
+            event-driven architecture powered by some of the toughest machines
+            available. <span className='font-bold'>Function arguments</span> are
+            provided through query parameters, enabling seamless integration
+            with webhooks, APIs, and other event sources.
+          </Typography>
+        </Box>
+        <Box sx={{ px: '10%', py: 10 }}>
+          <Typography variant='h4' sx={{ textAlign: 'center' }}>
+            🔓 Unlock limitless possibilities with{' '}
+            <span className='font-bold'>{'GitHub Actions Lambda 🔑'}</span>
+          </Typography>
+          <Typography variant='h5' sx={{ textAlign: 'center' }}>
+            <Link href='/signin' color='inherit' underline='hover'>
               Sign in
-            </a>{' '}
+            </Link>{' '}
             to gain <span className='font-bold'>full access</span> to PMAL,
             including our <span className='font-bold'>API</span>.
-          </p>
-        </div>
-      </div>
+          </Typography>
+        </Box>
+      </Stack>
       <Footer type='landing' />
-    </main>
+    </Box>
   );
 }

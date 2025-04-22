@@ -4,6 +4,7 @@ import {
   deleteFunctionByAlias,
   deleteFunctionById,
   getFunctionByAlias,
+  getFunctionById,
   updateFunctionByAlias,
 } from '@/services/supabase';
 import { Function, FunctionRecord } from '@/types/Function';
@@ -25,7 +26,7 @@ export async function GET(req: Request) {
     if (alias) {
       fun = await getFunctionByAlias(alias);
     } else if (id) {
-      fun = await getFunctionByAlias(id);
+      fun = await getFunctionById(id);
     } else {
       return new Response(null, { status: 500 });
     }

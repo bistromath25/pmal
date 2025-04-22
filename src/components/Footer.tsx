@@ -1,3 +1,5 @@
+import { AppBar, Box, Button, Grid, Toolbar, Typography } from '@mui/material';
+
 export interface FooterProps {
   type: 'landing' | 'dashboard';
 }
@@ -5,27 +7,43 @@ export interface FooterProps {
 export default function Footer({ type }: FooterProps) {
   const isLanding = type === 'landing';
   return (
-    <div
-      className={`w-full ${isLanding ? 'bg-black' : 'bg-gray-50 border border-e-0 border-s-0'} p-4`}
-    >
-      <div
-        className={`grid grid-cols-2 ${isLanding ? 'text-gray-100' : 'text-black'}`}
-      >
-        <div className='font-bold'>
-          <h1>Experiments with GitHub Actions as a Backend</h1>
-        </div>
-        <div className='ml-auto font-bold text-right sm:flex sm:flex-row gap-4'>
-          <p>
-            <a href='https://github.com/bistromath25/pmal'>Contact</a>
-          </p>
-          <p>
-            <a href='https://github.com/bistromath25/pmal'>Privacy</a>
-          </p>
-          <p>
-            <a href='https://github.com/bistromath25/pmal'>Source</a>
-          </p>
-        </div>
-      </div>
-    </div>
+    <Box>
+      <AppBar position='static' sx={{ backgroundColor: '#000' }}>
+        <Toolbar>
+          <Box>
+            <Typography variant='h6'>
+              Experiments with GitHub Actions as a Backend
+            </Typography>
+          </Box>
+          <Box sx={{ flexGrow: 1 }} />
+          <Grid container>
+            <Grid>
+              <Button
+                href='https://github.com/bistromath25/pmal'
+                color='inherit'
+              >
+                Contact
+              </Button>
+            </Grid>
+            <Grid>
+              <Button
+                href='https://github.com/bistromath25/pmal'
+                color='inherit'
+              >
+                Privacy
+              </Button>
+            </Grid>
+            <Grid>
+              <Button
+                href='https://github.com/bistromath25/pmal'
+                color='inherit'
+              >
+                Source
+              </Button>
+            </Grid>
+          </Grid>
+        </Toolbar>
+      </AppBar>
+    </Box>
   );
 }

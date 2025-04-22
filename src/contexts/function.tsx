@@ -6,7 +6,8 @@ import * as API from '@/app/api/api';
 import { ExecutionEntry } from '@/types/ExecutionEntry';
 import { Function } from '@/types/Function';
 import { getDefaultFunctionValue } from '@/utils/functions';
-import { useUserContext } from './userContext';
+import { useApp } from './app';
+import { useUser } from './user';
 
 export const FunctionContext = createContext<
   | {
@@ -28,6 +29,7 @@ export function FunctionContextProvider({
 }: {
   children: React.ReactNode;
 }) {
+  const { setLoading, setError } = useApp();
   const [code, setCode] = useState(getDefaultFunctionValue('js'));
   const [language, setLanguage] = useState('js');
   const [currentFunction, setCurrentFunction] = useState<Function>({
@@ -46,26 +48,33 @@ export function FunctionContextProvider({
   const session = useSession();
   const {
     user: { aliases },
-  } = useUserContext();
+  } = useUser();
   useEffect(() => {
     const getFunctions = async () => {
-      const { funs } = await API.getFunctions({ aliases });
-      setFunctions(funs);
-      let allEntries: ExecutionEntry[] = [];
-      for (const fun of funs) {
-        const { entries } = await API.getExecutionEntries({
-          function_alias: fun.alias,
-        });
-        if (entries) {
-          allEntries = [...allEntries, ...entries];
+      try {
+        setLoading(true);
+        const { funs } = await API.getFunctions({ aliases });
+        setFunctions(funs);
+        let allEntries: ExecutionEntry[] = [];
+        for (const fun of funs) {
+          const { entries } = await API.getExecutionEntries({
+            function_alias: fun.alias,
+          });
+          if (entries) {
+            allEntries = [...allEntries, ...entries];
+          }
         }
+        setExecutionEntries(allEntries);
+      } catch (error) {
+        setError(error as string);
+      } finally {
+        setLoading(false);
       }
-      setExecutionEntries(allEntries);
     };
     if (session.status === 'authenticated' && !functions.length) {
       getFunctions();
     }
-  }, [session, aliases, functions.length]);
+  }, [session.status, aliases, functions.length, setError, setLoading]);
   return (
     <FunctionContext.Provider
       value={{
@@ -85,11 +94,11 @@ export function FunctionContextProvider({
   );
 }
 
-export function useFunctionContext() {
+export function useFunction() {
   const functionContext = useContext(FunctionContext);
   if (!functionContext) {
     throw new Error(
-      'useFunctionContext must be used within a FunctionContextProvider'
+      'useFunction must be used within a FunctionContextProvider'
     );
   }
   return functionContext;
