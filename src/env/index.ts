@@ -16,6 +16,7 @@ const variables = [
   'GITHUB_ACTIONS_JS_STEP',
   'FF_USE_GITHUB_ACTIONS',
   'FF_ONLY_JS_FUNCTIONS',
+  'NEXT_PUBLIC_FF_ONLY_JS_FUNCTIONS',
 ] as const;
 
 for (const variable of variables) {
