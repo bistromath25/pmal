@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useFunction } from '@/contexts/function';
-import { formatDate } from '@/utils/utils';
+import { formatDate } from '@/utils';
 import {
   Box,
   Paper,

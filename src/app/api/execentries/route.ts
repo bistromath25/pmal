@@ -3,7 +3,7 @@ import {
   getExecutionEntriesByFunctionAlias,
   getExecutionEntriesByFunctionId,
 } from '@/services/supabase';
-import { ExecutionEntryRecord } from '@/types/ExecutionEntry';
+import { ExecutionEntryRecord } from '@/types';
 
 export async function GET(req: Request) {
   try {

@@ -2,10 +2,9 @@
 
 import { createContext, useContext, useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
-import * as API from '@/app/api/api';
-import { ExecutionEntry } from '@/types/ExecutionEntry';
-import { Function } from '@/types/Function';
-import { getDefaultFunctionValue } from '@/utils/functions';
+import * as API from '@/app/api';
+import { ExecutionEntry, Function } from '@/types';
+import { getDefaultFunctionValue } from '@/utils';
 import { useApp } from './app';
 import { useUser } from './user';
 

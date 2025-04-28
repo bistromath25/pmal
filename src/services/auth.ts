@@ -1,6 +1,6 @@
 import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
-import { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } from '@/env/env';
+import { env } from '@/env';
 
 export const {
   handlers: { GET, POST },
@@ -10,8 +10,8 @@ export const {
 } = NextAuth({
   providers: [
     GoogleProvider({
-      clientId: GOOGLE_CLIENT_ID,
-      clientSecret: GOOGLE_CLIENT_SECRET,
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
     }),
   ],
 });

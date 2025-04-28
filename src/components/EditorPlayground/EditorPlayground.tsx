@@ -2,16 +2,15 @@
 
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import * as API from '@/app/api/api';
+import * as API from '@/app/api';
 import Editor from '@/components/Editor';
 import { DefaultIcon, SuccessIcon } from '@/components/Icons';
 import LanguageSelection from '@/components/LanguageSelection';
 import { useFunction } from '@/contexts/function';
 import { useUser } from '@/contexts/user';
-import { APP_BASE_URL } from '@/env/env';
+import { env } from '@/env';
 import useWrappedRequest from '@/hooks/useWrappedRequest';
-import { isValidFunction } from '@/utils/functions';
-import { getDemoQuery } from '@/utils/functions';
+import { getDemoQuery, isValidFunction } from '@/utils';
 import { Box, Button, Stack, TextField } from '@mui/material';
 
 export default function EditorPlayground() {
@@ -64,7 +63,7 @@ export default function EditorPlayground() {
       </Box>
       <Box sx={{ display: 'flex' }}>
         <TextField
-          value={`curl -X GET '${APP_BASE_URL}/api/${key}?${demoQuery}'`}
+          value={`curl -X GET '${env.APP_BASE_URL}/api/${key}?${demoQuery}'`}
           slotProps={{
             input: {
               readOnly: true,
@@ -75,7 +74,7 @@ export default function EditorPlayground() {
           onClick={(e) => {
             e.preventDefault();
             navigator.clipboard.writeText(
-              `curl -X GET '${APP_BASE_URL}/api/${key}?${demoQuery}'`
+              `curl -X GET '${env.APP_BASE_URL}/api/${key}?${demoQuery}'`
             );
             setCopied(true);
           }}

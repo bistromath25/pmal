@@ -4,10 +4,9 @@ import { useCallback, useState } from 'react';
 import Editor from '@/components/Editor';
 import Modal from '@/components/Modal';
 import { useFunction } from '@/contexts/function';
-import { APP_BASE_URL } from '@/env/env';
-import { Function } from '@/types/Function';
-import { getDemoQuery, languageOptions } from '@/utils/functions';
-import { formatDate } from '@/utils/utils';
+import { env } from '@/env';
+import { Function } from '@/types';
+import { formatDate, getDemoQuery, languageOptions } from '@/utils';
 import { Box, Button, Grid, Paper, Stack, Typography } from '@mui/material';
 
 function FunctionDetails({ fun }: { fun: Function }) {
@@ -183,7 +182,7 @@ export default function FunctionTable({
                   onClick={(e) => {
                     e.preventDefault();
                     navigator.clipboard.writeText(
-                      `${APP_BASE_URL}/api/${currentFunction.alias}?${getDemoQuery(currentFunction.code, currentFunction.language)}`
+                      `${env.APP_BASE_URL}/api/${currentFunction.alias}?${getDemoQuery(currentFunction.code, currentFunction.language)}`
                     );
                   }}
                   readOnly

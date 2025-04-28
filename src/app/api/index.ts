@@ -1,19 +1,15 @@
 import {
   ExecutionEntryGetPayload,
   ExecutionEntryGetManyPayload,
-} from '@/types/ExecutionEntry';
-import {
   FunctionCreatePayload,
   FunctionDeletePayload,
   FunctionGetManyPayload,
   FunctionGetPayload,
   FunctionUpdatePayload,
-} from '@/types/Function';
-import {
   UserCreatePayload,
   UserGetPayload,
   UserUpdatePayload,
-} from '@/types/User';
+} from '@/types';
 
 export const createFunction = async (payload: FunctionCreatePayload) => {
   const response = await fetch(`/api/fun`, {

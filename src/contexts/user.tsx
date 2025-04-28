@@ -2,10 +2,9 @@
 
 import { createContext, useContext, useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
-import * as API from '@/app/api/api';
-import { FunctionCreatePayload } from '@/types/Function';
-import { User } from '@/types/User';
-import { getDefaultFunctionValue } from '@/utils/functions';
+import * as API from '@/app/api';
+import { FunctionCreatePayload, User } from '@/types';
+import { getDefaultFunctionValue } from '@/utils';
 import { useApp } from './app';
 
 export const UserContext = createContext<

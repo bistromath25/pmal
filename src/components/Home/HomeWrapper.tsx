@@ -1,12 +1,12 @@
 'use client';
 
 import { useCallback, useEffect } from 'react';
-import * as API from '@/app/api/api';
+import * as API from '@/app/api';
 import { useApp } from '@/contexts/app';
 import { useFunction } from '@/contexts/function';
 import { useUser } from '@/contexts/user';
 import useWrappedRequest from '@/hooks/useWrappedRequest';
-import { getDefaultFunctionValue } from '@/utils/functions';
+import { getDefaultFunctionValue } from '@/utils';
 import FunctionCharts from './Charts';
 import FunctionStats from './Stats';
 import { CircularProgress, Stack, Typography } from '@mui/material';
