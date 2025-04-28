@@ -18,9 +18,11 @@ const variables = [
   'NEXT_PUBLIC_FF_ONLY_JS_FUNCTIONS',
 ] as const;
 
-for (const variable of variables) {
-  if (!process.env[variable]) {
-    throw new Error(`Missing environment variable ${variable}`);
+if (typeof window === 'undefined') {
+  for (const variable of variables) {
+    if (!process.env[variable]) {
+      throw new Error(`Missing environment variable ${variable}`);
+    }
   }
 }
 

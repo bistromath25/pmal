@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import * as API from '@/app/api';
 import { useFunction } from '@/contexts/function';
 import { useUser } from '@/contexts/user';
-import { APP_BASE_URL } from '@/env';
+import { env } from '@/env';
 import useWrappedRequest from '@/hooks/useWrappedRequest';
 import EditorPlayground from './EditorPlayground';
 import { Stack, Typography } from '@mui/material';
@@ -45,7 +45,7 @@ export default function EditorPlaygroundWrapper() {
       <Typography variant='h6'>
         This function will always be available at{' '}
         <span className='font-mono text-black'>
-          {`${APP_BASE_URL}/api/${key}`}
+          {`${env.APP_BASE_URL}/api/${key}`}
         </span>
       </Typography>
       <EditorPlayground />
