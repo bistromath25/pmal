@@ -1,6 +1,6 @@
 import { auth } from '@/services/auth';
 import { getExecutionEntryById } from '@/services/supabase';
-import { ExecutionEntry } from '@/types/ExecutionEntry';
+import { ExecutionEntry } from '@/types';
 
 export async function GET(req: Request) {
   try {

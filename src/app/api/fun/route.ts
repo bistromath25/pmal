@@ -7,8 +7,8 @@ import {
   getFunctionById,
   updateFunctionByAlias,
 } from '@/services/supabase';
-import { Function, FunctionRecord } from '@/types/Function';
-import { randomString } from '@/utils/utils';
+import { Function, FunctionRecord } from '@/types';
+import { randomString } from '@/utils';
 
 export async function GET(req: Request) {
   try {

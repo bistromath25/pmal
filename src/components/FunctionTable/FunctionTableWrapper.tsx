@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import * as API from '@/app/api/api';
+import * as API from '@/app/api';
 import Editor from '@/components/Editor';
 import LanguageSelection from '@/components/LanguageSelection';
 import Modal from '@/components/Modal';
@@ -9,9 +9,8 @@ import { useApp } from '@/contexts/app';
 import { useFunction } from '@/contexts/function';
 import { useUser } from '@/contexts/user';
 import useWrappedRequest from '@/hooks/useWrappedRequest';
-import { Function } from '@/types/Function';
-import { getDefaultFunctionValue, isValidFunction } from '@/utils/functions';
-import { remove } from '@/utils/utils';
+import { Function } from '@/types';
+import { getDefaultFunctionValue, isValidFunction, remove } from '@/utils';
 import FunctionTable from './FunctionTable';
 import {
   Box,

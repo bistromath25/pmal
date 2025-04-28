@@ -2,16 +2,16 @@
 
 import { useState } from 'react';
 import Marquee from 'react-fast-marquee';
-import * as API from '@/app/api/api';
-import { APP_BASE_URL } from '@/env/env';
+import * as API from '@/app/api';
+import { env } from '@/env';
 import useWrappedRequest from '@/hooks/useWrappedRequest';
-import { FunctionCreatePayload } from '@/types/Function';
+import { FunctionCreatePayload } from '@/types';
 import {
   getDefaultFunctionValue,
+  getDemoQuery,
   isValidFunction,
   languageOptions,
-} from '@/utils/functions';
-import { getDemoQuery } from '@/utils/functions';
+} from '@/utils';
 import Editor from './Editor';
 import Footer from './Footer';
 import Header from './Header';
@@ -104,7 +104,7 @@ function LandingEditor() {
                   'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
                 minWidth: '560px',
               }}
-              value={`curl -X GET '${APP_BASE_URL}/api/${alias}?${demoQuery}'`}
+              value={`curl -X GET '${env.APP_BASE_URL}/api/${alias}?${demoQuery}'`}
               readOnly
             />
             <Button
@@ -120,7 +120,7 @@ function LandingEditor() {
                 e.preventDefault();
                 if (alias) {
                   navigator.clipboard.writeText(
-                    `curl -X GET '${APP_BASE_URL}/api/${alias}?${demoQuery}'`
+                    `curl -X GET '${env.APP_BASE_URL}/api/${alias}?${demoQuery}'`
                   );
                   setCopied(true);
                 }

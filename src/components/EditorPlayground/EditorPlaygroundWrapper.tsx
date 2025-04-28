@@ -2,10 +2,10 @@
 
 import { useCallback, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import * as API from '@/app/api/api';
+import * as API from '@/app/api';
 import { useFunction } from '@/contexts/function';
 import { useUser } from '@/contexts/user';
-import { APP_BASE_URL } from '@/env/env';
+import { APP_BASE_URL } from '@/env';
 import useWrappedRequest from '@/hooks/useWrappedRequest';
 import EditorPlayground from './EditorPlayground';
 import { Stack, Typography } from '@mui/material';

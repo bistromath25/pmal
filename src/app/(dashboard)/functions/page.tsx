@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import FunctionTableWrapper from '@/components/FunctionTable/FunctionTableWrapper';
 import DashboardLayout from '@/components/layouts/Dashboard';
-import { APP_BASE_URL } from '@/env/env';
+import { APP_BASE_URL } from '@/env';
 import { auth } from '@/services/auth';
 
 export default async function Page() {

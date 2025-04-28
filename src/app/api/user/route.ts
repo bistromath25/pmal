@@ -5,8 +5,8 @@ import {
   getUserById,
   updateUser,
 } from '@/services/supabase';
-import { UserRecord } from '@/types/User';
-import { randomString } from '@/utils/utils';
+import { UserRecord } from '@/types';
+import { randomString } from '@/utils';
 
 export async function GET(req: Request) {
   try {

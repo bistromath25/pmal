@@ -1,20 +1,16 @@
-import {
-  SUPABASE_ANON_KEY,
-  SUPABASE_FUNCTIONS_TABLE,
-  SUPABASE_TIME_ENTRIES_TABLE,
-  SUPABASE_URL,
-  SUPABASE_USERS_TABLE,
-} from '@/env/env';
+import { env } from '@/env';
 import {
   ExecutionEntryRecord,
   ExecutionEntryCreatePayload,
-} from '@/types/ExecutionEntry';
-import { FunctionRecord, FunctionUpdatePayload } from '@/types/Function';
-import { UserUpdatePayload, UserRecord } from '@/types/User';
-import { createFetch } from '@/utils/cache';
+  FunctionRecord,
+  FunctionUpdatePayload,
+  UserUpdatePayload,
+  UserRecord,
+} from '@/types';
+import { createFetch } from '@/utils';
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+const supabaseClient = createClient(env.SUPABASE_URL, env.SUPABASE_ANON_KEY, {
   global: {
     fetch: createFetch({
       cache: 'no-store',
@@ -30,7 +26,7 @@ const handleError = (error: Error | null) => {
 
 export const createFunction = async (fun: FunctionRecord) => {
   const { error } = await supabaseClient
-    .from(SUPABASE_FUNCTIONS_TABLE)
+    .from(env.SUPABASE_FUNCTIONS_TABLE)
     .insert(fun);
   handleError(error);
   return fun;
@@ -38,7 +34,7 @@ export const createFunction = async (fun: FunctionRecord) => {
 
 export const getFunctionById = async (id: string) => {
   const { data, error } = await supabaseClient
-    .from(SUPABASE_FUNCTIONS_TABLE)
+    .from(env.SUPABASE_FUNCTIONS_TABLE)
     .select('*')
     .eq('id', id)
     .neq('frozen', true);
@@ -48,7 +44,7 @@ export const getFunctionById = async (id: string) => {
 
 export const getFunctionByAlias = async (alias: string) => {
   const { data, error } = await supabaseClient
-    .from(SUPABASE_FUNCTIONS_TABLE)
+    .from(env.SUPABASE_FUNCTIONS_TABLE)
     .select('*')
     .eq('alias', alias)
     .neq('frozen', true);
@@ -65,7 +61,7 @@ export const updateFunctionCallsOnceById = async (id: string) => {
     updated_at: new Date(),
   } as FunctionRecord;
   const { error } = await supabaseClient
-    .from(SUPABASE_FUNCTIONS_TABLE)
+    .from(env.SUPABASE_FUNCTIONS_TABLE)
     .update(newFun)
     .eq('alias', fun.alias);
   handleError(error);
@@ -81,7 +77,7 @@ export const updateFunctionCallsOnceByAlias = async (alias: string) => {
     updated_at: new Date(),
   } as FunctionRecord;
   const { error } = await supabaseClient
-    .from(SUPABASE_FUNCTIONS_TABLE)
+    .from(env.SUPABASE_FUNCTIONS_TABLE)
     .update(newFun)
     .eq('alias', fun.alias);
   handleError(error);
@@ -94,7 +90,7 @@ export const updateFunctionById = async (fun: FunctionUpdatePayload) => {
   }
   const { id, ...rest } = fun;
   const { error } = await supabaseClient
-    .from(SUPABASE_FUNCTIONS_TABLE)
+    .from(env.SUPABASE_FUNCTIONS_TABLE)
     .update({
       ...rest,
       updated_at: new Date(),
@@ -111,7 +107,7 @@ export const updateFunctionByAlias = async (fun: FunctionUpdatePayload) => {
   }
   const { alias, ...rest } = fun;
   const { error } = await supabaseClient
-    .from(SUPABASE_FUNCTIONS_TABLE)
+    .from(env.SUPABASE_FUNCTIONS_TABLE)
     .update({
       ...rest,
       updated_at: new Date(),
@@ -125,7 +121,7 @@ export const updateFunctionByAlias = async (fun: FunctionUpdatePayload) => {
 export const deleteFunctionById = async (id: string) => {
   const date = new Date();
   const { error } = await supabaseClient
-    .from(SUPABASE_FUNCTIONS_TABLE)
+    .from(env.SUPABASE_FUNCTIONS_TABLE)
     .update({
       frozen: true,
       updated_at: date,
@@ -139,7 +135,7 @@ export const deleteFunctionById = async (id: string) => {
 export const deleteFunctionByAlias = async (alias: string) => {
   const date = new Date();
   const { error } = await supabaseClient
-    .from(SUPABASE_FUNCTIONS_TABLE)
+    .from(env.SUPABASE_FUNCTIONS_TABLE)
     .update({
       frozen: true,
       updated_at: date,
@@ -152,7 +148,7 @@ export const deleteFunctionByAlias = async (alias: string) => {
 
 export const getFunctionsByIds = async (ids: string[]) => {
   const { data, error } = await supabaseClient
-    .from(SUPABASE_FUNCTIONS_TABLE)
+    .from(env.SUPABASE_FUNCTIONS_TABLE)
     .select('*')
     .in('id', ids)
     .neq('frozen', true);
@@ -162,7 +158,7 @@ export const getFunctionsByIds = async (ids: string[]) => {
 
 export const getFunctionsByAliases = async (aliases: string[]) => {
   const { data, error } = await supabaseClient
-    .from(SUPABASE_FUNCTIONS_TABLE)
+    .from(env.SUPABASE_FUNCTIONS_TABLE)
     .select('*')
     .in('alias', aliases)
     .neq('frozen', true);
@@ -174,7 +170,7 @@ export const createExecutionEntry = async (
   entry: ExecutionEntryCreatePayload
 ) => {
   const { error } = await supabaseClient
-    .from(SUPABASE_TIME_ENTRIES_TABLE)
+    .from(env.SUPABASE_TIME_ENTRIES_TABLE)
     .insert(entry);
   handleError(error);
   return entry;
@@ -182,7 +178,7 @@ export const createExecutionEntry = async (
 
 export const getExecutionEntryById = async (id: string) => {
   const { data, error } = await supabaseClient
-    .from(SUPABASE_TIME_ENTRIES_TABLE)
+    .from(env.SUPABASE_TIME_ENTRIES_TABLE)
     .select('*')
     .eq('id', id);
   handleError(error);
@@ -191,7 +187,7 @@ export const getExecutionEntryById = async (id: string) => {
 
 export const getExecutionEntriesByFunctionId = async (function_id: string) => {
   const { data, error } = await supabaseClient
-    .from(SUPABASE_TIME_ENTRIES_TABLE)
+    .from(env.SUPABASE_TIME_ENTRIES_TABLE)
     .select('*')
     .eq('function_id', function_id);
   handleError(error);
@@ -202,7 +198,7 @@ export const getExecutionEntriesByFunctionAlias = async (
   function_alias: string
 ) => {
   const { data, error } = await supabaseClient
-    .from(SUPABASE_TIME_ENTRIES_TABLE)
+    .from(env.SUPABASE_TIME_ENTRIES_TABLE)
     .select('*')
     .eq('function_alias', function_alias);
   handleError(error);
@@ -211,7 +207,7 @@ export const getExecutionEntriesByFunctionAlias = async (
 
 export const createUser = async (user: UserRecord) => {
   const { error } = await supabaseClient
-    .from(SUPABASE_USERS_TABLE)
+    .from(env.SUPABASE_USERS_TABLE)
     .insert(user);
   handleError(error);
   return user;
@@ -219,7 +215,7 @@ export const createUser = async (user: UserRecord) => {
 
 export const getUserById = async (id: string) => {
   const { data, error } = await supabaseClient
-    .from(SUPABASE_USERS_TABLE)
+    .from(env.SUPABASE_USERS_TABLE)
     .select('*')
     .eq('id', id);
   handleError(error);
@@ -228,7 +224,7 @@ export const getUserById = async (id: string) => {
 
 export const getUserByEmail = async (email: string) => {
   const { data, error } = await supabaseClient
-    .from(SUPABASE_USERS_TABLE)
+    .from(env.SUPABASE_USERS_TABLE)
     .select('*')
     .eq('email', email);
   handleError(error);
@@ -237,7 +233,7 @@ export const getUserByEmail = async (email: string) => {
 
 export const updateUser = async (user: UserUpdatePayload) => {
   const { error } = await supabaseClient
-    .from(SUPABASE_USERS_TABLE)
+    .from(env.SUPABASE_USERS_TABLE)
     .update(user)
     .eq('id', user.id);
   handleError(error);

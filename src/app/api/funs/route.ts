@@ -1,6 +1,6 @@
 import { auth } from '@/services/auth';
 import { getFunctionsByAliases, getFunctionsByIds } from '@/services/supabase';
-import { FunctionRecord } from '@/types/Function';
+import { FunctionRecord } from '@/types';
 
 export async function POST(req: Request) {
   try {

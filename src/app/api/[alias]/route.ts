@@ -1,9 +1,5 @@
 import JSZip from 'jszip';
-import {
-  FF_USE_GITHUB_ACTIONS,
-  GITHUB_ACTIONS_JS_STEP,
-  GITHUB_JS_INDEX,
-} from '@/env/env';
+import { env } from '@/env';
 import * as GH from '@/services/gh';
 import {
   createExecutionEntry,
@@ -11,9 +7,8 @@ import {
   getFunctionByAlias,
   updateFunctionCallsOnceByAlias,
 } from '@/services/supabase';
-import { ExecutionEntryCreatePayload } from '@/types/ExecutionEntry';
-import { FunctionRecord } from '@/types/Function';
-import { getFunction, getFunctionName } from '@/utils/functions';
+import { ExecutionEntryCreatePayload, FunctionRecord } from '@/types';
+import { getFunction, getFunctionName } from '@/utils';
 
 export async function GET(req: Request) {
   try {
@@ -44,7 +39,7 @@ export async function GET(req: Request) {
     let newFun: FunctionRecord | null = null;
     const startDate = new Date();
     if (code) {
-      if (FF_USE_GITHUB_ACTIONS) {
+      if (env.FF_USE_GITHUB_ACTIONS) {
         const funName = getFunctionName(code, language);
         const contents =
           code +
@@ -53,8 +48,9 @@ export async function GET(req: Request) {
         let response = await GH.getFiles('/js');
         const files = await response.json();
         const sha =
-          files.find(({ name }: { name: string }) => name === GITHUB_JS_INDEX)
-            ?.sha ?? '';
+          files.find(
+            ({ name }: { name: string }) => name === env.GITHUB_JS_INDEX
+          )?.sha ?? '';
 
         const commitMessage = `${alias}-${sha}`;
         response = await GH.updateIndexFile({
@@ -131,7 +127,7 @@ export async function GET(req: Request) {
           const zip = await getWorkflowLogs(id);
 
           const dirtyLogContent =
-            await zip.files[GITHUB_ACTIONS_JS_STEP].async('string');
+            await zip.files[env.GITHUB_ACTIONS_JS_STEP].async('string');
           const cleanLogContent = dirtyLogContent
             .split('\n')
             .filter((line) => line.trim())

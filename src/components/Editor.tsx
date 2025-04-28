@@ -1,7 +1,7 @@
 'use client';
 
 import { useDeferredValue, useEffect } from 'react';
-import { isValidFunction } from '@/utils/functions';
+import { isValidFunction } from '@/utils';
 import { Typography } from '@mui/material';
 import CodeEditor from '@uiw/react-textarea-code-editor';
 

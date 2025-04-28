@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import { FF_ONLY_JS_FUNCTIONS } from '@/env/env';
-import { languageOptions } from '@/utils/functions';
+import { env } from '@/env';
+import { languageOptions } from '@/utils';
 import { Box, Typography } from '@mui/material';
 
 export default function LanguageSelection({
@@ -16,17 +16,17 @@ export default function LanguageSelection({
   const renderLanguageOption = (name: string, logoUrl: string) => {
     return (
       <Link
-        className={`rounded-lg hover:bg-white h-[50px] justify-items-center ${name === currentLanguage ? 'bg-white' : ''} ${FF_ONLY_JS_FUNCTIONS && name !== 'js' ? 'hover:cursor-not-allowed hover:bg-white' : ''}`}
+        className={`rounded-lg hover:bg-white h-[50px] justify-items-center ${name === currentLanguage ? 'bg-white' : ''} ${env.FF_ONLY_JS_FUNCTIONS && name !== 'js' ? 'hover:cursor-not-allowed hover:bg-white' : ''}`}
         key={`editor-language-option-${name}`}
         href={
           isPlayground
-            ? FF_ONLY_JS_FUNCTIONS
+            ? env.FF_ONLY_JS_FUNCTIONS
               ? `?language=js`
               : `?language=${name}`
             : ''
         }
         onClick={() => {
-          if (FF_ONLY_JS_FUNCTIONS && name !== 'js') {
+          if (env.FF_ONLY_JS_FUNCTIONS && name !== 'js') {
             return;
           }
           setCurrentLanguage(name);

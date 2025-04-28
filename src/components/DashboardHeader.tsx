@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useApp } from '@/contexts/app';
 import { useUser } from '@/contexts/user';
-import { SIDEBAR_COLLAPSE_WIDTH, SIDEBAR_FULL_WIDTH } from '@/utils/constants';
+import { SIDEBAR_COLLAPSE_WIDTH, SIDEBAR_FULL_WIDTH } from '@/utils';
 import MenuIcon from '@mui/icons-material/Menu';
 import {
   AppBar,
