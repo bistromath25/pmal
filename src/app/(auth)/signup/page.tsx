@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { signup } from '@/actions/user';
-import AuthForm from '@/components/auth/AuthForm';
+import AuthForm from '@/components/AuthForm';
 import { Box } from '@mui/material';
 
 export default function SignUpPage() {

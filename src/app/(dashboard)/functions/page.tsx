@@ -1,4 +1,4 @@
-import FunctionTableWrapper from '@/components/FunctionTable/FunctionTableWrapper';
+import FunctionTableWrapper from '@/components/FunctionTableWrapper';
 
 export default async function Page() {
   return <FunctionTableWrapper />;

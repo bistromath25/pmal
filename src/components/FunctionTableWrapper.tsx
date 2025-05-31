@@ -3,10 +3,10 @@
 import { useState } from 'react';
 import { useApp } from '@/contexts/app';
 import { useFunction } from '@/contexts/function';
-import Editor from '../Editor';
-import LanguageSelection from '../LanguageSelection';
-import Modal from '../Modal';
+import Editor from './Editor';
 import FunctionTable from './FunctionTable';
+import LanguageSelection from './LanguageSelection';
+import Modal from './Modal';
 import { Box, Button, Stack, Typography } from '@mui/material';
 
 export default function FunctionTableWrapper() {

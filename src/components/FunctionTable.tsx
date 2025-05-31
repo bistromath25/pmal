@@ -6,7 +6,7 @@ import Modal from '@/components/Modal';
 import { useFunction } from '@/contexts/function';
 import { FunctionRecord } from '@/types';
 import { formatDate, languageOptions } from '@/utils';
-import { Detail } from '../FunctionView';
+import { Detail } from './FunctionView';
 import { Box, Button, Grid, Paper, Stack, Typography } from '@mui/material';
 
 export default function FunctionTable() {
