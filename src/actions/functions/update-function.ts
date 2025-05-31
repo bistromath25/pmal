@@ -1,7 +1,10 @@
 'use server';
 
 import { env } from '@/env';
-import { createClient } from '@/services/supabase/server';
+import {
+  createClient,
+  createServiceRoleClent,
+} from '@/services/supabase/server';
 import { FunctionUpdatePayload } from '@/types-v2';
 import { logError } from '@/utils';
 
@@ -28,6 +31,26 @@ export const setFunctionAliasById = async ({
   alias: string;
 }) => {
   const supabase = await createClient();
+  const { error } = await supabase
+    .from(env.SUPABASE_FUNCTIONS_TABLE)
+    .update({ alias })
+    .eq('id', id);
+
+  if (error) {
+    logError(error);
+    return null;
+  }
+  return true;
+};
+
+export const serviceRoleSetFunctionAliasById = async ({
+  id,
+  alias,
+}: {
+  id: string;
+  alias: string;
+}) => {
+  const supabase = await createServiceRoleClent();
   const { error } = await supabase
     .from(env.SUPABASE_FUNCTIONS_TABLE)
     .update({ alias })

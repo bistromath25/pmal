@@ -1,3 +1,4 @@
+import { HEADER_HEIGHT } from '@/utils';
 import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
 
 export interface HeaderProps {
@@ -13,7 +14,10 @@ export default function Header({ type }: HeaderProps) {
         backgroundColor: '#000',
       }}
     >
-      <AppBar position='fixed' sx={{ backgroundColor: '#000' }}>
+      <AppBar
+        position='fixed'
+        sx={{ backgroundColor: '#000', height: `${HEADER_HEIGHT}px` }}
+      >
         <Toolbar sx={{ gap: 2 }}>
           <Typography variant='h5' sx={{ fontWeight: 'bold' }}>
             PMAL

@@ -4,7 +4,11 @@ import { useRouter } from 'next/navigation';
 import { signout } from '@/actions/user';
 import { useApp } from '@/contexts/app';
 import { useUser } from '@/contexts/user';
-import { SIDEBAR_COLLAPSE_WIDTH, SIDEBAR_FULL_WIDTH } from '@/utils';
+import {
+  HEADER_HEIGHT,
+  SIDEBAR_COLLAPSE_WIDTH,
+  SIDEBAR_FULL_WIDTH,
+} from '@/utils';
 import MenuIcon from '@mui/icons-material/Menu';
 import {
   AppBar,
@@ -36,6 +40,7 @@ export default function DashboardHeader() {
             : `calc(100% - ${SIDEBAR_COLLAPSE_WIDTH}px)`,
           transition: 'margin-left 0.3s, width 0.3s',
           zIndex: (theme) => theme.zIndex.drawer + 1,
+          height: `${HEADER_HEIGHT}px`,
         }}
       >
         <Toolbar sx={{ gap: 2 }}>

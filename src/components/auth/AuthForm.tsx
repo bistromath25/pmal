@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { HEADER_HEIGHT } from '@/utils';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import {
   Alert,
@@ -53,7 +54,10 @@ export default function AuthForm({
   };
 
   return (
-    <Paper elevation={3} sx={{ padding: 4, mt: 8, borderRadius: 3 }}>
+    <Paper
+      elevation={3}
+      sx={{ padding: 4, mt: `${HEADER_HEIGHT * 1.75}px`, borderRadius: 3 }}
+    >
       <Stack spacing={2} alignItems='center'>
         <Avatar
           sx={{

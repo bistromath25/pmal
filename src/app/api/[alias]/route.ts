@@ -34,8 +34,10 @@ export async function GET(req: NextRequest) {
           });
           return NextResponse.json(
             {
-              result,
-              total_calls: total_calls + 1,
+              data: {
+                result,
+                total_calls: total_calls + 1,
+              },
             },
             { status: 200 }
           );
