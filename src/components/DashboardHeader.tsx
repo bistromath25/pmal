@@ -9,6 +9,8 @@ import {
   SIDEBAR_COLLAPSE_WIDTH,
   SIDEBAR_FULL_WIDTH,
 } from '@/utils';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import MenuIcon from '@mui/icons-material/Menu';
 import {
   AppBar,
@@ -62,6 +64,12 @@ export default function DashboardHeader() {
                 transition: 'transform 0.3s ease-in-out',
               }}
             />
+          </IconButton>
+          <IconButton onClick={() => router.back()} color='inherit'>
+            <ArrowBackIcon />
+          </IconButton>
+          <IconButton onClick={() => router.forward()} color='inherit'>
+            <ArrowForwardIcon />
           </IconButton>
           <Box sx={{ flexGrow: 1 }} />
           <Typography variant='h6'>{user?.email}</Typography>

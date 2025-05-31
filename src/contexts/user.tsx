@@ -8,6 +8,7 @@ import {
   useState,
 } from 'react';
 import { getDbUser, getSessionUser } from '@/actions/user';
+import { createClient } from '@/services/supabase/client';
 import { UserContextValue, UserRecord } from '@/types-v2';
 import { useApp } from './app';
 
@@ -22,6 +23,7 @@ export function UserContextProvider({
 }) {
   const { wrappedRequest, resetError } = useApp();
   const [user, setUser] = useState<UserRecord | null>(null);
+  const supabase = createClient();
 
   const refreshUser = useCallback(async () => {
     await wrappedRequest(async () => {
@@ -39,10 +41,14 @@ export function UserContextProvider({
   }, [resetError, wrappedRequest]);
 
   useEffect(() => {
-    if (!user?.id) {
-      refreshUser();
-    }
-  }, [user?.id, refreshUser]);
+    refreshUser();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async () => refreshUser());
+
+    return () => subscription.unsubscribe();
+  }, [refreshUser, supabase.auth]);
 
   return (
     <UserContext.Provider value={{ user, refreshUser, ready: !!user }}>
