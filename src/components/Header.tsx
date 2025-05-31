@@ -1,12 +1,7 @@
 import { HEADER_HEIGHT } from '@/utils';
 import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
 
-export interface HeaderProps {
-  type: 'landing' | 'dashboard';
-}
-
-export default function Header({ type }: HeaderProps) {
-  const isLanding = type === 'landing';
+export default function Header() {
   return (
     <Box
       sx={{
@@ -23,14 +18,12 @@ export default function Header({ type }: HeaderProps) {
             PMAL
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
-          <Button href={isLanding ? '/signin' : '/signout'} variant='contained'>
-            {isLanding ? 'Sign in' : 'Sign out'}
+          <Button href='/signin' variant='contained'>
+            Sign in
           </Button>
-          {isLanding && (
-            <Button href='/signup' variant='outlined'>
-              Sign up
-            </Button>
-          )}
+          <Button href='/signup' variant='outlined'>
+            Sign up
+          </Button>
         </Toolbar>
       </AppBar>
     </Box>

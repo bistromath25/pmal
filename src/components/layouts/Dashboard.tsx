@@ -6,8 +6,8 @@ import DashboardHeader from '@/components/DashboardHeader';
 import Sidebar from '@/components/Sidebar';
 import Toast from '@/components/Toast';
 import { useApp } from '@/contexts/app';
-import { Box, CircularProgress, Stack } from '@mui/material';
 import { useUser } from '@/contexts/user';
+import { Box, CircularProgress, Stack } from '@mui/material';
 
 export default function DashboardLayout({
   children,
@@ -70,7 +70,7 @@ export default function DashboardLayout({
           )}
           <Stack>
             <DashboardHeader />
-            {ready? children : <CircularProgress />}
+            {ready ? children : <CircularProgress />}
           </Stack>
         </Box>
       </Box>

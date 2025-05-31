@@ -20,7 +20,7 @@ import { Box, Button, Grid, Link, Stack, Typography } from '@mui/material';
 export default function Landing() {
   return (
     <Box>
-      <Header type='landing' />
+      <Header />
       <Stack>
         <Hero />
         <Steps />
@@ -28,7 +28,7 @@ export default function Landing() {
         <Features />
         <About2 />
       </Stack>
-      <Footer type='landing' />
+      <Footer />
     </Box>
   );
 }
