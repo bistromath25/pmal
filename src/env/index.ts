@@ -6,8 +6,6 @@ const variables = [
   'SUPABASE_FUNCTIONS_TABLE',
   'SUPABASE_TIME_ENTRIES_TABLE',
   'NEXT_PUBLIC_APP_BASE_URL',
-  'GOOGLE_CLIENT_ID',
-  'GOOGLE_CLIENT_SECRET',
   'GITHUB_TOKEN',
   'GITHUB_OWNER',
   'GITHUB_REPO',
@@ -36,8 +34,6 @@ export const env = {
   SUPABASE_TIME_ENTRIES_TABLE: process.env
     .SUPABASE_TIME_ENTRIES_TABLE as string,
   APP_BASE_URL: process.env.NEXT_PUBLIC_APP_BASE_URL as string,
-  GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID as string,
-  GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET as string,
   GITHUB_TOKEN: process.env.GITHUB_TOKEN as string,
   GITHUB_OWNER: process.env.GITHUB_OWNER as string,
   GITHUB_REPO: process.env.GITHUB_REPO as string,
