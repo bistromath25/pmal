@@ -7,7 +7,7 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { getDbUser, getSessionUser } from '@/actions/user/get-user';
+import { getDbUser, getSessionUser } from '@/actions/user';
 import { UserContextValue, UserRecord } from '@/types-v2';
 import { useApp } from './app';
 
@@ -39,8 +39,10 @@ export function UserContextProvider({
   }, [resetError, wrappedRequest]);
 
   useEffect(() => {
-    refreshUser();
-  }, [refreshUser]);
+    if (!user?.id) {
+      refreshUser();
+    }
+  }, [user?.id, refreshUser]);
 
   return (
     <UserContext.Provider value={{ user, refreshUser, ready: !!user }}>

@@ -22,3 +22,15 @@ export async function createClient() {
     },
   });
 }
+
+export async function createServiceRoleClent() {
+  return createServerClient(env.SUPABASE_URL!, env.SUPABASE_SERVICE_ROLE_KEY!, {
+    cookies: {
+      get() {
+        return undefined;
+      },
+      set() {},
+      remove() {},
+    },
+  });
+}

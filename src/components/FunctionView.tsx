@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useFunction } from '@/contexts/function';
 import { env } from '@/env';
 import { FunctionRecord } from '@/types-v2';
-import { formatDate } from '@/utils';
+import { formatDate, getDemoQuery } from '@/utils';
 import Editor from './Editor';
 import { Button, Stack, Typography } from '@mui/material';
 
@@ -73,15 +73,35 @@ export default function FunctionView({ alias }: FunctionViewProps) {
 }
 
 function Details({ fun }: { fun: FunctionRecord }) {
+  const demoQuery = getDemoQuery(fun.code, fun.language);
+  const url = `${env.APP_BASE_URL}/api/${fun.alias}${demoQuery ? `?${demoQuery}` : ''}`;
   return (
     <Stack>
-      <Typography>Total calls: {fun.total_calls}</Typography>
-      <Typography>Language: {fun.language}</Typography>
-      <Typography>Created at: {formatDate(fun.created_at)}</Typography>
-      <Typography>
-        Updated at: {formatDate(fun.updated_at || fun.created_at)}
-      </Typography>
-      <Typography>URL: {`${env.APP_BASE_URL}/${fun.alias}`}</Typography>
+      <Detail label='Total calls' value={fun.total_calls} />
+      <Detail label='Language' value={fun.language} />
+      <Detail label='Created at' value={formatDate(fun.created_at)} />
+      <Detail
+        label='Updated at'
+        value={formatDate(fun.updated_at || fun.created_at)}
+      />
+      <Detail label='URL' value={url} />
     </Stack>
+  );
+}
+
+export function Detail({
+  label,
+  value,
+}: {
+  label: string;
+  value: React.ReactNode;
+}) {
+  return (
+    <Typography>
+      <Typography component='span' fontWeight='bold'>
+        {label}:
+      </Typography>{' '}
+      {value}
+    </Typography>
   );
 }

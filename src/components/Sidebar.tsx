@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { signout } from '@/actions/user/signout';
+import { signout } from '@/actions/user';
 import { useApp } from '@/contexts/app';
 import { SIDEBAR_COLLAPSE_WIDTH, SIDEBAR_FULL_WIDTH } from '@/utils';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';

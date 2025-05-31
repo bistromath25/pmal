@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { signin } from '@/actions/user/signin';
+import { signin } from '@/actions/user';
 import AuthForm from '@/components/auth/AuthForm';
 import { Box } from '@mui/material';
 

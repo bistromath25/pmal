@@ -6,6 +6,7 @@ import Modal from '@/components/Modal';
 import { useFunction } from '@/contexts/function';
 import { FunctionRecord } from '@/types-v2';
 import { formatDate, languageOptions } from '@/utils';
+import { Detail } from '../FunctionView';
 import { Box, Button, Grid, Paper, Stack, Typography } from '@mui/material';
 
 export default function FunctionTable() {
@@ -26,7 +27,7 @@ export default function FunctionTable() {
         {functions.map((fun, index) => (
           <Grid key={index}>
             <Paper elevation={2} sx={{ padding: 2, borderRadius: 2 }}>
-              <Detail fun={fun} setDeleteModalIsOpen={setDeleteModalIsOpen} />
+              <Details fun={fun} setDeleteModalIsOpen={setDeleteModalIsOpen} />
             </Paper>
           </Grid>
         ))}
@@ -71,7 +72,7 @@ export default function FunctionTable() {
   );
 }
 
-function Detail({
+export function Details({
   fun,
   setDeleteModalIsOpen,
 }: {
@@ -82,49 +83,57 @@ function Detail({
   const logo = languageOptions.find(
     ({ name }) => name === fun.language
   )!.logoUrl;
-  const createdAt = formatDate(fun.created_at);
-  const updatedAt = formatDate(fun.updated_at || fun.created_at);
-  const alias = fun.alias;
-  const totalCalls = fun.total_calls;
+
+  const handleDelete = () => {
+    setCurrentFunction(fun);
+    setDeleteModalIsOpen(true);
+  };
 
   return (
     <Stack direction='row' alignItems='center' gap={2}>
       <Box flex='1' display='flex' justifyContent='center'>
-        <img src={logo} height='48px' width='48px' />
+        <img src={logo} alt={fun.language} height='48px' width='48px' />
       </Box>
 
       <Box flex='10'>
         <Stack>
-          <Typography fontWeight='bold'>{alias}</Typography>
-          <Typography>Total calls: {totalCalls}</Typography>
-          <Typography>Created at: {createdAt}</Typography>
-          <Typography>Updated at: {updatedAt}</Typography>
+          <Typography fontWeight='bold'>{fun.alias}</Typography>
+          <Detail label='Total calls' value={fun.total_calls} />
+          <Detail label='Created at' value={formatDate(fun.created_at)} />
+          <Detail
+            label='Updated at'
+            value={formatDate(fun.updated_at || fun.created_at)}
+          />
         </Stack>
       </Box>
 
       <Box flex='1'>
-        <Stack spacing={1}>
-          <Button
-            component={Link}
-            href={`/functions/${alias}`}
-            variant='contained'
-            fullWidth
-          >
-            Edit
-          </Button>
-          <Button
-            onClick={() => {
-              setCurrentFunction(fun);
-              setDeleteModalIsOpen(true);
-            }}
-            variant='outlined'
-            color='error'
-            fullWidth
-          >
-            Delete
-          </Button>
-        </Stack>
+        <ActionButtons alias={fun.alias} onDelete={handleDelete} />
       </Box>
+    </Stack>
+  );
+}
+
+function ActionButtons({
+  alias,
+  onDelete,
+}: {
+  alias: string;
+  onDelete: () => void;
+}) {
+  return (
+    <Stack spacing={1}>
+      <Button
+        component={Link}
+        href={`/functions/${alias}`}
+        variant='contained'
+        fullWidth
+      >
+        Edit
+      </Button>
+      <Button onClick={onDelete} variant='outlined' color='error' fullWidth>
+        Delete
+      </Button>
     </Stack>
   );
 }

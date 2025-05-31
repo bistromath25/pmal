@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { signout } from '@/actions/user/signout';
+import { signout } from '@/actions/user';
 import { useApp } from '@/contexts/app';
 import { useUser } from '@/contexts/user';
 import { SIDEBAR_COLLAPSE_WIDTH, SIDEBAR_FULL_WIDTH } from '@/utils';
