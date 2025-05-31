@@ -1,10 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { createFunction } from '@/actions/functions/create-function';
 import { useApp } from '@/contexts/app';
 import { useFunction } from '@/contexts/function';
-import { getAlias } from '@/utils';
 import Editor from '../Editor';
 import LanguageSelection from '../LanguageSelection';
 import Modal from '../Modal';
@@ -12,30 +10,26 @@ import FunctionTable from './FunctionTable';
 import { Box, Button, Stack, Typography } from '@mui/material';
 
 export default function FunctionTableWrapper() {
-  const { error: appError, loading, wrappedRequest, setSuccess } = useApp();
+  const { error: appError, loading, wrappedRequest } = useApp();
   const {
     code: currentCode,
     setCode: setCurrentCode,
     language: currentLanguage,
     setLanguage: setCurrentLanguage,
-    refreshFunctions,
+    createFunction,
   } = useFunction();
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [editorError, setEditorError] = useState(false);
 
   const onSubmit = async () => {
     await wrappedRequest(async () => {
-      const id = await createFunction({
+      await createFunction({
         language: currentLanguage,
         code: currentCode,
         anonymous: false,
       });
-      await refreshFunctions();
-
       setEditorError(false);
       setModalIsOpen(false);
-      const alias = getAlias(id!);
-      setSuccess(`Created function ${alias}`);
     });
   };
 

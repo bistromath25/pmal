@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Modal from '@/components/Modal';
 import { useFunction } from '@/contexts/function';
 import { FunctionRecord } from '@/types-v2';
-import { formatDate, getAlias, languageOptions } from '@/utils';
+import { formatDate, languageOptions } from '@/utils';
 import { Box, Button, Grid, Paper, Stack, Typography } from '@mui/material';
 
 export default function FunctionTable() {
@@ -34,7 +34,7 @@ export default function FunctionTable() {
       <Modal
         modalIsOpen={deleteModalIsOpen}
         onClose={() => setDeleteModalIsOpen(false)}
-        title={`Delete function ${getAlias(currentFunction?.id || '')}?`}
+        title={`Delete function ${currentFunction?.alias}?`}
         contents={
           <Stack spacing={2}>
             <Typography variant='body1'>
@@ -84,7 +84,7 @@ function Detail({
   )!.logoUrl;
   const createdAt = formatDate(fun.created_at);
   const updatedAt = formatDate(fun.updated_at || fun.created_at);
-  const alias = getAlias(fun.id);
+  const alias = fun.alias;
   const totalCalls = fun.total_calls;
 
   return (

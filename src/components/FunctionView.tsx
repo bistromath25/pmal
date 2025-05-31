@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useFunction } from '@/contexts/function';
 import { env } from '@/env';
 import { FunctionRecord } from '@/types-v2';
-import { formatDate, getAlias } from '@/utils';
+import { formatDate } from '@/utils';
 import Editor from './Editor';
 import { Button, Stack, Typography } from '@mui/material';
 
@@ -81,7 +81,7 @@ function Details({ fun }: { fun: FunctionRecord }) {
       <Typography>
         Updated at: {formatDate(fun.updated_at || fun.created_at)}
       </Typography>
-      <Typography>URL: {`${env.APP_BASE_URL}/${getAlias(fun.id)}`}</Typography>
+      <Typography>URL: {`${env.APP_BASE_URL}/${fun.alias}`}</Typography>
     </Stack>
   );
 }

@@ -7,14 +7,13 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { deleteFunctionById } from '@/actions/functions/delete-function';
-import { getFunctionsByUserId } from '@/actions/functions/get-functions';
-import { updateFunctionById } from '@/actions/functions/update-function';
+import * as FunctionActions from '@/actions/functions';
 import {
   ExecutionEntryRecord,
   FunctionRecord,
   FunctionContextValue,
   FunctionUpdatePayload,
+  FunctionCreatePayload,
 } from '@/types-v2';
 import { getAlias, getDefaultFunctionValue } from '@/utils';
 import { useApp } from './app';
@@ -47,7 +46,7 @@ export function FunctionContextProvider({
     }
     await wrappedRequest(async () => {
       try {
-        const funs = await getFunctionsByUserId(user.id);
+        const funs = await FunctionActions.getFunctionsByUserId(user.id);
         if (funs) {
           setFunctions(funs);
         }
@@ -57,33 +56,46 @@ export function FunctionContextProvider({
     });
   }, [user?.id, wrappedRequest, resetError]);
 
+  const createFunction = useCallback(
+    async (payload: FunctionCreatePayload) => {
+      await wrappedRequest(async () => {
+        const id = await FunctionActions.createFunction(payload);
+        const alias = getAlias(id!);
+        await FunctionActions.setFunctionAliasById({ id: id!, alias });
+        await refreshFunctions();
+        setSuccess(`Created function ${alias}`);
+      });
+    },
+    [wrappedRequest, setSuccess, refreshFunctions]
+  );
+
   const updateFunction = useCallback(
     async (payload: FunctionUpdatePayload) => {
       await wrappedRequest(async () => {
-        await updateFunctionById(payload);
         const alias = getAlias(payload.id);
+        await FunctionActions.updateFunctionById(payload);
         await refreshFunctions();
         setSuccess(`Updated function ${alias}`);
       });
     },
-    [refreshFunctions, setSuccess, wrappedRequest]
+    [setSuccess, wrappedRequest, refreshFunctions]
   );
 
   const deleteFunction = useCallback(
     async (id: string) => {
       await wrappedRequest(async () => {
         const alias = getAlias(id);
-        await deleteFunctionById(id);
+        await FunctionActions.deleteFunctionById(id);
         await refreshFunctions();
         setSuccess(`Deleted function ${alias}`);
       });
     },
-    [refreshFunctions, setSuccess, wrappedRequest]
+    [setSuccess, wrappedRequest, refreshFunctions]
   );
 
   const getFunctionByAlias = useCallback(
     (alias: string) => {
-      return functions.find(({ id }) => getAlias(id) === alias) ?? null;
+      return functions.find(({ alias: a }) => a === alias) ?? null;
     },
     [functions]
   );
@@ -105,6 +117,7 @@ export function FunctionContextProvider({
         executionEntries,
         refreshFunctions,
         getFunctionByAlias,
+        createFunction,
         updateFunction,
         deleteFunction,
       }}

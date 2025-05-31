@@ -1,5 +1,9 @@
 import { ExecutionEntryRecord } from './ExecutionEntry';
-import { FunctionRecord, FunctionUpdatePayload } from './Function';
+import {
+  FunctionCreatePayload,
+  FunctionRecord,
+  FunctionUpdatePayload,
+} from './Function';
 import { User } from './User';
 import { WrappedRequest } from './WrappedRequest';
 
@@ -38,6 +42,7 @@ export type FunctionContextValue = {
   executionEntries: ExecutionEntryRecord[];
   refreshFunctions: () => Promise<void>;
   getFunctionByAlias: (alias: string) => Required<FunctionRecord> | null;
+  createFunction: (payload: FunctionCreatePayload) => Promise<void>;
   updateFunction: (payload: FunctionUpdatePayload) => Promise<void>;
   deleteFunction: (id: string) => Promise<void>;
 };

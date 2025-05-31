@@ -19,3 +19,23 @@ export const updateFunctionById = async (payload: FunctionUpdatePayload) => {
   }
   return true;
 };
+
+export const setFunctionAliasById = async ({
+  id,
+  alias,
+}: {
+  id: string;
+  alias: string;
+}) => {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from(env.SUPABASE_FUNCTIONS_TABLE)
+    .update({ alias })
+    .eq('id', id);
+
+  if (error) {
+    logError(error);
+    return null;
+  }
+  return true;
+};
