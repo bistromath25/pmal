@@ -169,3 +169,33 @@ export const updateUser = async (payload: UserUpdatePayload) => {
   }
   return new Error(`Unable to update user by id ${payload.id}`);
 };
+
+export const signupUser = async (payload: {
+  email: string;
+  password: string;
+}) => {
+  const response = await fetch('/api/auth/signup', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  if (response.ok) {
+    return await response.json();
+  }
+  return new Error(`Unable to login user`);
+};
+
+export const loginUser = async (payload: {
+  email: string;
+  password: string;
+}) => {
+  const response = await fetch('/api/auth/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  if (response.ok) {
+    return await response.json();
+  }
+  return new Error(`Unable to login user`);
+};

@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
 
 export interface HeaderProps {
@@ -7,13 +6,6 @@ export interface HeaderProps {
 
 export default function Header({ type }: HeaderProps) {
   const isLanding = type === 'landing';
-  const [scrollY, setScrollY] = useState(0);
-  useEffect(() => {
-    const onScroll = () => setScrollY(window.scrollY);
-    window.removeEventListener('scroll', onScroll);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
   return (
     <Box
       sx={{
@@ -22,14 +14,19 @@ export default function Header({ type }: HeaderProps) {
       }}
     >
       <AppBar position='fixed' sx={{ backgroundColor: '#000' }}>
-        <Toolbar>
+        <Toolbar sx={{ gap: 2 }}>
           <Typography variant='h5' sx={{ fontWeight: 'bold' }}>
             PMAL
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
           <Button href={isLanding ? '/signin' : '/signout'} variant='contained'>
-            {isLanding ? 'Sign in with Google' : 'Sign out'}
+            {isLanding ? 'Sign in' : 'Sign out'}
           </Button>
+          {isLanding && (
+            <Button href='/signup' variant='outlined'>
+              Sign up
+            </Button>
+          )}
         </Toolbar>
       </AppBar>
     </Box>

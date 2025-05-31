@@ -1,6 +1,6 @@
 const variables = [
-  'SUPABASE_URL',
-  'SUPABASE_ANON_KEY',
+  'NEXT_PUBLIC_SUPABASE_URL',
+  'NEXT_PUBLIC_SUPABASE_ANON_KEY',
   'SUPABASE_USERS_TABLE',
   'SUPABASE_FUNCTIONS_TABLE',
   'SUPABASE_TIME_ENTRIES_TABLE',
@@ -27,8 +27,8 @@ if (typeof window === 'undefined') {
 }
 
 export const env = {
-  SUPABASE_URL: process.env.SUPABASE_URL as string,
-  SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY as string,
+  SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL as string,
+  SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string,
   SUPABASE_USERS_TABLE: process.env.SUPABASE_USERS_TABLE as string,
   SUPABASE_FUNCTIONS_TABLE: process.env.SUPABASE_FUNCTIONS_TABLE as string,
   SUPABASE_TIME_ENTRIES_TABLE: process.env

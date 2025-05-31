@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { useApp } from '@/contexts/app';
 import { useUser } from '@/contexts/user';
 import { SIDEBAR_COLLAPSE_WIDTH, SIDEBAR_FULL_WIDTH } from '@/utils';
@@ -14,12 +13,19 @@ import {
   Toolbar,
   Typography,
 } from '@mui/material';
+import { signout } from '@/actions/user/signout';
+import { useRouter } from 'next/navigation';
 
 export default function DashboardHeader() {
+  const router = useRouter();
   const { sidebarOpen, setSidebarOpen } = useApp();
-  const {
-    user: { name, image },
-  } = useUser();
+  const { user } = useUser();
+
+  const handleSignOut = async () => {
+      await signout();
+      router.push('/signin');
+    };
+
   return (
     <Stack>
       <AppBar
@@ -53,18 +59,9 @@ export default function DashboardHeader() {
             />
           </IconButton>
           <Box sx={{ flexGrow: 1 }} />
-          {image && (
-            <IconButton sx={{ padding: 0 }}>
-              <img
-                src={image}
-                style={{ height: 48, width: 48, borderRadius: '50%' }}
-              />
-            </IconButton>
-          )}
-          <Typography variant='h6'>{name}</Typography>
+          <Typography variant='h6'>{user?.email}</Typography>
           <Button
-            component={Link}
-            href='/signout'
+            onClick={handleSignOut}
             variant='outlined'
             color='inherit'
           >

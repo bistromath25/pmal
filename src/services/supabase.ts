@@ -10,13 +10,17 @@ import {
 import { createFetch } from '@/utils';
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseClient = createClient(env.SUPABASE_URL, env.SUPABASE_ANON_KEY, {
-  global: {
-    fetch: createFetch({
-      cache: 'no-store',
-    }),
-  },
-});
+export const supabaseClient = createClient(
+  env.SUPABASE_URL,
+  env.SUPABASE_ANON_KEY,
+  {
+    global: {
+      fetch: createFetch({
+        cache: 'no-store',
+      }),
+    },
+  }
+);
 
 const handleError = (error: Error | null) => {
   if (error) {
@@ -239,4 +243,34 @@ export const updateUser = async (user: UserUpdatePayload) => {
   handleError(error);
   const newUser = await getUserById(user.id);
   return newUser;
+};
+
+export const signupUser = async ({
+  email,
+  password,
+}: {
+  email: string;
+  password: string;
+}) => {
+  const { data, error } = await supabaseClient.auth.signUp({
+    email,
+    password,
+  });
+  handleError(error);
+  return data.user;
+};
+
+export const loginUser = async ({
+  email,
+  password,
+}: {
+  email: string;
+  password: string;
+}) => {
+  const { data, error } = await supabaseClient.auth.signInWithPassword({
+    email,
+    password,
+  });
+  handleError(error);
+  return data.user;
 };

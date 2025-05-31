@@ -3,6 +3,7 @@
 export * from './cache';
 export * from './constants';
 export * from './functions';
+export * from './logger';
 
 export const randomString = (n) => {
   return Math.random().toString(36).slice(-n);
