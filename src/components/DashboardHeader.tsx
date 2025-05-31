@@ -1,5 +1,7 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+import { signout } from '@/actions/user/signout';
 import { useApp } from '@/contexts/app';
 import { useUser } from '@/contexts/user';
 import { SIDEBAR_COLLAPSE_WIDTH, SIDEBAR_FULL_WIDTH } from '@/utils';
@@ -13,8 +15,6 @@ import {
   Toolbar,
   Typography,
 } from '@mui/material';
-import { signout } from '@/actions/user/signout';
-import { useRouter } from 'next/navigation';
 
 export default function DashboardHeader() {
   const router = useRouter();
@@ -22,9 +22,9 @@ export default function DashboardHeader() {
   const { user } = useUser();
 
   const handleSignOut = async () => {
-      await signout();
-      router.push('/signin');
-    };
+    await signout();
+    router.push('/signin');
+  };
 
   return (
     <Stack>
@@ -60,11 +60,7 @@ export default function DashboardHeader() {
           </IconButton>
           <Box sx={{ flexGrow: 1 }} />
           <Typography variant='h6'>{user?.email}</Typography>
-          <Button
-            onClick={handleSignOut}
-            variant='outlined'
-            color='inherit'
-          >
+          <Button onClick={handleSignOut} variant='outlined' color='inherit'>
             Sign out
           </Button>
         </Toolbar>

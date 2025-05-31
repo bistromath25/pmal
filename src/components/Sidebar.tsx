@@ -101,7 +101,7 @@ export default function Sidebar() {
             </Box>
 
             {sidebarOptions.map(({ name, icon, path }) => {
-              const isActive = path === pathname;
+              const isActive = pathname.startsWith(path);
               return (
                 <Box key={`sidebar-option-${name}`} sx={{ height: 48 }}>
                   <Box

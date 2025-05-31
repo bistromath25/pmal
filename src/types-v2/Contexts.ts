@@ -1,4 +1,5 @@
-// import { ExecutionEntry } from './ExecutionEntry';
+import { ExecutionEntryRecord } from './ExecutionEntry';
+import { FunctionRecord, FunctionUpdatePayload } from './Function';
 import { User } from './User';
 import { WrappedRequest } from './WrappedRequest';
 
@@ -25,14 +26,18 @@ export type UserContextValue = {
 };
 
 export type FunctionContextValue = {
-  dummy: string;
-  //   code: string;
-  //   setCode: React.Dispatch<React.SetStateAction<string>>;
-  //   language: string;
-  //   setLanguage: React.Dispatch<React.SetStateAction<string>>;
-  //   currentFunction: Function;
-  //   setCurrentFunction: React.Dispatch<React.SetStateAction<Function>>;
-  //   functions: Function[];
-  //   setFunctions: React.Dispatch<React.SetStateAction<Function[]>>;
-  //   executionEntries: ExecutionEntry[];
+  code: string;
+  setCode: React.Dispatch<React.SetStateAction<string>>;
+  language: string;
+  setLanguage: React.Dispatch<React.SetStateAction<string>>;
+  currentFunction: FunctionRecord | null;
+  setCurrentFunction: React.Dispatch<
+    React.SetStateAction<FunctionRecord | null>
+  >;
+  functions: FunctionRecord[];
+  executionEntries: ExecutionEntryRecord[];
+  refreshFunctions: () => Promise<void>;
+  getFunctionByAlias: (alias: string) => Required<FunctionRecord> | null;
+  updateFunction: (payload: FunctionUpdatePayload) => Promise<void>;
+  deleteFunction: (id: string) => Promise<void>;
 };

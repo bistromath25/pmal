@@ -1,3 +1,5 @@
+import crypto from 'crypto';
+
 export const getDefaultFunctionValue = (langauge: string) => {
   const values: Record<string, string> = {
     js: 'function add(a, b) {\n  return parseInt(a) + parseInt(b);\n}',
@@ -94,3 +96,8 @@ export const languageOptions = [
     logoUrl: '/logos/ruby.png',
   },
 ];
+
+export const getAlias = (id: string) => {
+  const hash = crypto.createHash('sha256').update(id).digest('hex');
+  return hash.substring(0, 6);
+};
