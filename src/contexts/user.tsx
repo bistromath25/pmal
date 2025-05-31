@@ -5,6 +5,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from 'react';
 import { getDbUser, getSessionUser } from '@/actions/user';
@@ -23,7 +24,7 @@ export function UserContextProvider({
 }) {
   const { wrappedRequest, resetError } = useApp();
   const [user, setUser] = useState<UserRecord | null>(null);
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
 
   const refreshUser = useCallback(async () => {
     await wrappedRequest(async () => {

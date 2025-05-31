@@ -53,7 +53,7 @@ export default function FunctionView({ alias }: FunctionViewProps) {
   }, [fun, setCode, setLanguage]);
 
   if (!fun) {
-    return <Typography>No function</Typography>;
+    return <Typography variant='h4'>No function</Typography>;
   }
   return (
     <Stack gap={2}>

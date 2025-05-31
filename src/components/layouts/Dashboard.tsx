@@ -6,7 +6,8 @@ import DashboardHeader from '@/components/DashboardHeader';
 import Sidebar from '@/components/Sidebar';
 import Toast from '@/components/Toast';
 import { useApp } from '@/contexts/app';
-import { Box, Stack } from '@mui/material';
+import { Box, CircularProgress, Stack } from '@mui/material';
+import { useUser } from '@/contexts/user';
 
 export default function DashboardLayout({
   children,
@@ -14,6 +15,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const { error, resetError, success, resetSuccess } = useApp();
+  const { ready } = useUser();
   const [errorToastOpen, setErrorToastOpen] = useState(!!error);
   const [successToastOpen, setSuccessToastOpen] = useState(!!success);
   const handleCloseErrorToast = () => {
@@ -68,7 +70,7 @@ export default function DashboardLayout({
           )}
           <Stack>
             <DashboardHeader />
-            {children}
+            {ready? children : <CircularProgress />}
           </Stack>
         </Box>
       </Box>
