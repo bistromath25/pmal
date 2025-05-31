@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useFunction } from '@/contexts/function';
-import { formatDate } from '@/utils';
+import { formatDate, getAlias } from '@/utils';
 import {
   Box,
   Paper,
@@ -94,7 +94,7 @@ function EntryBarChart() {
       .map((d) => ({
         date: new Date(d.started_at),
         runtime: d.time ?? 0,
-        alias: d.function_alias,
+        alias: getAlias(d.function_id),
       }))
       .sort((a, b) => a.date.getTime() - b.date.getTime())
       .slice(-30);
@@ -121,7 +121,7 @@ function EntryList() {
       .map((d) => ({
         date: new Date(d.started_at),
         runtime: d.time ?? 0,
-        alias: d.function_alias,
+        alias: getAlias(d.function_id),
       }))
       .sort((a, b) => a.date.getTime() - b.date.getTime())
       .slice(-6);

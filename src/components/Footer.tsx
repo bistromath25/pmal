@@ -1,11 +1,6 @@
 import { AppBar, Box, Button, Grid, Toolbar, Typography } from '@mui/material';
 
-export interface FooterProps {
-  type: 'landing' | 'dashboard';
-}
-
-export default function Footer({ type }: FooterProps) {
-  const isLanding = type === 'landing';
+export default function Footer() {
   return (
     <Box>
       <AppBar position='static' sx={{ backgroundColor: '#000' }}>
