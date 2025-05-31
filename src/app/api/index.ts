@@ -1,4 +1,4 @@
-import { FunctionCreatePayload } from '@/types-v2';
+import { FunctionCreatePayload } from '@/types';
 
 export const createFunction = async (payload: FunctionCreatePayload) => {
   const response = await fetch(`/api/fun`, {

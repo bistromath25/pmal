@@ -14,7 +14,7 @@ import {
   FunctionContextValue,
   FunctionUpdatePayload,
   FunctionCreatePayload,
-} from '@/types-v2';
+} from '@/types';
 import { getAlias, getDefaultFunctionValue } from '@/utils';
 import { useApp } from './app';
 import { useUser } from './user';

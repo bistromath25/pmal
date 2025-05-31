@@ -5,7 +5,7 @@ import {
   createClient,
   createServiceRoleClent,
 } from '@/services/supabase/server';
-import { FunctionRecord } from '@/types-v2';
+import { FunctionRecord } from '@/types';
 import { logError } from '@/utils';
 
 export const getFunctionById = async (id: string) => {

@@ -4,7 +4,7 @@ import { useCallback, useState } from 'react';
 import Link from 'next/link';
 import Modal from '@/components/Modal';
 import { useFunction } from '@/contexts/function';
-import { FunctionRecord } from '@/types-v2';
+import { FunctionRecord } from '@/types';
 import { formatDate, languageOptions } from '@/utils';
 import { Detail } from '../FunctionView';
 import { Box, Button, Grid, Paper, Stack, Typography } from '@mui/material';

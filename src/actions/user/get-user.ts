@@ -2,7 +2,7 @@
 
 import { env } from '@/env';
 import { createClient } from '@/services/supabase/server';
-import { UserRecord } from '@/types-v2';
+import { UserRecord } from '@/types';
 import { logError } from '@/utils';
 
 export const getSessionUser = async () => {

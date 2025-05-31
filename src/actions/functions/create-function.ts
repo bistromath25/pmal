@@ -5,7 +5,7 @@ import {
   createClient,
   createServiceRoleClent,
 } from '@/services/supabase/server';
-import { FunctionCreatePayload } from '@/types-v2';
+import { FunctionCreatePayload } from '@/types';
 import { logError } from '@/utils';
 
 export const createFunction = async (payload: FunctionCreatePayload) => {

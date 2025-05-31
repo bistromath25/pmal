@@ -2,7 +2,7 @@
 
 import { env } from '@/env';
 import { createClient } from '@/services/supabase/server';
-import { ExecutionEntry } from '@/types-v2';
+import { ExecutionEntry } from '@/types';
 import { logError } from '@/utils';
 
 export const getExecutionEntryById = async (id: string) => {

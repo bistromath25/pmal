@@ -10,7 +10,7 @@ import {
 } from 'react';
 import { getDbUser, getSessionUser } from '@/actions/user';
 import { createClient } from '@/services/supabase/client';
-import { UserContextValue, UserRecord } from '@/types-v2';
+import { UserContextValue, UserRecord } from '@/types';
 import { useApp } from './app';
 
 export const UserContext = createContext<UserContextValue | undefined>(

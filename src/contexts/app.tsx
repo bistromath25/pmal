@@ -1,8 +1,8 @@
 'use client';
 
 import { createContext, useCallback, useContext, useState } from 'react';
-import { AppContextValue } from '@/types-v2';
-import { WrappedRequest } from '@/types-v2/WrappedRequest';
+import { AppContextValue } from '@/types';
+import { WrappedRequest } from '@/types/WrappedRequest';
 
 export const AppContext = createContext<AppContextValue | undefined>(undefined);
 

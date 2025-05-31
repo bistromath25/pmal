@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useFunction } from '@/contexts/function';
 import { env } from '@/env';
-import { FunctionRecord } from '@/types-v2';
+import { FunctionRecord } from '@/types';
 import { formatDate, getDemoQuery } from '@/utils';
 import Editor from './Editor';
 import { Button, Stack, Typography } from '@mui/material';

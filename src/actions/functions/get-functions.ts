@@ -2,7 +2,7 @@
 
 import { env } from '@/env';
 import { createClient } from '@/services/supabase/server';
-import { FunctionRecord } from '@/types-v2';
+import { FunctionRecord } from '@/types';
 import { logError } from '@/utils';
 
 export const getFunctionsByUserId = async (user_id: string) => {
