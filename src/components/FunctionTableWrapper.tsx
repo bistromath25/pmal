@@ -53,7 +53,6 @@ export default function FunctionTableWrapper() {
         contents={
           <Stack spacing={2}>
             <LanguageSelection
-              type='dashboard'
               currentLanguage={currentLanguage}
               setCurrentLanguage={setCurrentLanguage}
             />

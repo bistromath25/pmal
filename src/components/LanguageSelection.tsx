@@ -1,47 +1,51 @@
-import Link from 'next/link';
+'use client';
+
 import { env } from '@/env';
 import { languageOptions } from '@/utils';
-import { Box, Typography } from '@mui/material';
+import { Box, Button, Stack, Typography } from '@mui/material';
 
 export default function LanguageSelection({
-  type,
   currentLanguage,
   setCurrentLanguage,
 }: {
-  type: 'dashboard' | 'playground';
   currentLanguage: string;
   setCurrentLanguage: React.Dispatch<React.SetStateAction<string>>;
 }) {
-  const isPlayground = type === 'playground';
-  const renderLanguageOption = (name: string, logoUrl: string) => {
-    return (
-      <Link
-        className={`rounded-lg hover:bg-white h-[50px] justify-items-center ${name === currentLanguage ? 'bg-white' : ''} ${env.FF_ONLY_JS_FUNCTIONS && name !== 'js' ? 'hover:cursor-not-allowed hover:bg-white' : ''}`}
-        key={`editor-language-option-${name}`}
-        href={
-          isPlayground
-            ? env.FF_ONLY_JS_FUNCTIONS
-              ? `?language=js`
-              : `?language=${name}`
-            : ''
-        }
-        onClick={() => {
-          if (env.FF_ONLY_JS_FUNCTIONS && name !== 'js') {
-            return;
-          }
-          setCurrentLanguage(name);
-        }}
-      >
-        <img className='h-[50px]' src={logoUrl} alt={name} />
-      </Link>
-    );
-  };
+  const onlyJS = env.FF_ONLY_JS_FUNCTIONS === 'true';
+
   return (
-    <Box className='hidden md:flex md:flex-row gap-4'>
+    <Stack flexDirection='row' gap={1} sx={{ alignItems: 'center' }}>
       <Typography variant='h6'>Language:</Typography>
-      {languageOptions.map(({ name, logoUrl }) =>
-        renderLanguageOption(name, logoUrl)
-      )}
-    </Box>
+      {languageOptions.map(({ name, logoUrl }) => {
+        const isDisabled = onlyJS && name !== 'js';
+        const isSelected = name === currentLanguage;
+
+        return (
+          <Button
+            key={name}
+            onClick={() => {
+              if (!isDisabled) {
+                setCurrentLanguage(name);
+              }
+            }}
+            disabled={isDisabled}
+            sx={{
+              borderRadius: 2,
+              height: 50,
+              backgroundColor: isSelected ? 'background.paper' : 'transparent',
+              '&:hover': {
+                backgroundColor: isDisabled
+                  ? 'transparent'
+                  : 'background.paper',
+                cursor: isDisabled ? 'not-allowed' : 'pointer',
+              },
+              p: 0.5,
+            }}
+          >
+            <Box component='img' src={logoUrl} alt={name} sx={{ height: 50 }} />
+          </Button>
+        );
+      })}
+    </Stack>
   );
 }
