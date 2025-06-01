@@ -37,34 +37,35 @@ export default function FunctionTable() {
         onClose={() => setDeleteModalIsOpen(false)}
         title={`Delete function ${currentFunction?.alias}?`}
         contents={
-          <Stack spacing={2}>
-            <Typography variant='body1'>
-              Are you sure you want to delete this function? This action cannot
-              be undone.
-            </Typography>
-
-            <Box sx={{ display: 'flex', gap: 2 }}>
-              <Button
-                variant='contained'
-                color='error'
-                onClick={() => {
-                  handleDelete();
-                  setDeleteModalIsOpen(false);
-                }}
-              >
-                Yes, I'm sure
-              </Button>
-
-              <Button
-                variant='outlined'
-                onClick={() => {
-                  setDeleteModalIsOpen(false);
-                  setCurrentFunction(null);
-                }}
-              >
-                No, Cancel
-              </Button>
-            </Box>
+          <Typography variant='body1' color='text.secondary'>
+            Are you sure you want to delete this function? This action cannot be
+            undone.
+          </Typography>
+        }
+        actions={
+          <Stack
+            flexDirection='row'
+            sx={{ justifyContent: 'flex-end', display: 'flex', gap: 2 }}
+          >
+            <Button
+              variant='outlined'
+              onClick={() => {
+                setDeleteModalIsOpen(false);
+                setCurrentFunction(null);
+              }}
+            >
+              No, Cancel
+            </Button>
+            <Button
+              variant='contained'
+              color='error'
+              onClick={() => {
+                handleDelete();
+                setDeleteModalIsOpen(false);
+              }}
+            >
+              Yes, I'm sure
+            </Button>
           </Stack>
         }
       />

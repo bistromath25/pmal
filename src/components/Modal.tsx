@@ -1,12 +1,23 @@
+'use client';
+
 import { ReactElement } from 'react';
 import { CloseModalIcon } from './Icons';
-import { Box, Button, Divider, Typography } from '@mui/material';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  IconButton,
+  Divider,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 
 export interface ModalProps {
   modalIsOpen: boolean;
   onClose: () => void;
   title?: string;
   contents?: ReactElement;
+  actions?: ReactElement;
   editor?: boolean;
 }
 
@@ -15,35 +26,40 @@ export default function Modal({
   onClose,
   title,
   contents,
+  actions,
   editor,
 }: ModalProps) {
-  return modalIsOpen ? (
-    <>
-      <Box
-        sx={{ zIndex: 1300 }}
-        className='backdrop-blur-sm justify-center items-center text-left flex overflow-x-hidden overflow-y-auto fixed inset-0 z-40 outline-none focus:outline-none'
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
+
+  return (
+    <Dialog
+      open={modalIsOpen}
+      onClose={onClose}
+      fullWidth
+      fullScreen={editor && fullScreen}
+      maxWidth={editor ? 'md' : 'sm'}
+      PaperProps={{
+        sx: { borderRadius: 2, width: editor ? '100%' : undefined },
+      }}
+    >
+      <DialogTitle
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          pb: 1,
+        }}
       >
-        <Box
-          className={`bg-white rounded-lg shadow z-50 p-0 ${editor ? 'w-[100%] md:w-[70%]' : 'w-[500px]'}`}
-        >
-          <Box className='space-y-2 p-6'>
-            <Box className='flex items-center justify-between rounded-t'>
-              <Typography
-                variant='h5'
-                className='text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl'
-              >
-                {title}
-              </Typography>
-              <Button data-modal-hide='static-modal' onClick={onClose}>
-                <CloseModalIcon />
-              </Button>
-            </Box>
-            <Divider />
-            {contents}
-          </Box>
-        </Box>
-      </Box>
-      <Box className='opacity-25 fixed inset-0 z-30 bg-black' />
-    </>
-  ) : null;
+        {title}
+        <IconButton edge='end' onClick={onClose}>
+          <CloseModalIcon />
+        </IconButton>
+      </DialogTitle>
+      <Divider />
+      <DialogContent sx={{ pt: 2 }}>{contents}</DialogContent>
+      <Divider />
+      <DialogContent sx={{ pt: 2 }}>{actions}</DialogContent>
+    </Dialog>
+  );
 }

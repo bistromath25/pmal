@@ -1,12 +1,13 @@
 'use client';
 
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useFunction } from '@/contexts/function';
 import { env } from '@/env';
 import { FunctionRecord } from '@/types';
 import { formatDate, getDemoQuery } from '@/utils';
 import Editor from './Editor';
+import Modal from './Modal';
 import { Button, Stack, Typography } from '@mui/material';
 
 interface FunctionViewProps {
@@ -21,9 +22,12 @@ export default function FunctionView({ alias }: FunctionViewProps) {
     setCode,
     language,
     setLanguage,
+    currentFunction,
+    setCurrentFunction,
     updateFunction,
     deleteFunction,
   } = useFunction();
+  const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
 
   const fun = useMemo(
     () => getFunctionByAlias(alias),
@@ -49,6 +53,7 @@ export default function FunctionView({ alias }: FunctionViewProps) {
     if (fun) {
       setCode(fun.code);
       setLanguage(fun.language);
+      setCurrentFunction(fun);
     }
   }, [fun, setCode, setLanguage]);
 
@@ -56,19 +61,62 @@ export default function FunctionView({ alias }: FunctionViewProps) {
     return <Typography variant='h4'>No function</Typography>;
   }
   return (
-    <Stack gap={2}>
-      <Typography variant='h4'>{alias}</Typography>
-      <Details fun={fun} />
-      <Editor code={code} setCode={setCode} language={language} />
-      <Stack flexDirection='row' gap={2}>
-        <Button onClick={handleSave} variant='contained'>
-          Save
-        </Button>
-        <Button onClick={handleDelete} variant='outlined' color='error'>
-          Delete
-        </Button>
+    <>
+      <Stack gap={2}>
+        <Typography variant='h4'>{alias}</Typography>
+        <Details fun={fun} />
+        <Editor code={code} setCode={setCode} language={language} />
+        <Stack flexDirection='row' gap={2}>
+          <Button onClick={handleSave} variant='contained'>
+            Save
+          </Button>
+          <Button
+            onClick={() => setDeleteModalIsOpen(true)}
+            variant='outlined'
+            color='error'
+          >
+            Delete
+          </Button>
+        </Stack>
       </Stack>
-    </Stack>
+      <Modal
+        modalIsOpen={deleteModalIsOpen}
+        onClose={() => setDeleteModalIsOpen(false)}
+        title={`Delete function ${currentFunction?.alias}?`}
+        contents={
+          <Typography variant='body1' color='text.secondary'>
+            Are you sure you want to delete this function? This action cannot be
+            undone.
+          </Typography>
+        }
+        actions={
+          <Stack
+            flexDirection='row'
+            sx={{ justifyContent: 'flex-end', display: 'flex', gap: 2 }}
+          >
+            <Button
+              variant='outlined'
+              onClick={() => {
+                setDeleteModalIsOpen(false);
+                setCurrentFunction(null);
+              }}
+            >
+              No, Cancel
+            </Button>
+            <Button
+              variant='contained'
+              color='error'
+              onClick={() => {
+                handleDelete();
+                setDeleteModalIsOpen(false);
+              }}
+            >
+              Yes, I'm sure
+            </Button>
+          </Stack>
+        }
+      />
+    </>
   );
 }
 

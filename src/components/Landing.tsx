@@ -17,6 +17,7 @@ import LockIcon from '@mui/icons-material/Lock';
 import PublicIcon from '@mui/icons-material/Public';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import { Box, Button, Grid, Link, Stack, Typography } from '@mui/material';
+import { green, yellow } from '@mui/material/colors';
 
 export default function Landing() {
   return (
@@ -195,8 +196,14 @@ export function Steps() {
           description={
             <>
               Call your function wherever you want via{' '}
-              <span className='font-mono'>GET</span> or{' '}
-              <span className='font-mono'>POST</span>.
+              <Box component='span' fontFamily='monospace'>
+                GET
+              </Box>{' '}
+              or{' '}
+              <Box component='span' fontFamily='monospace'>
+                POST
+              </Box>
+              .
             </>
           }
         />
@@ -235,10 +242,21 @@ export function About1() {
   return (
     <Section py={10} textAlign='justify'>
       <Typography variant='h4'>
-        Deploy <span className='bg-green-300'>serverless functions</span> right
-        from your browser using{' '}
-        <span className='bg-yellow-200'>GitHub Actions</span> as a computing
-        backend.
+        Deploy{' '}
+        <Box
+          component='span'
+          sx={{ backgroundColor: green[200], px: 0.5, borderRadius: 1 }}
+        >
+          serverless functions
+        </Box>{' '}
+        right from your browser using{' '}
+        <Box
+          component='span'
+          sx={{ backgroundColor: yellow[200], px: 0.5, borderRadius: 1 }}
+        >
+          GitHub Actions
+        </Box>{' '}
+        as a computing backend.
       </Typography>
     </Section>
   );
@@ -273,7 +291,7 @@ const features = [
   {
     icon: <CodeIcon fontSize='large' />,
     title: 'Multi-Language',
-    description: 'Supports Node.js, Python, Go, and more.',
+    description: 'Supports Node.js, Python, PHP, and more.',
   },
 ];
 
@@ -310,10 +328,12 @@ function Features() {
 
 export function About2() {
   return (
-    <Section py={10} textAlign='center'>
+    <Box py={10} textAlign='center'>
       <Typography variant='h4'>
         🔓 Unlock limitless possibilities with{' '}
-        <span className='font-bold'>{'GitHub Actions Lambda 🔑'}</span>
+        <Box component='span' fontWeight='bold'>
+          GitHub Actions Lambda 🔑
+        </Box>
       </Typography>
       <Typography variant='h5'>
         <Link
@@ -324,10 +344,17 @@ export function About2() {
         >
           Sign in
         </Link>{' '}
-        to gain <span className='font-bold'>full access</span> to PMAL,
-        including our <span className='font-bold'>API</span>.
+        to gain{' '}
+        <Box component='span' fontWeight='bold'>
+          full access
+        </Box>{' '}
+        to PMAL, including our{' '}
+        <Box component='span' fontWeight='bold'>
+          API
+        </Box>
+        .
       </Typography>
-    </Section>
+    </Box>
   );
 }
 
