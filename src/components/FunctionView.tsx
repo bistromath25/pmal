@@ -55,7 +55,7 @@ export default function FunctionView({ alias }: FunctionViewProps) {
       setLanguage(fun.language);
       setCurrentFunction(fun);
     }
-  }, [fun, setCode, setLanguage]);
+  }, [fun, setCode, setLanguage, setCurrentFunction]);
 
   if (!fun) {
     return <Typography variant='h4'>No function</Typography>;
