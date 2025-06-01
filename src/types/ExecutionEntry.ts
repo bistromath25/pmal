@@ -1,9 +1,7 @@
 import { BaseRecord } from './BaseRecord';
-import { RequireAtLeastOne } from './utils';
 
 export interface ExecutionEntry extends BaseRecord {
   function_id: string;
-  function_alias: string;
   user_id: string | null;
   code: string;
   language: string;
@@ -15,10 +13,15 @@ export interface ExecutionEntry extends BaseRecord {
 }
 
 export type ExecutionEntryRecord = Required<ExecutionEntry>;
-export type ExecutionEntryCreatePayload = Omit<ExecutionEntryRecord, 'id'>;
-export type ExecutionEntryGetPayload = Pick<ExecutionEntryRecord, 'id'>;
-
-export type ExecutionEntryGetManyPayload = RequireAtLeastOne<
-  Pick<ExecutionEntryRecord, 'function_id' | 'function_alias'>
+export type ExecutionEntryCreatePayload = Pick<
+  ExecutionEntry,
+  | 'function_id'
+  | 'user_id'
+  | 'code'
+  | 'language'
+  | 'query'
+  | 'started_at'
+  | 'ended_at'
+  | 'time'
+  | 'result'
 >;
-export type ExecutionEntryDeleteManyPayload = ExecutionEntryGetManyPayload;

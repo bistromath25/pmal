@@ -1,9 +1,16 @@
 'use client';
 
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { signout } from '@/actions/user';
 import { useApp } from '@/contexts/app';
 import { useUser } from '@/contexts/user';
-import { SIDEBAR_COLLAPSE_WIDTH, SIDEBAR_FULL_WIDTH } from '@/utils';
+import {
+  HEADER_HEIGHT,
+  SIDEBAR_COLLAPSE_WIDTH,
+  SIDEBAR_FULL_WIDTH,
+} from '@/utils';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import MenuIcon from '@mui/icons-material/Menu';
 import {
   AppBar,
@@ -16,10 +23,15 @@ import {
 } from '@mui/material';
 
 export default function DashboardHeader() {
+  const router = useRouter();
   const { sidebarOpen, setSidebarOpen } = useApp();
-  const {
-    user: { name, image },
-  } = useUser();
+  const { user } = useUser();
+
+  const handleSignOut = async () => {
+    await signout();
+    router.push('/signin');
+  };
+
   return (
     <Stack>
       <AppBar
@@ -30,6 +42,7 @@ export default function DashboardHeader() {
             : `calc(100% - ${SIDEBAR_COLLAPSE_WIDTH}px)`,
           transition: 'margin-left 0.3s, width 0.3s',
           zIndex: (theme) => theme.zIndex.drawer + 1,
+          height: `${HEADER_HEIGHT}px`,
         }}
       >
         <Toolbar sx={{ gap: 2 }}>
@@ -52,22 +65,15 @@ export default function DashboardHeader() {
               }}
             />
           </IconButton>
+          <IconButton onClick={() => router.back()} color='inherit'>
+            <ArrowBackIcon />
+          </IconButton>
+          <IconButton onClick={() => router.forward()} color='inherit'>
+            <ArrowForwardIcon />
+          </IconButton>
           <Box sx={{ flexGrow: 1 }} />
-          {image && (
-            <IconButton sx={{ padding: 0 }}>
-              <img
-                src={image}
-                style={{ height: 48, width: 48, borderRadius: '50%' }}
-              />
-            </IconButton>
-          )}
-          <Typography variant='h6'>{name}</Typography>
-          <Button
-            component={Link}
-            href='/signout'
-            variant='outlined'
-            color='inherit'
-          >
+          <Typography variant='h6'>{user?.email}</Typography>
+          <Button onClick={handleSignOut} variant='outlined' color='inherit'>
             Sign out
           </Button>
         </Toolbar>

@@ -1,22 +1,10 @@
 'use client';
 
 import { createContext, useCallback, useContext, useState } from 'react';
+import { AppContextValue } from '@/types';
+import { WrappedRequest } from '@/types/WrappedRequest';
 
-export const AppContext = createContext<
-  | {
-      loading: boolean;
-      setLoading: React.Dispatch<React.SetStateAction<boolean>>;
-      error: string | null;
-      setError: React.Dispatch<React.SetStateAction<string | null>>;
-      resetError: () => void;
-      success: string | null;
-      setSuccess: React.Dispatch<React.SetStateAction<string | null>>;
-      resetSuccess: () => void;
-      sidebarOpen: boolean;
-      setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    }
-  | undefined
->(undefined);
+export const AppContext = createContext<AppContextValue | undefined>(undefined);
 
 export function AppContextProvider({
   children,
@@ -26,9 +14,29 @@ export function AppContextProvider({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [ready, setReady] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const resetError = useCallback(() => setError(null), []);
   const resetSuccess = useCallback(() => setSuccess(null), []);
+
+  const wrappedRequest: WrappedRequest = useCallback(
+    async (promise) => {
+      try {
+        setLoading(true);
+        setReady(false);
+        resetError();
+        return await promise();
+      } catch (error) {
+        setError((error as Error).message ?? String(error));
+        return null;
+      } finally {
+        setLoading(false);
+        setReady(true);
+      }
+    },
+    [resetError]
+  );
+
   return (
     <AppContext.Provider
       value={{
@@ -40,6 +48,9 @@ export function AppContextProvider({
         success,
         setSuccess,
         resetSuccess,
+        ready,
+        setReady,
+        wrappedRequest,
         sidebarOpen,
         setSidebarOpen,
       }}
@@ -49,7 +60,7 @@ export function AppContextProvider({
   );
 }
 
-export function useApp() {
+export function useApp(): AppContextValue {
   const app = useContext(AppContext);
   if (!app) {
     throw new Error('useApp must be used within a AppContextProvider');

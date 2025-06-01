@@ -1,51 +1,39 @@
 import JSZip from 'jszip';
-import { env } from '@/env';
-import * as GH from '@/services/gh';
+import { NextRequest, NextResponse } from 'next/server';
+import { serviceRoleCreateExecutionEntry } from '@/actions/execution-entries/create-execution-entry';
 import {
-  createExecutionEntry,
-  deleteFunctionByAlias,
-  getFunctionByAlias,
-  updateFunctionCallsOnceByAlias,
-} from '@/services/supabase';
-import { ExecutionEntryCreatePayload, FunctionRecord } from '@/types';
-import { getFunction, getFunctionName } from '@/utils';
+  serviceRoleGetFunctionByAlias,
+  serviceRoleUpdateFunctionTotalCalls,
+} from '@/actions/functions';
+import { env } from '@/env';
+import * as GitHub from '@/services/github';
+import { getFunction, getFunctionName, logError } from '@/utils';
 
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
   try {
-    const url = new URL(req.url);
-    const params = new URLSearchParams(url.search);
-    const alias = url.pathname.split('/api/')[1];
-    const f = await getFunctionByAlias(alias);
-    if (!f) {
-      return new Response(
-        JSON.stringify({
-          error: 'Function does not exist',
-        }),
-        { status: 500 }
+    const params = req.nextUrl.searchParams;
+    const alias = req.nextUrl.pathname.split('/api/')[1];
+    const fun = await serviceRoleGetFunctionByAlias(alias);
+    if (!fun) {
+      return NextResponse.json(
+        { error: 'Function does not exist' },
+        { status: 404 }
       );
     }
-    const { code, anonymous, total_calls, language } = f;
-    if (anonymous && total_calls >= 10) {
-      await deleteFunctionByAlias(alias);
-      return new Response(
-        JSON.stringify({
-          error: 'Maximum calls exceeded',
-        }),
-        { status: 500 }
-      );
-    }
+
+    const { code, language, total_calls } = fun;
 
     let result;
-    let newFun: FunctionRecord | null = null;
     const startDate = new Date();
     if (code) {
-      if (env.FF_USE_GITHUB_ACTIONS) {
+      if (env.FF_USE_GITHUB_ACTIONS === 'true') {
+        logError('FF_USE_GITHUB_ACTIONS not supported');
         const funName = getFunctionName(code, language);
         const contents =
           code +
           `\nconsole.log(${funName}(${Object.values(Object.fromEntries(params)).map((x) => `'${x}'`)}));`;
 
-        let response = await GH.getFiles('/js');
+        let response = await GitHub.getFiles('/js');
         const files = await response.json();
         const sha =
           files.find(
@@ -53,7 +41,7 @@ export async function GET(req: Request) {
           )?.sha ?? '';
 
         const commitMessage = `${alias}-${sha}`;
-        response = await GH.updateIndexFile({
+        response = await GitHub.updateIndexFile({
           decodedContents: contents,
           sha,
           language: 'js',
@@ -68,7 +56,7 @@ export async function GET(req: Request) {
             async function pollForId() {
               try {
                 attempts++;
-                const response = await GH.getWorkflows();
+                const response = await GitHub.getWorkflows();
                 const { workflow_runs } = await response.json();
                 const id = workflow_runs.find(
                   (workflow: { head_commit: { message: string } }) =>
@@ -97,7 +85,7 @@ export async function GET(req: Request) {
             async function pollForCompletion() {
               try {
                 attempts++;
-                const response = await GH.getWorkflowRunById(id);
+                const response = await GitHub.getWorkflowRunById(id);
                 const { status } = await response.json();
                 if (status === 'completed') {
                   resolve();
@@ -115,7 +103,7 @@ export async function GET(req: Request) {
         }
 
         async function getWorkflowLogs(id: number): Promise<JSZip> {
-          const response = await GH.getWorkflowRunLogsById(id);
+          const response = await GitHub.getWorkflowRunLogsById(id);
           const data = await response.arrayBuffer();
           const zip = await JSZip.loadAsync(data);
           return zip;
@@ -135,73 +123,64 @@ export async function GET(req: Request) {
             .join('\n');
 
           result = cleanLogContent.split('##[endgroup]\n')[1].trim();
-          newFun = await updateFunctionCallsOnceByAlias(alias);
         } catch (error) {
-          return new Response(
-            JSON.stringify({
-              error: 'Execution timed out',
-            }),
+          logError(error);
+          return NextResponse.json(
+            { error: 'Execution timed out' },
             { status: 500 }
           );
         }
       } else {
-        const fun = getFunction(code);
-        if (fun) {
-          result = fun(...Object.values(Object.fromEntries(params)));
-          newFun = await updateFunctionCallsOnceByAlias(alias);
+        const funCode = getFunction(code);
+
+        if (funCode) {
+          result = funCode(...Object.values(Object.fromEntries(params)));
         }
       }
 
-      if (!newFun) {
-        return new Response(
-          JSON.stringify({
-            error: 'Unable to update function after execution',
-          }),
-          { status: 500 }
-        );
-      }
-
       const endDate = new Date();
-      const executionEntry: ExecutionEntryCreatePayload = {
-        created_at: startDate,
-        updated_at: null,
-        deleted_at: null,
-        user_id: f.anonymous ? 'anonymous' : f.created_by,
-        function_id: f.id,
-        function_alias: f.alias,
-        code: f.code,
-        language: f.language,
+      const time = endDate.getTime() - startDate.getTime();
+
+      await serviceRoleUpdateFunctionTotalCalls({
+        id: fun.id,
+        total_calls: total_calls + 1,
+      });
+
+      await serviceRoleCreateExecutionEntry({
+        function_id: fun.id,
+        user_id: fun.user_id,
+        code,
+        language,
         query: params.toString(),
         started_at: startDate,
         ended_at: endDate,
-        time: endDate.getTime() - startDate.getTime(),
+        time,
         result,
-      };
-      await createExecutionEntry(executionEntry);
-      return new Response(
-        JSON.stringify({
-          result,
-          total_calls: newFun.total_calls,
-        }),
+      });
+
+      return NextResponse.json(
+        {
+          data: {
+            result,
+            total_calls: total_calls + 1,
+          },
+        },
         { status: 200 }
       );
     }
-    return new Response(
-      JSON.stringify({
+
+    return NextResponse.json(
+      {
         error: 'Function is empty',
-      }),
-      { status: 500 }
+      },
+      { status: 400 }
     );
   } catch (error) {
-    return new Response(
-      JSON.stringify({
-        error: 'Error',
-      }),
-      { status: 500 }
-    );
+    logError(error);
+    return NextResponse.json({ error }, { status: 500 });
   }
 }
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   return GET(req);
 }

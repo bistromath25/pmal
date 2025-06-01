@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server';
-import { auth } from './services/auth';
+import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from './services/supabase/server';
 
 const routeConfig = {
   landing: {
@@ -18,16 +18,8 @@ export const config = {
   ],
 };
 
-export async function middleware(req: Request) {
+export async function middleware(req: NextRequest) {
   const { pathname } = new URL(req.url);
-
-  if (pathname === '/signin') {
-    return NextResponse.redirect(new URL('/api/auth/signin', req.url));
-  }
-
-  if (pathname === '/signout') {
-    return NextResponse.redirect(new URL('/api/auth/signout', req.url));
-  }
 
   const route = Object.values(routeConfig).find(({ patterns }) =>
     patterns.includes(pathname)
@@ -36,12 +28,20 @@ export async function middleware(req: Request) {
     return NextResponse.next();
   }
 
-  const session = await auth();
-  if (route.requiresAuth && !session) {
-    return NextResponse.redirect(new URL('/signin', req.url));
-  }
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (pathname === '/' && session) {
+  if (route.requiresAuth && !user) {
+    const url = new URL('/signin', req.url);
+    url.searchParams.set(
+      'callbackUrl',
+      req.nextUrl.pathname + req.nextUrl.search
+    );
+    return NextResponse.redirect(url);
+  }
+  if (pathname === '/' && user) {
     return NextResponse.redirect(new URL('/home', req.url));
   }
 

@@ -1,79 +1,114 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState } from 'react';
-import { useSession } from 'next-auth/react';
-import * as API from '@/app/api';
-import { ExecutionEntry, Function } from '@/types';
-import { getDefaultFunctionValue } from '@/utils';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
+import { getExecutionEntryByUserId } from '@/actions/execution-entries/get-execution-entries';
+import * as FunctionActions from '@/actions/functions';
+import {
+  ExecutionEntryRecord,
+  FunctionRecord,
+  FunctionContextValue,
+  FunctionUpdatePayload,
+  FunctionCreatePayload,
+} from '@/types';
+import { getAlias, getDefaultFunctionValue } from '@/utils';
 import { useApp } from './app';
 import { useUser } from './user';
 
-export const FunctionContext = createContext<
-  | {
-      code: string;
-      setCode: React.Dispatch<React.SetStateAction<string>>;
-      language: string;
-      setLanguage: React.Dispatch<React.SetStateAction<string>>;
-      currentFunction: Function;
-      setCurrentFunction: React.Dispatch<React.SetStateAction<Function>>;
-      functions: Function[];
-      setFunctions: React.Dispatch<React.SetStateAction<Function[]>>;
-      executionEntries: ExecutionEntry[];
-    }
-  | undefined
->(undefined);
+export const FunctionContext = createContext<FunctionContextValue | undefined>(
+  undefined
+);
 
 export function FunctionContextProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { setLoading, setError } = useApp();
+  const { wrappedRequest, resetError, setSuccess } = useApp();
+  const { user } = useUser();
   const [code, setCode] = useState(getDefaultFunctionValue('js'));
   const [language, setLanguage] = useState('js');
-  const [currentFunction, setCurrentFunction] = useState<Function>({
-    id: '',
-    created_at: new Date(),
-    alias: '',
-    code: '',
-    total_calls: 0,
-    remaining_calls: 0,
-    language: '',
-  });
-  const [functions, setFunctions] = useState<Function[]>([]);
-  const [executionEntries, setExecutionEntries] = useState<ExecutionEntry[]>(
-    []
+  const [currentFunction, setCurrentFunction] = useState<FunctionRecord | null>(
+    null
   );
-  const session = useSession();
-  const {
-    user: { aliases },
-  } = useUser();
-  useEffect(() => {
-    const getFunctions = async () => {
-      try {
-        setLoading(true);
-        const { funs } = await API.getFunctions({ aliases });
-        setFunctions(funs);
-        let allEntries: ExecutionEntry[] = [];
-        for (const fun of funs) {
-          const { entries } = await API.getExecutionEntries({
-            function_alias: fun.alias,
-          });
-          if (entries) {
-            allEntries = [...allEntries, ...entries];
-          }
-        }
-        setExecutionEntries(allEntries);
-      } catch (error) {
-        setError(error as string);
-      } finally {
-        setLoading(false);
-      }
-    };
-    if (session.status === 'authenticated' && !functions.length) {
-      getFunctions();
+  const [functions, setFunctions] = useState<FunctionRecord[]>([]);
+  const [executionEntries, setExecutionEntries] = useState<
+    ExecutionEntryRecord[]
+  >([]);
+
+  const refreshFunctions = useCallback(async () => {
+    if (!user?.id) {
+      return;
     }
-  }, [session.status, aliases, functions.length, setError, setLoading]);
+    await wrappedRequest(async () => {
+      try {
+        const funs = await FunctionActions.getFunctionsByUserId(user.id);
+        if (funs?.length) {
+          setFunctions(funs);
+        }
+        const entries = await getExecutionEntryByUserId(user.id);
+        if (entries?.length) {
+          setExecutionEntries(entries);
+        }
+      } catch {
+        resetError();
+      }
+    });
+  }, [user?.id, wrappedRequest, resetError]);
+
+  const createFunction = useCallback(
+    async (payload: FunctionCreatePayload) => {
+      await wrappedRequest(async () => {
+        const id = await FunctionActions.createFunction(payload);
+        const alias = getAlias(id!);
+        await FunctionActions.setFunctionAliasById({ id: id!, alias });
+        await refreshFunctions();
+        setSuccess(`Created function ${alias}`);
+      });
+    },
+    [wrappedRequest, setSuccess, refreshFunctions]
+  );
+
+  const updateFunction = useCallback(
+    async (payload: FunctionUpdatePayload) => {
+      await wrappedRequest(async () => {
+        const alias = getAlias(payload.id);
+        await FunctionActions.updateFunctionById(payload);
+        await refreshFunctions();
+        setSuccess(`Updated function ${alias}`);
+      });
+    },
+    [setSuccess, wrappedRequest, refreshFunctions]
+  );
+
+  const deleteFunction = useCallback(
+    async (id: string) => {
+      await wrappedRequest(async () => {
+        const alias = getAlias(id);
+        await FunctionActions.deleteFunctionById(id);
+        await refreshFunctions();
+        setSuccess(`Deleted function ${alias}`);
+      });
+    },
+    [setSuccess, wrappedRequest, refreshFunctions]
+  );
+
+  const getFunctionByAlias = useCallback(
+    (alias: string) => {
+      return functions.find(({ alias: a }) => a === alias) ?? null;
+    },
+    [functions]
+  );
+
+  useEffect(() => {
+    refreshFunctions();
+  }, [refreshFunctions]);
+
   return (
     <FunctionContext.Provider
       value={{
@@ -84,8 +119,12 @@ export function FunctionContextProvider({
         currentFunction,
         setCurrentFunction,
         functions,
-        setFunctions,
         executionEntries,
+        refreshFunctions,
+        getFunctionByAlias,
+        createFunction,
+        updateFunction,
+        deleteFunction,
       }}
     >
       {children}

@@ -1,53 +1,92 @@
 'use client';
 
 import { useState } from 'react';
-import Marquee from 'react-fast-marquee';
+import NextLink from 'next/link';
 import * as API from '@/app/api';
+import { useApp } from '@/contexts/app';
 import { env } from '@/env';
-import useWrappedRequest from '@/hooks/useWrappedRequest';
-import { FunctionCreatePayload } from '@/types';
-import {
-  getDefaultFunctionValue,
-  getDemoQuery,
-  isValidFunction,
-  languageOptions,
-} from '@/utils';
+import { getDefaultFunctionValue, getDemoQuery } from '@/utils';
 import Editor from './Editor';
 import Footer from './Footer';
 import Header from './Header';
 import { DefaultIcon, SuccessIcon } from './Icons';
+import BoltIcon from '@mui/icons-material/Bolt';
+import BuildIcon from '@mui/icons-material/Build';
+import CodeIcon from '@mui/icons-material/Code';
+import LockIcon from '@mui/icons-material/Lock';
+import PublicIcon from '@mui/icons-material/Public';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import { Box, Button, Grid, Link, Stack, Typography } from '@mui/material';
+import { green, yellow } from '@mui/material/colors';
+
+export default function Landing() {
+  return (
+    <Box>
+      <Header />
+      <Stack>
+        <Hero />
+        <Steps />
+        <About1 />
+        <Features />
+        <About2 />
+      </Stack>
+      <Footer />
+    </Box>
+  );
+}
+
+function Hero() {
+  return (
+    <Stack
+      spacing={4}
+      sx={{
+        py: 10,
+      }}
+      className='sm:bg-[linear-gradient(170deg,_rgb(0_0_0)_48%,_rgb(255_255_255)_48%)] bg-fixed'
+    >
+      <Typography
+        variant='h2'
+        sx={{
+          textAlign: 'center',
+          fontWeight: 'bold',
+          color: 'background.paper',
+        }}
+      >
+        Deploy{' '}
+        <span className='bg-gradient-to-r from-blue-600 via-yellow-200 to-blue-600 inline-block text-transparent bg-clip-text animate-shimmer bg-[length:200%_100%]'>
+          Serverless Functions
+        </span>
+        <br />
+        right from your browser
+      </Typography>
+      <Box sx={{ px: '20%' }}>
+        <LandingEditor />
+      </Box>
+    </Stack>
+  );
+}
 
 function LandingEditor() {
-  const { wrappedRequest } = useWrappedRequest();
+  const { loading, wrappedRequest } = useApp();
   const [code, setCode] = useState(getDefaultFunctionValue('js'));
   const [demoQuery, setDemoQuery] = useState<string | undefined>(undefined);
   const [error, setError] = useState(false);
   const [alias, setAlias] = useState<string | undefined>(undefined);
   const [copied, setCopied] = useState(false);
-  const [loading, setLoading] = useState(false);
+
   const onSubmit = async () => {
-    setLoading(true);
-    try {
-      if (isValidFunction(code, 'js')) {
-        const payload: FunctionCreatePayload = {
-          code,
-          language: 'js',
-          anonymous: true,
-          created_by: null,
-          belongs_to: [],
-        };
-        const {
-          fun: { alias },
-        } = await wrappedRequest(() => API.createFunction(payload));
-        setAlias(alias);
-        setDemoQuery(getDemoQuery(code, 'js'));
-        setCopied(false);
-        setError(false);
-      }
-    } finally {
-      setLoading(false);
-    }
+    await wrappedRequest(async () => {
+      const {
+        data: { alias },
+      } = await API.createFunction({
+        code,
+        language: 'js',
+        anonymous: true,
+      });
+      setAlias(alias);
+      setDemoQuery(getDemoQuery(code, 'js'));
+      setCopied(false);
+    });
   };
   return (
     <Stack spacing={2}>
@@ -84,19 +123,6 @@ function LandingEditor() {
           }}
         >
           <Box sx={{ display: 'flex' }}>
-            {/* <TextField
-              value={`curl -X GET '${APP_BASE_URL}/api/${alias}?${demoQuery}'`}
-              sx={{
-                minWidth: 560,
-                // backgroundColor: theme.colors.black,
-              }}
-              slotProps={{
-                input: {
-                  readOnly: true,
-                  color: 'primary'
-                },
-              }}
-            /> */}
             <input
               className='bg-slate-950 text-white text-sm border border-e-0 border-[#dbeafe] rounded-s-lg block w-full p-2.5 overflow-x-scroll line-clamp-1 focus:outline-none'
               style={{
@@ -134,7 +160,12 @@ function LandingEditor() {
             sx={{ filter: 'invert(1)', mixBlendMode: 'difference' }}
           >
             Free functions are automatically deleted after 10 calls.{' '}
-            <Link href='/signin' color='inherit' underline='hover'>
+            <Link
+              component={NextLink}
+              href='/signin'
+              color='primary.main'
+              underline='hover'
+            >
               Sign in
             </Link>{' '}
             to get more calls!
@@ -145,172 +176,206 @@ function LandingEditor() {
   );
 }
 
-function LanguageMarquee() {
+export function Steps() {
   return (
-    <Marquee autoFill pauseOnHover>
-      {languageOptions.map(({ name, logoUrl }) => (
-        <img
-          className='h-[60px] px-10'
-          src={logoUrl}
-          key={`language-marquee-${name}`}
+    <Section px='10%' py={4} bg='background.paper'>
+      <Grid container spacing={2} justifyContent='center'>
+        <FeatureCard
+          emoji='✏️'
+          title='Edit'
+          description='Edit your function in the built-in editor supporting 5+ languages.'
         />
-      ))}
-    </Marquee>
+        <FeatureCard
+          emoji='🚀'
+          title='Deploy'
+          description='Deploy your function at the click of a button.'
+        />
+        <FeatureCard
+          emoji='⚡'
+          title='Call'
+          description={
+            <>
+              Call your function wherever you want via{' '}
+              <Box component='span' fontFamily='monospace'>
+                GET
+              </Box>{' '}
+              or{' '}
+              <Box component='span' fontFamily='monospace'>
+                POST
+              </Box>
+              .
+            </>
+          }
+        />
+      </Grid>
+    </Section>
   );
 }
 
-export default function Landing() {
+function FeatureCard({
+  emoji,
+  title,
+  description,
+}: {
+  emoji: string;
+  title: string;
+  description: React.ReactNode;
+}) {
   return (
-    <Box>
-      <Header type='landing' />
+    <Grid sx={{ display: 'flex', gap: 2, maxWidth: '30%' }}>
+      <Typography variant='h3' sx={{ my: 'auto' }}>
+        {emoji}
+      </Typography>
       <Stack>
-        <Stack
-          spacing={4}
-          sx={{
-            py: 10,
-          }}
-          className='sm:bg-[linear-gradient(170deg,_rgb(0_0_0)_48%,_rgb(255_255_255)_48%)] bg-fixed'
-        >
-          <Typography
-            variant='h2'
-            sx={{
-              textAlign: 'center',
-              fontWeight: 'bold',
-              color: 'background.paper',
-            }}
-          >
-            Deploy{' '}
-            <span className='bg-gradient-to-r from-blue-600 via-yellow-200 to-blue-600 inline-block text-transparent bg-clip-text animate-shimmer bg-[length:200%_100%]'>
-              Serverless Functions
-            </span>
-            <br />
-            right from your browser
-          </Typography>
-          <Box sx={{ px: '20%' }}>
-            <LandingEditor />
-          </Box>
-        </Stack>
-        <Box sx={{ px: '5%', py: 4, backgroundColor: 'background.paper' }}>
-          <Grid container spacing={2} sx={{ justifyContent: 'center' }}>
-            <Grid sx={{ display: 'flex', gap: 2, maxWidth: '30%' }}>
-              <Typography variant='h3' sx={{ my: 'auto' }}>
-                ✏️
-              </Typography>
-              <Stack>
-                <Typography
-                  variant='h5'
-                  sx={{
-                    fontWeight: 'bold',
-                  }}
-                >
-                  Edit
-                </Typography>
-                <Typography variant='h6'>
-                  Edit your function in the built-in editor supporting 5+
-                  languages.
-                </Typography>
-              </Stack>
-            </Grid>
-            <Grid sx={{ display: 'flex', gap: 2, maxWidth: '30%' }}>
-              <Typography variant='h3' sx={{ my: 'auto' }}>
-                🚀
-              </Typography>
-              <Stack>
-                <Typography
-                  variant='h5'
-                  sx={{
-                    fontWeight: 'bold',
-                  }}
-                >
-                  Deploy
-                </Typography>
-                <Typography variant='h6'>
-                  Deploy your function at the click of a button.
-                </Typography>
-              </Stack>
-            </Grid>
-            <Grid sx={{ display: 'flex', gap: 2, maxWidth: '30%' }}>
-              <Typography variant='h3' sx={{ my: 'auto' }}>
-                ⚡
-              </Typography>
-              <Stack>
-                <Typography
-                  variant='h5'
-                  sx={{
-                    fontWeight: 'bold',
-                  }}
-                >
-                  Call
-                </Typography>
-                <Typography variant='h6'>
-                  Call your function wherever you want via{' '}
-                  <span className='font-mono'>GET</span> or{' '}
-                  <span className='font-mono'>POST</span>.
-                </Typography>
-              </Stack>
-            </Grid>
-          </Grid>
-        </Box>
-        <Box sx={{ px: '10%', py: 10 }}>
-          <Typography variant='h4' sx={{ textAlign: 'justify' }}>
-            Deploy <span className='bg-green-300'>serverless functions</span>{' '}
-            right from your browser using{' '}
-            <span className='bg-yellow-200'>GitHub Actions</span> as a computing
-            backend.
-          </Typography>
-          {/* <Grid container spacing={2}>
-          <Grid>
-            <Typography variant='h5'>
-              Deploy <span className='bg-green-300'>serverless functions</span>{' '}
-              right from your browser using{' '}
-              <span className='bg-yellow-200'>GitHub Actions</span> as a
-              computing backend.
-            </Typography>
-          </Grid>
-          <Grid>
-            <Box
-              style={{
-                maskImage:
-                  'linear-gradient(to right, rgba(248, 251, 253, 0), black 10%, black 90%, rgba(248, 251, 253, 0))',
-                maskType: 'alpha',
-              }}
-            >
-              <LanguageMarquee />
-            </Box>
-          </Grid>
-        </Grid> */}
-        </Box>
-        <Box sx={{ px: '10%', py: 4, backgroundColor: 'background.paper' }}>
-          <Typography
-            variant='h5'
-            sx={{ textAlign: 'center', fontWeight: 'bold' }}
-          >
-            Where performance meets simplicity
-          </Typography>
-          <Typography variant='h6'>
-            <span className='font-bold'>Each function invocation</span> triggers
-            its own containerized workflow through GitHub Actions, delivering an
-            event-driven architecture powered by some of the toughest machines
-            available. <span className='font-bold'>Function arguments</span> are
-            provided through query parameters, enabling seamless integration
-            with webhooks, APIs, and other event sources.
-          </Typography>
-        </Box>
-        <Box sx={{ px: '10%', py: 10 }}>
-          <Typography variant='h4' sx={{ textAlign: 'center' }}>
-            🔓 Unlock limitless possibilities with{' '}
-            <span className='font-bold'>{'GitHub Actions Lambda 🔑'}</span>
-          </Typography>
-          <Typography variant='h5' sx={{ textAlign: 'center' }}>
-            <Link href='/signin' color='inherit' underline='hover'>
-              Sign in
-            </Link>{' '}
-            to gain <span className='font-bold'>full access</span> to PMAL,
-            including our <span className='font-bold'>API</span>.
-          </Typography>
-        </Box>
+        <Typography variant='h5' fontWeight='bold'>
+          {title}
+        </Typography>
+        <Typography variant='h6' color='text.secondary'>
+          {description}
+        </Typography>
       </Stack>
-      <Footer type='landing' />
+    </Grid>
+  );
+}
+
+export function About1() {
+  return (
+    <Section py={10} textAlign='justify'>
+      <Typography variant='h4'>
+        Deploy{' '}
+        <Box
+          component='span'
+          sx={{ backgroundColor: green[200], px: 0.5, borderRadius: 1 }}
+        >
+          serverless functions
+        </Box>{' '}
+        right from your browser using{' '}
+        <Box
+          component='span'
+          sx={{ backgroundColor: yellow[200], px: 0.5, borderRadius: 1 }}
+        >
+          GitHub Actions
+        </Box>{' '}
+        as a computing backend.
+      </Typography>
+    </Section>
+  );
+}
+
+const features = [
+  {
+    icon: <BoltIcon fontSize='large' />,
+    title: 'Fast Execution',
+    description: 'Run your functions with minimal cold start latency.',
+  },
+  {
+    icon: <LockIcon fontSize='large' />,
+    title: 'Secure',
+    description: 'Your code runs in isolated containers for maximum security.',
+  },
+  {
+    icon: <PublicIcon fontSize='large' />,
+    title: 'Multi-Region',
+    description: 'Deploy functions close to your users worldwide.',
+  },
+  {
+    icon: <BuildIcon fontSize='large' />,
+    title: 'Easy Integration',
+    description: 'Connect with APIs, webhooks, and existing workflows.',
+  },
+  {
+    icon: <TrendingUpIcon fontSize='large' />,
+    title: 'Scalable',
+    description: 'Automatically scales with your traffic and demand.',
+  },
+  {
+    icon: <CodeIcon fontSize='large' />,
+    title: 'Multi-Language',
+    description: 'Supports Node.js, Python, PHP, and more.',
+  },
+];
+
+function Features() {
+  return (
+    <Section py={4} bg='background.paper'>
+      <Typography
+        variant='h4'
+        sx={{ mb: 4, textAlign: 'center', fontWeight: 'bold' }}
+      >
+        Designed for simplicity.
+      </Typography>
+
+      <Grid container spacing={4} justifyContent='center'>
+        {features.map(({ icon, title, description }, index) => (
+          <Grid key={index} sx={{ display: 'flex', alignItems: 'flex-start' }}>
+            <Stack direction='row' spacing={2} color='primary.main'>
+              {icon}
+              <Box maxWidth='300px'>
+                <Typography variant='h6' sx={{ fontWeight: 'bold', mb: 1 }}>
+                  {title}
+                </Typography>
+                <Typography variant='body1' color='text.secondary'>
+                  {description}
+                </Typography>
+              </Box>
+            </Stack>
+          </Grid>
+        ))}
+      </Grid>
+    </Section>
+  );
+}
+
+export function About2() {
+  return (
+    <Box py={10} textAlign='center'>
+      <Typography variant='h4'>
+        🔓 Unlock limitless possibilities with{' '}
+        <Box component='span' fontWeight='bold'>
+          GitHub Actions Lambda 🔑
+        </Box>
+      </Typography>
+      <Typography variant='h5'>
+        <Link
+          component={NextLink}
+          href='/signin'
+          color='primary.main'
+          underline='hover'
+        >
+          Sign in
+        </Link>{' '}
+        to gain{' '}
+        <Box component='span' fontWeight='bold'>
+          full access
+        </Box>{' '}
+        to PMAL, including our{' '}
+        <Box component='span' fontWeight='bold'>
+          API
+        </Box>
+        .
+      </Typography>
+    </Box>
+  );
+}
+
+function Section({
+  children,
+  px = '10%',
+  py = 10,
+  color = 'text.primary',
+  bg = 'transparent',
+  textAlign = 'left',
+}: {
+  children: React.ReactNode;
+  px?: string;
+  py?: number;
+  color?: string;
+  bg?: string;
+  textAlign?: 'left' | 'center' | 'justify';
+}) {
+  return (
+    <Box sx={{ px, py, color, backgroundColor: bg }}>
+      <div style={{ textAlign }}>{children}</div>
     </Box>
   );
 }

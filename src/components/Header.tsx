@@ -1,19 +1,8 @@
-import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { HEADER_HEIGHT } from '@/utils';
 import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
 
-export interface HeaderProps {
-  type: 'landing' | 'dashboard';
-}
-
-export default function Header({ type }: HeaderProps) {
-  const isLanding = type === 'landing';
-  const [scrollY, setScrollY] = useState(0);
-  useEffect(() => {
-    const onScroll = () => setScrollY(window.scrollY);
-    window.removeEventListener('scroll', onScroll);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+export default function Header() {
   return (
     <Box
       sx={{
@@ -21,14 +10,25 @@ export default function Header({ type }: HeaderProps) {
         backgroundColor: '#000',
       }}
     >
-      <AppBar position='fixed' sx={{ backgroundColor: '#000' }}>
-        <Toolbar>
-          <Typography variant='h5' sx={{ fontWeight: 'bold' }}>
+      <AppBar
+        position='fixed'
+        sx={{ backgroundColor: '#000', height: `${HEADER_HEIGHT}px` }}
+      >
+        <Toolbar sx={{ gap: 2 }}>
+          <Typography
+            component={Link}
+            href='/'
+            variant='h5'
+            sx={{ fontWeight: 'bold' }}
+          >
             PMAL
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
-          <Button href={isLanding ? '/signin' : '/signout'} variant='contained'>
-            {isLanding ? 'Sign in with Google' : 'Sign out'}
+          <Button href='/signin' variant='contained'>
+            Sign in
+          </Button>
+          <Button href='/signup' variant='outlined'>
+            Sign up
           </Button>
         </Toolbar>
       </AppBar>

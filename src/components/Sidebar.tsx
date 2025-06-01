@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { signout } from '@/actions/user';
 import { useApp } from '@/contexts/app';
 import { SIDEBAR_COLLAPSE_WIDTH, SIDEBAR_FULL_WIDTH } from '@/utils';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
@@ -27,22 +28,20 @@ const sidebarOptions = [
     icon: <FormatListBulletedIcon />,
     path: '/functions',
   },
-  {
-    name: 'Sign out',
-    icon: <LogoutIcon />,
-    path: '/signout',
-  },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   const { sidebarOpen, setSidebarOpen } = useApp();
+
+  const handleSignOut = async () => {
+    await signout();
+    router.push('/signin');
+  };
+
   return (
-    <Box
-      sx={{
-        display: 'flex',
-      }}
-    >
+    <Box sx={{ display: 'flex' }}>
       <Drawer
         variant='permanent'
         open={sidebarOpen}
@@ -70,20 +69,14 @@ export default function Sidebar() {
           }}
         >
           <Stack spacing={1}>
-            <Box
-              sx={{
-                height: 48,
-              }}
-            >
+            <Box sx={{ height: 48 }}>
               <Box
                 sx={{
                   display: 'flex',
                   height: '100%',
                   width: 48,
                   borderRadius: 2,
-                  '&:hover': {
-                    backgroundColor: 'background.paper',
-                  },
+                  '&:hover': { backgroundColor: 'background.paper' },
                 }}
               >
                 <IconButton
@@ -106,15 +99,11 @@ export default function Sidebar() {
                 )}
               </Box>
             </Box>
+
             {sidebarOptions.map(({ name, icon, path }) => {
-              const isActive = path === pathname;
+              const isActive = pathname.startsWith(path);
               return (
-                <Box
-                  key={`sidebar-option-${name}`}
-                  sx={{
-                    height: 48,
-                  }}
-                >
+                <Box key={`sidebar-option-${name}`} sx={{ height: 48 }}>
                   <Box
                     sx={{
                       display: 'flex',
@@ -131,13 +120,13 @@ export default function Sidebar() {
                     {sidebarOpen ? (
                       <Button
                         component={Link}
+                        href={path}
                         sx={{
                           justifyContent: 'flex-start',
                           px: 2,
                           height: '100%',
                           color: 'primary.main',
                         }}
-                        href={path}
                         startIcon={
                           <Box sx={{ display: 'flex', fontSize: 24 }}>
                             {icon}
@@ -147,9 +136,7 @@ export default function Sidebar() {
                       >
                         <Typography
                           variant='body1'
-                          sx={{
-                            textTransform: 'none',
-                          }}
+                          sx={{ textTransform: 'none' }}
                         >
                           {name}
                         </Typography>
@@ -173,6 +160,54 @@ export default function Sidebar() {
                 </Box>
               );
             })}
+
+            <Box sx={{ height: 48 }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  height: '100%',
+                  borderRadius: 2,
+                  '&:hover': {
+                    backgroundColor: 'background.paper',
+                  },
+                }}
+              >
+                {sidebarOpen ? (
+                  <Button
+                    onClick={handleSignOut}
+                    sx={{
+                      justifyContent: 'flex-start',
+                      px: 2,
+                      height: '100%',
+                      color: 'primary.main',
+                    }}
+                    startIcon={
+                      <Box sx={{ display: 'flex', fontSize: 24 }}>
+                        <LogoutIcon />
+                      </Box>
+                    }
+                    fullWidth
+                  >
+                    <Typography variant='body1' sx={{ textTransform: 'none' }}>
+                      Sign out
+                    </Typography>
+                  </Button>
+                ) : (
+                  <IconButton
+                    onClick={handleSignOut}
+                    sx={{
+                      justifyContent: 'center',
+                      width: '100%',
+                      height: '100%',
+                      color: 'primary.main',
+                      fontSize: 24,
+                    }}
+                  >
+                    <LogoutIcon />
+                  </IconButton>
+                )}
+              </Box>
+            </Box>
           </Stack>
         </Stack>
       </Drawer>
