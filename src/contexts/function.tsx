@@ -7,6 +7,7 @@ import {
   useEffect,
   useState,
 } from 'react';
+import { getExecutionEntryByUserId } from '@/actions/execution-entries/get-execution-entries';
 import * as FunctionActions from '@/actions/functions';
 import {
   ExecutionEntryRecord,
@@ -47,8 +48,12 @@ export function FunctionContextProvider({
     await wrappedRequest(async () => {
       try {
         const funs = await FunctionActions.getFunctionsByUserId(user.id);
-        if (funs) {
+        if (funs?.length) {
           setFunctions(funs);
+        }
+        const entries = await getExecutionEntryByUserId(user.id);
+        if (entries?.length) {
+          setExecutionEntries(entries);
         }
       } catch {
         resetError();

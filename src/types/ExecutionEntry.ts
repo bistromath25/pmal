@@ -13,3 +13,15 @@ export interface ExecutionEntry extends BaseRecord {
 }
 
 export type ExecutionEntryRecord = Required<ExecutionEntry>;
+export type ExecutionEntryCreatePayload = Pick<
+  ExecutionEntry,
+  | 'function_id'
+  | 'user_id'
+  | 'code'
+  | 'language'
+  | 'query'
+  | 'started_at'
+  | 'ended_at'
+  | 'time'
+  | 'result'
+>;

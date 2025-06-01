@@ -1,7 +1,7 @@
 import { BaseRecord } from './BaseRecord';
 
 export interface Function extends BaseRecord {
-  user_id: string;
+  user_id: string | null;
   alias: string;
   language: string;
   code: string;

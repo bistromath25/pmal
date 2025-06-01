@@ -28,13 +28,11 @@ function CallsAndRuntimeLineChart() {
         });
         return m;
       }, new Map()),
-    ]
-      .map(([date, { calls, runtime }]) => ({
-        date: new Date(date),
-        calls,
-        runtime,
-      }))
-      .sort((a, b) => a.date.getTime() - b.date.getTime());
+    ].map(([date, { calls, runtime }]) => ({
+      date: new Date(date),
+      calls,
+      runtime,
+    }));
   }, [executionEntries]);
   return (
     <LineChart
@@ -96,7 +94,6 @@ function EntryBarChart() {
         runtime: d.time ?? 0,
         alias: getAlias(d.function_id),
       }))
-      .sort((a, b) => a.date.getTime() - b.date.getTime())
       .slice(-30);
   }, [executionEntries]);
   return (
@@ -123,7 +120,6 @@ function EntryList() {
         runtime: d.time ?? 0,
         alias: getAlias(d.function_id),
       }))
-      .sort((a, b) => a.date.getTime() - b.date.getTime())
       .slice(-6);
   }, [executionEntries]);
   return (
