@@ -2,7 +2,11 @@
 
 import { useState } from 'react';
 import NextLink from 'next/link';
-import { HEADER_HEIGHT } from '@/utils';
+import {
+  isValidEmail,
+  passwordContainsSpaces,
+  validPasswordLength,
+} from '@/utils';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import {
   Alert,
@@ -47,19 +51,27 @@ export default function AuthForm({
       return;
     }
 
-    setError(null);
+    if (!validPasswordLength(password) || passwordContainsSpaces(password)) {
+      setError('Password must be at least 8 characters without spaces.');
+    }
 
+    setError(null);
     try {
       await onSubmit({ email, password, confirm });
     } catch {
-      setError('Failed to authenticate. Please try again.');
+      setError('Incorrect email or password.');
     }
   };
 
   return (
     <Paper
       elevation={3}
-      sx={{ padding: 4, mt: `${HEADER_HEIGHT * 1.75}px`, borderRadius: 3 }}
+      sx={{
+        padding: 4,
+        borderRadius: 3,
+        width: '400px',
+        backgroundColor: 'background.default',
+      }}
     >
       <Stack spacing={2} alignItems='center'>
         <Avatar
@@ -77,12 +89,21 @@ export default function AuthForm({
         <Stack spacing={2} sx={{ width: '100%' }}>
           <TextField
             label='Email Address'
+            type='email'
             fullWidth
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             autoComplete='email'
             autoFocus
+            error={
+              mode === 'signup' && email.length > 0 && !isValidEmail(email)
+            }
+            helperText={
+              mode === 'signup' && email.length > 0 && !isValidEmail(email)
+                ? 'Please enter a valid email address.'
+                : ''
+            }
           />
           <TextField
             label='Password'
@@ -93,6 +114,21 @@ export default function AuthForm({
             onChange={(e) => setPassword(e.target.value)}
             autoComplete={
               mode === 'signup' ? 'new-password' : 'current-password'
+            }
+            error={
+              mode === 'signup' &&
+              password.length > 0 &&
+              (validPasswordLength(password) ||
+                passwordContainsSpaces(password))
+            }
+            helperText={
+              mode === 'signup' && password.length > 0
+                ? !validPasswordLength(password)
+                  ? 'Password must be at least 8 characters.'
+                  : passwordContainsSpaces(password)
+                    ? 'Password must not contain spaces.'
+                    : ''
+                : ''
             }
           />
           {mode === 'signup' && (

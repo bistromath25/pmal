@@ -4,12 +4,7 @@ import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
 
 export default function Header() {
   return (
-    <Box
-      sx={{
-        flexGrow: 1,
-        backgroundColor: '#000',
-      }}
-    >
+    <Box>
       <AppBar
         position='fixed'
         sx={{ backgroundColor: '#000', height: `${HEADER_HEIGHT}px` }}

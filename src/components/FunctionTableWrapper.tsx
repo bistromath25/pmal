@@ -64,16 +64,16 @@ export default function FunctionTableWrapper() {
               error={editorError}
               setError={setEditorError}
             />
-            <Box>
-              <Button
-                variant='contained'
-                onClick={onSubmit}
-                disabled={editorError || loading || !!appError || !currentCode}
-              >
-                Deploy
-              </Button>
-            </Box>
           </Stack>
+        }
+        actions={
+          <Button
+            variant='contained'
+            onClick={onSubmit}
+            disabled={editorError || loading || !!appError || !currentCode}
+          >
+            Deploy
+          </Button>
         }
         editor
       />
