@@ -1,12 +1,15 @@
 'use client';
 
 import { useState } from 'react';
+import NextLink from 'next/link';
 import { HEADER_HEIGHT } from '@/utils';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import {
   Alert,
   Avatar,
+  Box,
   Button,
+  Link,
   Paper,
   Stack,
   TextField,
@@ -113,6 +116,18 @@ export default function AuthForm({
           <Button variant='contained' fullWidth onClick={handleSubmit}>
             {mode === 'signup' ? 'Sign Up' : 'Sign In'}
           </Button>
+          <Box textAlign='center' mt={2}>
+            <Link
+              component={NextLink}
+              href={mode === 'signup' ? '/signin' : '/signup'}
+              color='primary.main'
+              underline='hover'
+            >
+              {mode === 'signup'
+                ? 'Already have an account? Sign in'
+                : "Don't have an account? Sign up"}
+            </Link>
+          </Box>
         </Stack>
       </Stack>
     </Paper>

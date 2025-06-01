@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import NextLink from 'next/link';
 import * as API from '@/app/api';
 import { useApp } from '@/contexts/app';
 import { env } from '@/env';
@@ -158,7 +159,12 @@ function LandingEditor() {
             sx={{ filter: 'invert(1)', mixBlendMode: 'difference' }}
           >
             Free functions are automatically deleted after 10 calls.{' '}
-            <Link href='/signin' color='inherit' underline='hover'>
+            <Link
+              component={NextLink}
+              href='/signin'
+              color='primary.main'
+              underline='hover'
+            >
               Sign in
             </Link>{' '}
             to get more calls!
@@ -310,7 +316,12 @@ export function About2() {
         <span className='font-bold'>{'GitHub Actions Lambda 🔑'}</span>
       </Typography>
       <Typography variant='h5'>
-        <Link href='/signin' color='inherit' underline='hover'>
+        <Link
+          component={NextLink}
+          href='/signin'
+          color='primary.main'
+          underline='hover'
+        >
           Sign in
         </Link>{' '}
         to gain <span className='font-bold'>full access</span> to PMAL,

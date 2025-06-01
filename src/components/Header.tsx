@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { HEADER_HEIGHT } from '@/utils';
 import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
 
@@ -14,7 +15,12 @@ export default function Header() {
         sx={{ backgroundColor: '#000', height: `${HEADER_HEIGHT}px` }}
       >
         <Toolbar sx={{ gap: 2 }}>
-          <Typography variant='h5' sx={{ fontWeight: 'bold' }}>
+          <Typography
+            component={Link}
+            href='/'
+            variant='h5'
+            sx={{ fontWeight: 'bold' }}
+          >
             PMAL
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
