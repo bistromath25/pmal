@@ -1,25 +1,17 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
-import Modal from '@/components/Modal';
 import { useFunction } from '@/contexts/function';
 import { FunctionRecord } from '@/types';
 import { formatDate, languageOptions } from '@/utils';
+import DeleteModal from './DeleteModal';
 import { Detail } from './FunctionView';
 import { Box, Button, Grid, Paper, Stack, Typography } from '@mui/material';
 
 export default function FunctionTable() {
-  const { functions, currentFunction, setCurrentFunction, deleteFunction } =
-    useFunction();
+  const { functions, currentFunction } = useFunction();
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
-
-  const handleDelete = useCallback(async () => {
-    if (!currentFunction) {
-      return;
-    }
-    await deleteFunction(currentFunction.id);
-  }, [currentFunction, deleteFunction]);
 
   return (
     <Stack>
@@ -32,42 +24,10 @@ export default function FunctionTable() {
           </Grid>
         ))}
       </Grid>
-      <Modal
+      <DeleteModal
         modalIsOpen={deleteModalIsOpen}
         onClose={() => setDeleteModalIsOpen(false)}
-        title={`Delete function ${currentFunction?.alias}?`}
-        contents={
-          <Typography variant='body1' color='text.secondary'>
-            Are you sure you want to delete this function? This action cannot be
-            undone.
-          </Typography>
-        }
-        actions={
-          <Stack
-            flexDirection='row'
-            sx={{ justifyContent: 'flex-end', display: 'flex', gap: 2 }}
-          >
-            <Button
-              variant='outlined'
-              onClick={() => {
-                setDeleteModalIsOpen(false);
-                setCurrentFunction(null);
-              }}
-            >
-              No, Cancel
-            </Button>
-            <Button
-              variant='contained'
-              color='error'
-              onClick={() => {
-                handleDelete();
-                setDeleteModalIsOpen(false);
-              }}
-            >
-              Yes, I'm sure
-            </Button>
-          </Stack>
-        }
+        fun={currentFunction}
       />
     </Stack>
   );

@@ -153,16 +153,33 @@ export default function AuthForm({
             {mode === 'signup' ? 'Sign Up' : 'Sign In'}
           </Button>
           <Box textAlign='center' mt={2}>
-            <Link
-              component={NextLink}
-              href={mode === 'signup' ? '/signin' : '/signup'}
-              color='primary.main'
-              underline='hover'
-            >
-              {mode === 'signup'
-                ? 'Already have an account? Sign in'
-                : "Don't have an account? Sign up"}
-            </Link>
+            <Typography variant='body1'>
+              {mode === 'signup' ? (
+                <>
+                  Already have an account?{' '}
+                  <Link
+                    component={NextLink}
+                    href='/signin'
+                    color='primary.main'
+                    underline='hover'
+                  >
+                    Sign in
+                  </Link>
+                </>
+              ) : (
+                <>
+                  Don&apos;t have an account?{' '}
+                  <Link
+                    component={NextLink}
+                    href='/signup'
+                    color='primary.main'
+                    underline='hover'
+                  >
+                    Sign up
+                  </Link>
+                </>
+              )}
+            </Typography>
           </Box>
         </Stack>
       </Stack>
