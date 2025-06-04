@@ -9,10 +9,11 @@ import { getDefaultFunctionValue, getDemoQuery } from '@/utils';
 import Editor from './Editor';
 import Footer from './Footer';
 import Header from './Header';
-import { DefaultIcon, SuccessIcon } from './Icons';
 import BoltIcon from '@mui/icons-material/Bolt';
 import BuildIcon from '@mui/icons-material/Build';
+import CheckIcon from '@mui/icons-material/Check';
 import CodeIcon from '@mui/icons-material/Code';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import LockIcon from '@mui/icons-material/Lock';
 import PublicIcon from '@mui/icons-material/Public';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
@@ -152,7 +153,7 @@ function LandingEditor() {
                 }
               }}
             >
-              {copied ? <SuccessIcon /> : <DefaultIcon />}
+              {copied ? <CheckIcon /> : <ContentCopyIcon />}
             </Button>
           </Box>
           <Typography

@@ -62,3 +62,15 @@ export function getEndOfDay(dateStr: string, isUtc: boolean = false): Date {
     );
   }
 }
+
+export const validPasswordLength = (password: string) => {
+  return password.length >= 8;
+};
+
+export const passwordContainsSpaces = (password: string) => {
+  return /\s/.test(password);
+};
+
+export const isValidEmail = (email: string) => {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+};

@@ -1,39 +1,32 @@
 import { useMemo } from 'react';
 import { useFunction } from '@/contexts/function';
-import { formatLocalDate, getAlias } from '@/utils';
-import {
-  Box,
-  Paper,
-  Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
-} from '@mui/material';
+import { formatLocalDate } from '@/utils';
+import RecentActivity from './RecentActivity';
+import { Box, Paper, Stack, Typography } from '@mui/material';
 import { BarChart, LineChart } from '@mui/x-charts';
 
 function CallsAndRuntimeLineChart() {
   const { executionEntries } = useFunction();
   const data = useMemo(() => {
-    return [
-      ...executionEntries.reduce((m, { started_at, time }) => {
-        const date = formatLocalDate(new Date(started_at), false);
-        const entry = m.get(date) || { calls: 0, runtime: 0 };
-        m.set(date, {
-          calls: entry.calls + 1,
-          runtime: entry.runtime + (time ?? 0),
-        });
-        return m;
-      }, new Map()),
-    ].map(([date, { calls, runtime }]) => ({
+    const grouped = new Map<string, { calls: number; runtime: number }>();
+
+    for (const { started_at, time } of executionEntries) {
+      const dateKey = formatLocalDate(new Date(started_at), false);
+      const entry = grouped.get(dateKey) ?? { calls: 0, runtime: 0 };
+
+      grouped.set(dateKey, {
+        calls: entry.calls + 1,
+        runtime: entry.runtime + (time ?? 0),
+      });
+    }
+
+    return Array.from(grouped.entries()).map(([date, { calls, runtime }]) => ({
       date: new Date(date),
       calls,
       runtime,
     }));
   }, [executionEntries]);
+
   return (
     <LineChart
       xAxis={[
@@ -87,65 +80,22 @@ function CallsAndRuntimeLineChart() {
 
 function EntryBarChart() {
   const { executionEntries } = useFunction();
-  const data = useMemo(() => {
-    return executionEntries
-      .map((d) => ({
-        date: new Date(d.started_at),
-        runtime: d.time ?? 0,
-        alias: getAlias(d.function_id),
-      }))
-      .slice(-30);
-  }, [executionEntries]);
+  const data = executionEntries.slice(0, 30);
   return (
     <Box>
       <Typography variant='h5'>Runtime Analytics</Typography>
       <BarChart
-        xAxis={[{ scaleType: 'band', data: data.map((d) => d.date.toLocaleString()) }]}
-        series={[{ data: data.map((d) => d.runtime), color: 'rgb(37,99,235)' }]}
+        xAxis={[
+          {
+            scaleType: 'band',
+            data: data.map((d) => d.created_at.toLocaleString()),
+          },
+        ]}
+        series={[{ data: data.map((d) => d.time), color: 'rgb(37,99,235)' }]}
         height={450}
         sx={{ width: '100%' }}
       />
     </Box>
-  );
-}
-
-function EntryList() {
-  const { executionEntries } = useFunction();
-  const data = useMemo(() => {
-    return executionEntries
-      .map((d) => ({
-        date: new Date(d.started_at),
-        runtime: d.time ?? 0,
-        alias: getAlias(d.function_id),
-      }))
-      .slice(-6);
-  }, [executionEntries]);
-  return (
-    <Stack spacing={2}>
-      <Typography variant='h5'>Recent activity</Typography>
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Time</TableCell>
-              <TableCell>Function</TableCell>
-              <TableCell>Runtime</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {data.map((d, i) => {
-              return (
-                <TableRow key={`entry-${d.alias}-${i}`}>
-                  <TableCell>{d.date.toLocaleString()}</TableCell>
-                  <TableCell>{d.alias}</TableCell>
-                  <TableCell>{d.runtime}</TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Stack>
   );
 }
 
@@ -158,7 +108,7 @@ export default function FunctionCharts() {
           <CallsAndRuntimeLineChart />
         </Paper>
         <Box sx={{ flexBasis: '35%' }}>
-          <EntryList />
+          <RecentActivity />
         </Box>
       </Box>
     </Stack>
