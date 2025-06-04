@@ -1,7 +1,7 @@
 'use client';
 
 import { ReactElement } from 'react';
-import { CloseModalIcon } from './Icons';
+import CloseIcon from '@mui/icons-material/Close';
 import {
   Dialog,
   DialogTitle,
@@ -53,7 +53,7 @@ export default function Modal({
       >
         {title}
         <IconButton edge='end' onClick={onClose}>
-          <CloseModalIcon />
+          <CloseIcon />
         </IconButton>
       </DialogTitle>
       <Divider />
