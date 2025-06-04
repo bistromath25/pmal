@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useFunction } from '@/contexts/function';
 import { env } from '@/env';
 import { FunctionRecord } from '@/types';
-import { formatDate, getDemoQuery } from '@/utils';
+import { formatLocalDate, getDemoQuery } from '@/utils';
 import Editor from './Editor';
 import Modal from './Modal';
 import { Button, Stack, Typography } from '@mui/material';
@@ -127,10 +127,13 @@ function Details({ fun }: { fun: FunctionRecord }) {
     <Stack>
       <Detail label='Total calls' value={fun.total_calls} />
       <Detail label='Language' value={fun.language} />
-      <Detail label='Created at' value={formatDate(fun.created_at)} />
+      <Detail
+        label='Created at'
+        value={formatLocalDate(new Date(fun.created_at))}
+      />
       <Detail
         label='Updated at'
-        value={formatDate(fun.updated_at || fun.created_at)}
+        value={formatLocalDate(new Date(fun.updated_at || fun.created_at))}
       />
       <Detail label='URL' value={url} />
     </Stack>

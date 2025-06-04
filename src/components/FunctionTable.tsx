@@ -5,14 +5,25 @@ import Link from 'next/link';
 import Modal from '@/components/Modal';
 import { useFunction } from '@/contexts/function';
 import { FunctionRecord } from '@/types';
-import { formatDate, languageOptions } from '@/utils';
+import {
+  formatLocalDate,
+  getEndOfDay,
+  getStartOfDay,
+  languageOptions,
+} from '@/utils';
+import DateRangeFilter from './DateRangeFilter';
 import { Detail } from './FunctionView';
+import Search from './Search';
 import { Box, Button, Grid, Paper, Stack, Typography } from '@mui/material';
 
 export default function FunctionTable() {
   const { functions, currentFunction, setCurrentFunction, deleteFunction } =
     useFunction();
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState<string>('');
+  const [searchedValues, setSearchedValues] = useState<string[]>([]);
+  const [startDate, setStartDate] = useState<string>('');
+  const [endDate, setEndDate] = useState<string>('');
 
   const handleDelete = useCallback(async () => {
     if (!currentFunction) {
@@ -21,10 +32,58 @@ export default function FunctionTable() {
     await deleteFunction(currentFunction.id);
   }, [currentFunction, deleteFunction]);
 
+  const filteredFunctions = functions.filter(({ created_at, alias }) => {
+    const entryDate = new Date(created_at);
+    if (
+      getStartOfDay(entryDate.toString(), false) <
+      getStartOfDay(startDate || new Date(0).toString(), true)
+    ) {
+      return false;
+    }
+    if (
+      getStartOfDay(entryDate.toString(), false) >
+      getEndOfDay(
+        endDate || new Date(Date.now() + 24 * 60 * 60 * 1000).toString(),
+        true
+      )
+    ) {
+      return false;
+    }
+
+    if (searchedValues.length) {
+      const match = searchedValues.some((value) => alias.includes(value));
+      if (!match) {
+        return false;
+      }
+    }
+    if (searchValue) {
+      const match = alias.includes(searchValue);
+      if (!match) {
+        return false;
+      }
+    }
+
+    return true;
+  });
+
   return (
-    <Stack>
+    <Stack spacing={2}>
+      <Stack flexDirection='row' gap={2}>
+        <Search
+          searchValue={searchValue}
+          setSearchValue={setSearchValue}
+          searchedValues={searchedValues}
+          setSearchedValues={setSearchedValues}
+        />
+        <DateRangeFilter
+          startDate={startDate}
+          onStartDateChange={setStartDate}
+          endDate={endDate}
+          onEndDateChange={setEndDate}
+        />
+      </Stack>
       <Grid container spacing={3}>
-        {functions.map((fun, index) => (
+        {filteredFunctions.map((fun, index) => (
           <Grid key={index}>
             <Paper elevation={2} sx={{ padding: 2, borderRadius: 2 }}>
               <Details fun={fun} setDeleteModalIsOpen={setDeleteModalIsOpen} />
@@ -100,10 +159,16 @@ export function Details({
         <Stack>
           <Typography fontWeight='bold'>{fun.alias}</Typography>
           <Detail label='Total calls' value={fun.total_calls} />
-          <Detail label='Created at' value={formatDate(fun.created_at)} />
+          <Detail
+            label='Created at'
+            value={formatLocalDate(new Date(fun.created_at), false)}
+          />
           <Detail
             label='Updated at'
-            value={formatDate(fun.updated_at || fun.created_at)}
+            value={formatLocalDate(
+              new Date(fun.updated_at || fun.created_at),
+              false
+            )}
           />
         </Stack>
       </Box>

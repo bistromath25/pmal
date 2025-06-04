@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useFunction } from '@/contexts/function';
-import { formatDate, getAlias } from '@/utils';
+import { formatLocalDate, getAlias } from '@/utils';
 import {
   Box,
   Paper,
@@ -20,7 +20,7 @@ function CallsAndRuntimeLineChart() {
   const data = useMemo(() => {
     return [
       ...executionEntries.reduce((m, { started_at, time }) => {
-        const date = formatDate(started_at, false);
+        const date = formatLocalDate(new Date(started_at), false);
         const entry = m.get(date) || { calls: 0, runtime: 0 };
         m.set(date, {
           calls: entry.calls + 1,
@@ -100,9 +100,7 @@ function EntryBarChart() {
     <Box>
       <Typography variant='h5'>Runtime Analytics</Typography>
       <BarChart
-        xAxis={[
-          { scaleType: 'band', data: data.map((d) => d.date.toISOString()) },
-        ]}
+        xAxis={[{ scaleType: 'band', data: data.map((d) => d.date.toLocaleString()) }]}
         series={[{ data: data.map((d) => d.runtime), color: 'rgb(37,99,235)' }]}
         height={450}
         sx={{ width: '100%' }}
@@ -138,7 +136,7 @@ function EntryList() {
             {data.map((d, i) => {
               return (
                 <TableRow key={`entry-${d.alias}-${i}`}>
-                  <TableCell>{d.date.toISOString()}</TableCell>
+                  <TableCell>{d.date.toLocaleString()}</TableCell>
                   <TableCell>{d.alias}</TableCell>
                   <TableCell>{d.runtime}</TableCell>
                 </TableRow>
