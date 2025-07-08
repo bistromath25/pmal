@@ -13,6 +13,7 @@ import {
   Avatar,
   Box,
   Button,
+  CircularProgress,
   Link,
   Paper,
   Stack,
@@ -34,6 +35,7 @@ export default function AuthForm({
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async () => {
@@ -58,9 +60,12 @@ export default function AuthForm({
 
     setError(null);
     try {
+      setLoading(true);
       await onSubmit({ email, password, confirm });
     } catch {
       setError('Incorrect email or password.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -149,9 +154,14 @@ export default function AuthForm({
               {error}
             </Alert>
           )}
-
           <Button variant='contained' fullWidth onClick={handleSubmit}>
-            {mode === 'signup' ? 'Sign Up' : 'Sign In'}
+            {loading ? (
+              <CircularProgress />
+            ) : mode === 'signup' ? (
+              'Sign Up'
+            ) : (
+              'Sign In'
+            )}
           </Button>
           <Box textAlign='center' mt={2}>
             <Typography variant='body1'>
