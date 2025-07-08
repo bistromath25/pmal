@@ -166,7 +166,7 @@ function LandingEditor() {
   );
 }
 
-export function Steps() {
+function Steps() {
   return (
     <Section px='10%' py={4} bg='background.paper'>
       <Grid container spacing={2} justifyContent='center'>
@@ -228,7 +228,7 @@ function FeatureCard({
   );
 }
 
-export function About1() {
+function About1() {
   return (
     <Section py={10} textAlign='justify'>
       <Typography variant='h4'>
@@ -316,7 +316,7 @@ function Features() {
   );
 }
 
-export function About2() {
+function About2() {
   return (
     <Box py={10} textAlign='center'>
       <Typography variant='h4'>
