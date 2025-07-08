@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useApp } from '@/contexts/app';
 import { useFunction } from '@/contexts/function';
-import Editor from './Editor';
+import Editor from './EditorV2';
 import LanguageSelection from './LanguageSelection';
 import Modal, { ModalProps } from './Modal';
 import { Button, Stack } from '@mui/material';
@@ -42,9 +42,7 @@ export default function CreateModal({ modalIsOpen, onClose }: ModalProps) {
             code={currentCode}
             setCode={setCurrentCode}
             language={currentLanguage}
-            style={{ minHeight: '300px' }}
-            error={editorError}
-            setError={setEditorError}
+            onSave={onSubmit}
           />
         </Stack>
       }

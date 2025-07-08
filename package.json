@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@codemirror/lang-javascript": "^6.2.4",
     "@emotion/cache": "^11.14.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
@@ -20,6 +21,8 @@
     "@supabase/auth-ui-shared": "^0.1.8",
     "@supabase/ssr": "^0.6.1",
     "@supabase/supabase-js": "^2.47.3",
+    "@uiw/codemirror-theme-vscode": "^4.24.0",
+    "@uiw/react-codemirror": "^4.24.0",
     "@uiw/react-textarea-code-editor": "^3.1.0",
     "jszip": "^3.10.1",
     "next": "15.0.4",

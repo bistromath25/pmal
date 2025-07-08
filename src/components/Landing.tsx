@@ -6,7 +6,7 @@ import * as API from '@/app/api';
 import { useApp } from '@/contexts/app';
 import { env } from '@/env';
 import { getDefaultFunctionValue, getDemoQuery } from '@/utils';
-import Editor from './Editor';
+import Editor from './EditorV2';
 import Footer from './Footer';
 import Header from './Header';
 import BoltIcon from '@mui/icons-material/Bolt';
@@ -71,7 +71,6 @@ function LandingEditor() {
   const { loading, wrappedRequest } = useApp();
   const [code, setCode] = useState(getDefaultFunctionValue('js'));
   const [demoQuery, setDemoQuery] = useState<string | undefined>(undefined);
-  const [error, setError] = useState(false);
   const [alias, setAlias] = useState<string | undefined>(undefined);
   const [copied, setCopied] = useState(false);
 
@@ -91,24 +90,14 @@ function LandingEditor() {
   };
   return (
     <Stack spacing={2}>
-      <Editor
-        code={code}
-        setCode={setCode}
-        language='js'
-        error={error}
-        setError={setError}
-        style={{
-          backgroundColor: 'rgb(3, 7, 18)',
-        }}
-        colorMode='dark'
-      />
+      <Editor code={code} setCode={setCode} language='js' onSave={() => {}} />
       <Box
         sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
       >
         <Button
           variant='contained'
           onClick={onSubmit}
-          disabled={error || !code}
+          disabled={!code}
           loading={loading}
         >
           Deploy my function!

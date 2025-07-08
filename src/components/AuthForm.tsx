@@ -53,6 +53,7 @@ export default function AuthForm({
 
     if (!validPasswordLength(password) || passwordContainsSpaces(password)) {
       setError('Password must be at least 8 characters without spaces.');
+      return;
     }
 
     setError(null);
@@ -118,7 +119,7 @@ export default function AuthForm({
             error={
               mode === 'signup' &&
               password.length > 0 &&
-              (validPasswordLength(password) ||
+              (!validPasswordLength(password) ||
                 passwordContainsSpaces(password))
             }
             helperText={
