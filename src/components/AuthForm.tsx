@@ -13,6 +13,7 @@ import {
   Avatar,
   Box,
   Button,
+  CircularProgress,
   Link,
   Paper,
   Stack,
@@ -34,32 +35,35 @@ export default function AuthForm({
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async () => {
-    if (
-      !email.trim() ||
-      !password.trim() ||
-      (mode === 'signup' && !confirm.trim())
-    ) {
-      setError('Please fill in all required fields.');
-      return;
-    }
+    if (mode === 'signup') {
+      if (!email.trim() || !password.trim() || !confirm.trim()) {
+        setError('Please fill in all required fields.');
+        return;
+      }
 
-    if (mode === 'signup' && password !== confirm) {
-      setError('Passwords do not match.');
-      return;
-    }
+      if (password !== confirm) {
+        setError('Passwords do not match.');
+        return;
+      }
 
-    if (!validPasswordLength(password) || passwordContainsSpaces(password)) {
-      setError('Password must be at least 8 characters without spaces.');
+      if (!validPasswordLength(password) || passwordContainsSpaces(password)) {
+        setError('Password must be at least 8 characters without spaces.');
+        return;
+      }
     }
 
     setError(null);
     try {
+      setLoading(true);
       await onSubmit({ email, password, confirm });
     } catch {
       setError('Incorrect email or password.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -118,7 +122,7 @@ export default function AuthForm({
             error={
               mode === 'signup' &&
               password.length > 0 &&
-              (validPasswordLength(password) ||
+              (!validPasswordLength(password) ||
                 passwordContainsSpaces(password))
             }
             helperText={
@@ -148,9 +152,14 @@ export default function AuthForm({
               {error}
             </Alert>
           )}
-
           <Button variant='contained' fullWidth onClick={handleSubmit}>
-            {mode === 'signup' ? 'Sign Up' : 'Sign In'}
+            {loading ? (
+              <CircularProgress />
+            ) : mode === 'signup' ? (
+              'Sign Up'
+            ) : (
+              'Sign In'
+            )}
           </Button>
           <Box textAlign='center' mt={2}>
             <Typography variant='body1'>

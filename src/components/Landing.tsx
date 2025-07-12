@@ -71,7 +71,6 @@ function LandingEditor() {
   const { loading, wrappedRequest } = useApp();
   const [code, setCode] = useState(getDefaultFunctionValue('js'));
   const [demoQuery, setDemoQuery] = useState<string | undefined>(undefined);
-  const [error, setError] = useState(false);
   const [alias, setAlias] = useState<string | undefined>(undefined);
   const [copied, setCopied] = useState(false);
 
@@ -91,24 +90,14 @@ function LandingEditor() {
   };
   return (
     <Stack spacing={2}>
-      <Editor
-        code={code}
-        setCode={setCode}
-        language='js'
-        error={error}
-        setError={setError}
-        style={{
-          backgroundColor: 'rgb(3, 7, 18)',
-        }}
-        colorMode='dark'
-      />
+      <Editor code={code} setCode={setCode} language='js' onSave={() => {}} />
       <Box
         sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
       >
         <Button
           variant='contained'
           onClick={onSubmit}
-          disabled={error || !code}
+          disabled={!code}
           loading={loading}
         >
           Deploy my function!
@@ -177,7 +166,7 @@ function LandingEditor() {
   );
 }
 
-export function Steps() {
+function Steps() {
   return (
     <Section px='10%' py={4} bg='background.paper'>
       <Grid container spacing={2} justifyContent='center'>
@@ -239,7 +228,7 @@ function FeatureCard({
   );
 }
 
-export function About1() {
+function About1() {
   return (
     <Section py={10} textAlign='justify'>
       <Typography variant='h4'>
@@ -327,7 +316,7 @@ function Features() {
   );
 }
 
-export function About2() {
+function About2() {
   return (
     <Box py={10} textAlign='center'>
       <Typography variant='h4'>

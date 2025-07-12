@@ -42,9 +42,7 @@ export default function CreateModal({ modalIsOpen, onClose }: ModalProps) {
             code={currentCode}
             setCode={setCurrentCode}
             language={currentLanguage}
-            style={{ minHeight: '300px' }}
-            error={editorError}
-            setError={setEditorError}
+            onSave={onSubmit}
           />
         </Stack>
       }

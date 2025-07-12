@@ -57,7 +57,12 @@ export default function FunctionView({ alias }: FunctionViewProps) {
         <RecentActivity fun={fun} />
         <Stack spacing={1}>
           <Typography variant='h6'>Code</Typography>
-          <Editor code={code} setCode={setCode} language={language} />
+          <Editor
+            code={code}
+            setCode={setCode}
+            language={language}
+            onSave={handleSave}
+          />
         </Stack>
         <Stack flexDirection='row' gap={2}>
           <Button onClick={handleSave} variant='contained'>
