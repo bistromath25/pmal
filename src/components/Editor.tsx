@@ -1,67 +1,43 @@
-'use client';
+import { useCallback } from 'react';
+import { javascript } from '@codemirror/lang-javascript';
+import { Box } from '@mui/material';
+import { vscodeDark } from '@uiw/codemirror-theme-vscode';
+import CodeMirror from '@uiw/react-codemirror';
 
-import { useDeferredValue, useEffect } from 'react';
-import { isValidFunction } from '@/utils';
-import { Typography } from '@mui/material';
-import CodeEditor from '@uiw/react-textarea-code-editor';
-
-export function Warning() {
-  return (
-    <Typography variant='body1' color='error'>
-      ⚠️ Error! Not a valid function! ⚠️
-    </Typography>
-  );
-}
-
-export interface EditorProps {
+interface EditorProps {
   code: string;
-  setCode: React.Dispatch<React.SetStateAction<string>>;
+  setCode: (code: string) => void;
   language: string;
-  onClick?: (e: any) => void;
-  style?: React.CSSProperties;
-  error?: boolean;
-  setError?: React.Dispatch<React.SetStateAction<boolean>>;
-  colorMode?: 'light' | 'dark';
+  onSave: () => void;
 }
 
-export default function Editor({
-  code,
-  setCode,
-  language,
-  onClick,
-  style,
-  error,
-  setError,
-  colorMode,
-}: EditorProps) {
-  const combinedStyle = {
-    fontSize: '18px',
-    minHeight: '200px',
-    overflow: 'visible',
-    backgroundColor: '#f5f5f5',
-    ...style,
-    fontFamily:
-      'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
-  };
-  const deferredCode = useDeferredValue(code);
-  useEffect(() => {
-    if (setError) {
-      setError(!isValidFunction(deferredCode, language));
-    }
-  }, [language, deferredCode, setError]);
+export default function Editor({ code, setCode, onSave }: EditorProps) {
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent) => {
+      const isMac = navigator.platform.toUpperCase().includes('MAC');
+      const isSaveShortcut = isMac ? event.metaKey : event.ctrlKey;
+
+      if (isSaveShortcut && event.key.toLowerCase() === 's') {
+        event.preventDefault();
+        onSave();
+      }
+    },
+    [onSave]
+  );
+
   return (
-    <>
-      <CodeEditor
-        className='w-full p-2 rounded-lg border border-[rgb(227_232_239)] shadow-sm'
+    <Box onKeyDown={handleKeyDown}>
+      <CodeMirror
         value={code}
-        language={language}
-        onChange={(e) => setCode(e.target.value)}
-        padding={15}
-        style={combinedStyle}
-        onClick={onClick}
-        data-color-mode={colorMode ?? 'light'}
+        height='400px'
+        extensions={[javascript()]}
+        onChange={(code) => setCode(code)}
+        theme={vscodeDark}
+        basicSetup={{
+          lineNumbers: true,
+          highlightActiveLine: true,
+        }}
       />
-      {error && <Warning />}
-    </>
+    </Box>
   );
 }

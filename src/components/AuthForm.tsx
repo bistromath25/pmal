@@ -39,23 +39,21 @@ export default function AuthForm({
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async () => {
-    if (
-      !email.trim() ||
-      !password.trim() ||
-      (mode === 'signup' && !confirm.trim())
-    ) {
-      setError('Please fill in all required fields.');
-      return;
-    }
+    if (mode === 'signup') {
+      if (!email.trim() || !password.trim() || !confirm.trim()) {
+        setError('Please fill in all required fields.');
+        return;
+      }
 
-    if (mode === 'signup' && password !== confirm) {
-      setError('Passwords do not match.');
-      return;
-    }
+      if (password !== confirm) {
+        setError('Passwords do not match.');
+        return;
+      }
 
-    if (!validPasswordLength(password) || passwordContainsSpaces(password)) {
-      setError('Password must be at least 8 characters without spaces.');
-      return;
+      if (!validPasswordLength(password) || passwordContainsSpaces(password)) {
+        setError('Password must be at least 8 characters without spaces.');
+        return;
+      }
     }
 
     setError(null);

@@ -6,7 +6,7 @@ import { env } from '@/env';
 import { FunctionRecord } from '@/types';
 import { formatDate, getDemoQuery } from '@/utils';
 import DeleteModal from './DeleteModal';
-import Editor from './EditorV2';
+import Editor from './Editor';
 import RecentActivity from './RecentActivity';
 import { Button, Stack, Typography } from '@mui/material';
 

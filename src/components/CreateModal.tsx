@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useApp } from '@/contexts/app';
 import { useFunction } from '@/contexts/function';
-import Editor from './EditorV2';
+import Editor from './Editor';
 import LanguageSelection from './LanguageSelection';
 import Modal, { ModalProps } from './Modal';
 import { Button, Stack } from '@mui/material';

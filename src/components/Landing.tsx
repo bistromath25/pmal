@@ -6,7 +6,7 @@ import * as API from '@/app/api';
 import { useApp } from '@/contexts/app';
 import { env } from '@/env';
 import { getDefaultFunctionValue, getDemoQuery } from '@/utils';
-import Editor from './EditorV2';
+import Editor from './Editor';
 import Footer from './Footer';
 import Header from './Header';
 import BoltIcon from '@mui/icons-material/Bolt';
