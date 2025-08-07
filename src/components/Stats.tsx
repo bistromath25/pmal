@@ -17,7 +17,7 @@ function StatDetail({
 }
 
 export default function FunctionStats() {
-  const { functions, executionEntries } = useFunction();
+  const { functions, totalCount, executionEntries } = useFunction();
   const totalCalls = functions.reduce(
     (c, { total_calls }) => c + total_calls,
     0
@@ -27,7 +27,7 @@ export default function FunctionStats() {
     0
   );
   const stats = [
-    { label: 'Functions', value: functions.length },
+    { label: 'Functions', value: totalCount },
     { label: 'Calls', value: totalCalls },
     { label: 'Runtime', value: `${totalTime} ms` },
     { label: 'Saved', value: `$${(totalTime * 0.0000000021).toFixed(10)}` },

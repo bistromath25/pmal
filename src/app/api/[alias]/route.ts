@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { serviceRoleCreateExecutionEntry } from '@/actions/execution-entries/create-execution-entry';
+import { serviceRoleCreateExecutionEntry } from '@/actions/execution-entries';
 import {
   serviceRoleGetFunctionByAlias,
   serviceRoleUpdateFunctionTotalCalls,

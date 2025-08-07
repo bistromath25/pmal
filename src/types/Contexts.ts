@@ -45,4 +45,8 @@ export type FunctionContextValue = {
   createFunction: (payload: FunctionCreatePayload) => Promise<void>;
   updateFunction: (payload: FunctionUpdatePayload) => Promise<void>;
   deleteFunction: (id: string) => Promise<void>;
+  totalCount: number;
+  totalPages: number;
+  currentPage: number;
+  setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
 };

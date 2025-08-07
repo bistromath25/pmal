@@ -7,7 +7,7 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { getExecutionEntryByUserId } from '@/actions/execution-entries/get-execution-entries';
+import { getExecutionEntryByUserId } from '@/actions/execution-entries';
 import * as FunctionActions from '@/actions/functions';
 import {
   ExecutionEntryRecord,
@@ -31,6 +31,11 @@ export function FunctionContextProvider({
 }) {
   const { wrappedRequest, resetError, setSuccess } = useApp();
   const { user } = useUser();
+
+  const [totalCount, setTotalCount] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+
   const [code, setCode] = useState(getDefaultFunctionValue('js'));
   const [language, setLanguage] = useState('js');
   const [currentFunction, setCurrentFunction] = useState<FunctionRecord | null>(
@@ -41,25 +46,34 @@ export function FunctionContextProvider({
     ExecutionEntryRecord[]
   >([]);
 
-  const refreshFunctions = useCallback(async () => {
-    if (!user?.id) {
-      return;
-    }
-    await wrappedRequest(async () => {
-      try {
-        const funs = await FunctionActions.getFunctionsByUserId(user.id);
-        if (funs?.length) {
-          setFunctions(funs);
-        }
-        const entries = await getExecutionEntryByUserId(user.id);
-        if (entries?.length) {
-          setExecutionEntries(entries);
-        }
-      } catch {
-        resetError();
+  const refreshFunctions = useCallback(
+    async (page: number = 1) => {
+      if (!user?.id) {
+        return;
       }
-    });
-  }, [user?.id, wrappedRequest, resetError]);
+      await wrappedRequest(async () => {
+        try {
+          const response = await FunctionActions.getFunctionsByUserId(
+            user.id,
+            page
+          );
+          if (response) {
+            setFunctions(response.data);
+            setTotalPages(response.totalPages);
+            setTotalCount(response.count);
+            setCurrentPage(page);
+          }
+          const entries = await getExecutionEntryByUserId(user.id);
+          if (entries?.length) {
+            setExecutionEntries(entries);
+          }
+        } catch {
+          resetError();
+        }
+      });
+    },
+    [user?.id, wrappedRequest, resetError]
+  );
 
   const createFunction = useCallback(
     async (payload: FunctionCreatePayload) => {
@@ -106,8 +120,8 @@ export function FunctionContextProvider({
   );
 
   useEffect(() => {
-    refreshFunctions();
-  }, [refreshFunctions]);
+    refreshFunctions(currentPage);
+  }, [refreshFunctions, currentPage]);
 
   return (
     <FunctionContext.Provider
@@ -125,6 +139,10 @@ export function FunctionContextProvider({
         createFunction,
         updateFunction,
         deleteFunction,
+        totalCount,
+        totalPages,
+        currentPage,
+        setCurrentPage,
       }}
     >
       {children}
