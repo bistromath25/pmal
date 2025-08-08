@@ -51,6 +51,7 @@ export default function CreateModal({ modalIsOpen, onClose }: ModalProps) {
           variant='contained'
           onClick={onSubmit}
           disabled={editorError || loading || !!appError || !currentCode}
+          sx={{ fontWeight: 700, borderRadius: '8px' }}
         >
           Deploy
         </Button>

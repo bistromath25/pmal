@@ -1,18 +1,44 @@
 import { useFunction } from '@/contexts/function';
-import { Box, Paper, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 
-function StatDetail({
-  label,
-  value,
-}: {
-  label: string;
-  value: string | number;
-}) {
+function StatCard({ label, value }: { label: string; value: string | number }) {
   return (
-    <Stack>
-      <Typography variant='h6'>{value}</Typography>
-      <Typography variant='h6'>{label}</Typography>
-    </Stack>
+    <Box
+      sx={{
+        flex: 1,
+        background: '#fff',
+        border: '1px solid #e2e8f0',
+        borderRadius: '12px',
+        px: 2.5,
+        py: 2,
+        transition: 'box-shadow 0.15s',
+        '&:hover': { boxShadow: '0 4px 16px rgba(0,0,0,0.06)' },
+      }}
+    >
+      <Typography
+        variant='caption'
+        sx={{
+          color: '#94a3b8',
+          textTransform: 'uppercase',
+          letterSpacing: '0.08em',
+          fontWeight: 700,
+          fontSize: '0.68rem',
+        }}
+      >
+        {label}
+      </Typography>
+      <Typography
+        variant='h5'
+        sx={{
+          color: '#0f172a',
+          fontWeight: 700,
+          mt: 0.5,
+          letterSpacing: '-0.02em',
+        }}
+      >
+        {value}
+      </Typography>
+    </Box>
   );
 }
 
@@ -28,17 +54,15 @@ export default function FunctionStats() {
   );
   const stats = [
     { label: 'Functions', value: totalCount },
-    { label: 'Calls', value: totalCalls },
+    { label: 'Total calls', value: totalCalls },
     { label: 'Runtime', value: `${totalTime} ms` },
     { label: 'Saved', value: `$${(totalTime * 0.0000000021).toFixed(10)}` },
   ];
   return (
-    <Paper sx={{ display: 'flex', p: 2, gap: 4, borderRadius: '4px' }}>
+    <Stack direction='row' gap={2} flexWrap='wrap'>
       {stats.map(({ label, value }) => (
-        <Box sx={{ flexBasis: '25%' }} key={`function-stats-${label}`}>
-          <StatDetail label={label} value={value} />
-        </Box>
+        <StatCard key={label} label={label} value={value} />
       ))}
-    </Paper>
+    </Stack>
   );
 }

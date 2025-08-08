@@ -3,11 +3,12 @@
 import { ReactElement } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import {
+  Box,
   Dialog,
-  DialogTitle,
   DialogContent,
+  DialogTitle,
   IconButton,
-  Divider,
+  Typography,
   useMediaQuery,
   useTheme,
 } from '@mui/material';
@@ -40,7 +41,13 @@ export default function Modal({
       fullScreen={editor && fullScreen}
       maxWidth={editor ? 'md' : 'sm'}
       PaperProps={{
-        sx: { borderRadius: 2, width: editor ? '100%' : undefined },
+        sx: {
+          borderRadius: '16px',
+          background: '#fff',
+          border: '1px solid #e2e8f0',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.12)',
+          width: editor ? '100%' : undefined,
+        },
       }}
     >
       <DialogTitle
@@ -48,18 +55,52 @@ export default function Modal({
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          pb: 1,
+          px: 3,
+          py: 2,
+          borderBottom: '1px solid #f1f5f9',
         }}
       >
-        {title}
-        <IconButton edge='end' onClick={onClose}>
-          <CloseIcon />
+        <Typography
+          component='span'
+          sx={{
+            fontWeight: 700,
+            color: '#0f172a',
+            letterSpacing: '-0.01em',
+            fontSize: '1.1rem',
+          }}
+        >
+          {title}
+        </Typography>
+        <IconButton
+          edge='end'
+          onClick={onClose}
+          size='small'
+          sx={{
+            color: '#94a3b8',
+            '&:hover': { color: '#0f172a', background: 'rgba(0,0,0,0.05)' },
+          }}
+        >
+          <CloseIcon fontSize='small' />
         </IconButton>
       </DialogTitle>
-      <Divider />
-      <DialogContent sx={{ pt: 2 }}>{contents}</DialogContent>
-      <Divider />
-      <DialogContent sx={{ pt: 2 }}>{actions}</DialogContent>
+
+      <DialogContent sx={{ px: 3, pt: '20px !important', pb: 2.5 }}>
+        {contents}
+      </DialogContent>
+
+      {actions && (
+        <Box
+          sx={{
+            px: 3,
+            py: 2,
+            borderTop: '1px solid #f1f5f9',
+            display: 'flex',
+            justifyContent: 'flex-end',
+          }}
+        >
+          {actions}
+        </Box>
+      )}
     </Dialog>
   );
 }

@@ -58,7 +58,9 @@ export function FunctionContextProvider({
             page
           );
           if (response) {
-            setFunctions(response.data);
+            if (response.data.length) {
+              setFunctions(response.data);
+            }
             setTotalPages(response.totalPages);
             setTotalCount(response.count);
             setCurrentPage(page);

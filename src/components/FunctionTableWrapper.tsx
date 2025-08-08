@@ -4,39 +4,67 @@ import { useState } from 'react';
 import { useFunction } from '@/contexts/function';
 import CreateModal from './CreateModal';
 import FunctionTable from './FunctionTable';
-import { Box, Button, Stack, Typography, Pagination } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import { Box, Button, Pagination, Stack, Typography } from '@mui/material';
 
 export default function FunctionTableWrapper() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const { totalPages, currentPage, setCurrentPage } = useFunction();
+
   return (
     <>
-      <Stack spacing={2}>
-        <Typography variant='h4' sx={{ fontWeight: 'bold' }}>
-          Functions
-        </Typography>
+      <Stack spacing={3}>
         <Stack
           direction='row'
           alignItems='center'
           justifyContent='space-between'
         >
-          <Button variant='contained' onClick={() => setModalIsOpen(true)}>
-            Create
+          <Typography
+            variant='h5'
+            sx={{ fontWeight: 700, color: '#0f172a', letterSpacing: '-0.02em' }}
+          >
+            Functions
+          </Typography>
+          <Button
+            variant='contained'
+            startIcon={<AddIcon />}
+            onClick={() => setModalIsOpen(true)}
+            sx={{
+              fontWeight: 700,
+              borderRadius: '8px',
+            }}
+          >
+            New function
           </Button>
-          {totalPages > 1 && (
+        </Stack>
+
+        <Box>
+          <FunctionTable />
+        </Box>
+
+        {totalPages > 1 && (
+          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <Pagination
               count={totalPages}
               page={currentPage}
               onChange={(_, value) => setCurrentPage(value)}
               color='primary'
               size='medium'
+              sx={{
+                '& .MuiPaginationItem-root': {
+                  color: '#64748b',
+                  '&.Mui-selected': {
+                    background: 'rgba(59,130,246,0.1)',
+                    color: '#3b82f6',
+                  },
+                  '&:hover': { background: 'rgba(0,0,0,0.05)' },
+                },
+              }}
             />
-          )}
-        </Stack>
-        <Box sx={{ mt: 1 }}>
-          <FunctionTable />
-        </Box>
+          </Box>
+        )}
       </Stack>
+
       <CreateModal
         modalIsOpen={modalIsOpen}
         onClose={() => setModalIsOpen(false)}

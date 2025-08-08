@@ -48,7 +48,7 @@ export default function DashboardLayout({
             flexGrow: 1,
             padding: 4,
             height: '100%',
-            backgroundColor: 'background.default',
+            background: '#f8fafc',
             minHeight: '100vh',
           }}
         >

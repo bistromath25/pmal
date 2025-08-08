@@ -8,24 +8,13 @@ import { SIDEBAR_COLLAPSE_WIDTH, SIDEBAR_FULL_WIDTH } from '@/utils';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import HomeIcon from '@mui/icons-material/Home';
 import LogoutIcon from '@mui/icons-material/Logout';
-import {
-  Box,
-  Button,
-  Drawer,
-  IconButton,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Box, Drawer, Stack, Tooltip, Typography } from '@mui/material';
 
 const sidebarOptions = [
-  {
-    name: 'Home',
-    icon: <HomeIcon />,
-    path: '/home',
-  },
+  { name: 'Home', icon: <HomeIcon fontSize='small' />, path: '/home' },
   {
     name: 'Functions',
-    icon: <FormatListBulletedIcon />,
+    icon: <FormatListBulletedIcon fontSize='small' />,
     path: '/functions',
   },
 ];
@@ -49,166 +38,141 @@ export default function Sidebar() {
           flexShrink: 0,
           '& .MuiDrawer-paper': {
             width: sidebarOpen ? SIDEBAR_FULL_WIDTH : SIDEBAR_COLLAPSE_WIDTH,
-            transition: 'width 0.3s',
+            transition: 'width 0.25s ease',
             overflowX: 'hidden',
             whiteSpace: 'nowrap',
             top: 0,
             position: 'sticky',
             height: '100vh',
-            px: 2,
+            background: '#0d1117',
+            borderRight: '1px solid rgba(255,255,255,0.06)',
+            display: 'flex',
+            flexDirection: 'column',
+            px: 1.5,
+            py: 2,
           },
         }}
       >
-        <Stack
-          sx={{
-            pt: 2,
-            flexShrink: 0,
-            top: 0,
-            position: 'sticky',
-            height: '100vh',
-          }}
-        >
-          <Stack spacing={1}>
-            <Box sx={{ height: 48 }}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  height: '100%',
-                  width: 48,
-                  borderRadius: 2,
-                  '&:hover': { backgroundColor: 'background.paper' },
-                }}
-              >
-                <IconButton
-                  onClick={() => setSidebarOpen(!sidebarOpen)}
+        <Stack sx={{ height: '100%' }} justifyContent='space-between'>
+          <Stack spacing={0.5}>
+            {/* Logo */}
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1.5,
+                px: 1,
+                py: 1,
+                mb: 1,
+                cursor: 'pointer',
+                borderRadius: '8px',
+                '&:hover': { background: 'rgba(255,255,255,0.05)' },
+              }}
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+            >
+              <img
+                src='/favicon.ico'
+                width={28}
+                height={28}
+                style={{ flexShrink: 0 }}
+              />
+              {sidebarOpen && (
+                <Typography
+                  variant='h6'
                   sx={{
-                    justifyContent: 'flex-start',
-                    width: '100%',
-                    height: '100%',
-                    color: 'primary.main',
-                    fontSize: 24,
+                    fontWeight: 800,
+                    color: '#f8fafc',
+                    letterSpacing: '-0.02em',
+                    fontSize: '1rem',
                   }}
-                  disabled
                 >
-                  <img src='/favicon.ico' />
-                </IconButton>
-                {sidebarOpen && (
-                  <Typography variant='h5' sx={{ my: 'auto' }}>
-                    PMAL
-                  </Typography>
-                )}
-              </Box>
+                  PMAL
+                </Typography>
+              )}
             </Box>
 
+            {/* Nav items */}
             {sidebarOptions.map(({ name, icon, path }) => {
               const isActive = pathname.startsWith(path);
               return (
-                <Box key={`sidebar-option-${name}`} sx={{ height: 48 }}>
+                <Tooltip
+                  key={name}
+                  title={sidebarOpen ? '' : name}
+                  placement='right'
+                >
                   <Box
+                    component={Link}
+                    href={path}
                     sx={{
                       display: 'flex',
-                      height: '100%',
-                      borderRadius: 2,
+                      alignItems: 'center',
+                      gap: 1.5,
+                      px: 1.5,
+                      py: 1,
+                      borderRadius: '8px',
+                      textDecoration: 'none',
+                      transition: 'background 0.15s',
+                      background: isActive
+                        ? 'rgba(255,255,255,0.08)'
+                        : 'transparent',
+                      color: isActive ? '#f8fafc' : '#64748b',
                       '&:hover': {
-                        backgroundColor: 'background.paper',
+                        background: 'rgba(255,255,255,0.06)',
+                        color: '#f8fafc',
                       },
-                      backgroundColor: isActive
-                        ? 'background.default'
-                        : 'background.paper',
                     }}
                   >
-                    {sidebarOpen ? (
-                      <Button
-                        component={Link}
-                        href={path}
+                    <Box sx={{ display: 'flex', flexShrink: 0 }}>{icon}</Box>
+                    {sidebarOpen && (
+                      <Typography
+                        variant='body2'
                         sx={{
-                          justifyContent: 'flex-start',
-                          px: 2,
-                          height: '100%',
-                          color: 'primary.main',
-                        }}
-                        startIcon={
-                          <Box sx={{ display: 'flex', fontSize: 24 }}>
-                            {icon}
-                          </Box>
-                        }
-                        fullWidth
-                      >
-                        <Typography
-                          variant='body1'
-                          sx={{ textTransform: 'none' }}
-                        >
-                          {name}
-                        </Typography>
-                      </Button>
-                    ) : (
-                      <IconButton
-                        component={Link}
-                        href={path}
-                        sx={{
-                          justifyContent: 'center',
-                          width: '100%',
-                          height: '100%',
-                          color: 'primary.main',
-                          fontSize: 24,
+                          fontWeight: isActive ? 600 : 500,
+                          color: 'inherit',
                         }}
                       >
-                        {icon}
-                      </IconButton>
+                        {name}
+                      </Typography>
                     )}
                   </Box>
-                </Box>
+                </Tooltip>
               );
             })}
-
-            <Box sx={{ height: 48 }}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  height: '100%',
-                  borderRadius: 2,
-                  '&:hover': {
-                    backgroundColor: 'background.paper',
-                  },
-                }}
-              >
-                {sidebarOpen ? (
-                  <Button
-                    onClick={handleSignOut}
-                    sx={{
-                      justifyContent: 'flex-start',
-                      px: 2,
-                      height: '100%',
-                      color: 'primary.main',
-                    }}
-                    startIcon={
-                      <Box sx={{ display: 'flex', fontSize: 24 }}>
-                        <LogoutIcon />
-                      </Box>
-                    }
-                    fullWidth
-                  >
-                    <Typography variant='body1' sx={{ textTransform: 'none' }}>
-                      Sign out
-                    </Typography>
-                  </Button>
-                ) : (
-                  <IconButton
-                    onClick={handleSignOut}
-                    sx={{
-                      justifyContent: 'center',
-                      width: '100%',
-                      height: '100%',
-                      color: 'primary.main',
-                      fontSize: 24,
-                    }}
-                  >
-                    <LogoutIcon />
-                  </IconButton>
-                )}
-              </Box>
-            </Box>
           </Stack>
+
+          {/* Sign out */}
+          <Tooltip title={sidebarOpen ? '' : 'Sign out'} placement='right'>
+            <Box
+              onClick={handleSignOut}
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1.5,
+                px: 1.5,
+                py: 1,
+                borderRadius: '8px',
+                cursor: 'pointer',
+                color: '#64748b',
+                transition: 'background 0.15s, color 0.15s',
+                '&:hover': {
+                  background: 'rgba(239,68,68,0.1)',
+                  color: '#f87171',
+                },
+              }}
+            >
+              <Box sx={{ display: 'flex', flexShrink: 0 }}>
+                <LogoutIcon fontSize='small' />
+              </Box>
+              {sidebarOpen && (
+                <Typography
+                  variant='body2'
+                  sx={{ fontWeight: 500, color: 'inherit' }}
+                >
+                  Sign out
+                </Typography>
+              )}
+            </Box>
+          </Tooltip>
         </Stack>
       </Drawer>
     </Box>
